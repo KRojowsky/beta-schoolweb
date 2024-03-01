@@ -1,0 +1,59 @@
+{% extends 'baseLessons.html' %}
+{% block content %}
+{% include 'navbarHome.html' %}
+<div class="background-pattern">
+    <div class="registration-container">
+
+        <div class="student_register">
+            <div class="student_logo">
+                <h2>Zostań uczniem</h2>
+            </div>
+             <p class="normal-text">
+                 Zapraszamy serdecznie do skorzystania z platformy edukacyjnej SchoolWeb,
+                 która otwiera przed Tobą drzwi do głębszej i bardziej wszechstronnej
+                 nauki.<br><br> Dzięki zaawansowanym materiałom edukacyjnym oraz interaktywnym
+                 zasobom SchoolWeb staje się niezastąpionym narzędziem w Twojej drodze
+                 do osiągnięcia sukcesów edukacyjnych.<br><br> Ta platforma nie tylko umożliwia
+                 zdobywanie wiedzy, ale także rozwija umiejętności organizacyjne oraz
+                 samodyscyplinę – umiejętności niezwykle wartościowe w życiu.<br><br>
+                 Dołączając do SchoolWeb, dołączasz do społeczności ambitnych uczniów,
+                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
+                 Niech ta platforma stanie się Twoim partnerem w osiąganiu majwyższych
+                 celów edukacyjnych.
+            </p>
+            <p class="mobile-text">Dołączając do SchoolWeb, dołączasz do społeczności uczniów,
+                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
+            </p>
+            <div class="button-container">
+                <a href="{% url 'newStudent' %}" class="button">❱ Dołącz ❰</a>
+            </div>
+        </div>
+
+        <div class="teacher_register">
+            <div class="teacher_logo">
+                <h2>Zostań korepetytorem</h2>
+            </div>
+            <p class="normal-text">
+                Odkryj swobodę w swoim planie dnia i zarabiaj jako korepetytor w naszej rewolucyjnej platformie
+                edukacyjnej.<br><br> Dostosuj korepetycje do swojego harmonogramu i preferowanego miejsca.
+                Wszystko, czego potrzebujesz, to zaledwie 50 minut na lekcję, stabilne połączenie internetowe,
+                spokojne otoczenie i pasję do dzielenia się wiedzą!<br><br> Nasza platforma skrupulatnie dobiera
+                uczniów i korepetytorów, by zapewnić satysfakcję z nauki dla wszystkich. Dodatkowo, stale rozwijamy
+                naszą ofertę, wprowadzając nowe i fascynujące tematy.<br><br> Przyłącz się do naszej najnowszej
+                platformy edukacyjnej SchoolWeb i doświadcz radości płynącej z poszerzania horyzontów edukacyjnych,
+                podziel się wiedzą i wspieraj innych w ich naukowej podróży!
+            </p>
+            <p class="mobile-text">Doświadcz radości płynącej z poszerzania horyzontów edukacyjnych, podziel się
+                wiedzą i wspieraj innych w ich naukowej podróży!</p>
+            <div class="button-container">
+                <a href="{% url 'newTeacher' %}" class="button">❱ Dołącz ❰</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="home-info">
+        <h2>Jeśli posiadasz już konto w <span>strefie korepetycji</span>
+            wystarczy się <a href="{% url 'lessonsLogin' %}">zalogować</a></h2>
+    </div>
+</div>
+{% endblock content %}

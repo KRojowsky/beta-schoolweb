@@ -1,0 +1,28 @@
+{% extends 'website/lesson_converse_main.html' %}
+{% load static %}
+{% block content %}
+<main>
+    <section id="converse-name-wrapper">
+        <p>Nazwa pokoju: <span id="converse-name"></span></p>
+    </section>
+
+    <section id="video-streams"></section>
+
+    <section id="controls-wrapper">
+        <div class="icon-wrapper">
+            <img class="control-icon" id="mic-btn" src="{% static 'img/icons/microphone.svg' %}" />
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="camera-btn" src="{% static 'img/icons/video.svg' %}" />
+        </div>
+
+        <div class="icon-wrapper">
+            <img class="control-icon" id="leave-btn" src="{% static 'img/icons/leave.svg' %}" />
+        </div>
+    </section>
+</main>
+
+<script type="text/javascript" src="{% static 'assets/AgoraRTC_N-4.18.2.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/streams.js' %}"></script>
+{% endblock content %}

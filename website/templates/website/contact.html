@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SchoolWeb - skontaktuj się z nami">
+    <meta name="keywords" content="korepetytor, uczniowie, edukacja, korepetycje, korki, nauka, schoolweb, lekcje,
+		matematyka, fizyka, polski, angielski, chemia, lekcje dodatkowe, kontakt, e-mail, adres, zostań korepetytorem, aplikuj">
+    <title>SchoolWeb | Kontakt</title>
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link href="{% static "css/widget.css" %}" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="bordered-image">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'img/logo.png' %}" title="Wróć do menu głównego" alt="Logo SchoolWeb"/>
+            </a>
+        </div>
+        <div class="container">
+          <h2 class="title">
+              <span class="title-word title-word-1">School</span>
+              <span class="title-word title-word-2">Web</span>
+          </h2>
+        </div>
+      </div>
+    </nav>
+
+    <section>
+        <div class="main-contact-widget">
+            <div class="contact-widget">
+                <h1>Kontakt</h1>
+            </div>
+            <h4>PYTANIA OGÓLNE</h4>
+            <p>helpdesk.schoolweb@gmail.com</p>
+            <h4>APLIKUJ NA STANOWISKO KOREPETYTORA</h4>
+            <p>rekrutacja.schoolweb@gmail.com</p>
+            <h4>NUMER KONTAKTOWY</h4>
+            <p>+48 572930585</p>
+            <h4>ADRES KORYSPONDENCYJNY</h4>
+            <p>Wielicka 44, 30-552 Kraków</p>
+        </div>
+    </section>
+
+    <footer style="margin-top: 160px; margin-bottom:0px;">
+	  <div class="footer-columns">
+		<div class="footer-column">
+		  <h4>Obsługa klienta</h4>
+		  <ul>
+			<li><a href="{% url 'faq' %}">FAQ</a></li>
+			<li><a href="{% url 'contact-info' %}">Skontaktuj się z nami</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Informacje</h4>
+		  <ul>
+			<li><a href="{% url 'statute' %}">Regulamin</a></li>
+			<li><a href="https://forms.office.com/r/ikfnznRhjN" target="_blank">Badanie potrzeb ucznia</a></li>
+			  <li><a href="https://forms.gle/mPxPnYdmZ5rGJmT16" target="_blank">Badanie preferencji klientów</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Znajdź nas</h4>
+		  <a href="https://www.facebook.com/profile.php?id=61553842207855" class="fa fa-facebook"></a>
+		  <a href="https://www.instagram.com/schoolweb_polska/" class="fa fa-instagram"></a>
+		</div>
+	  </div>
+	  <p>&copy; 2024 SchoolWeb. Wszelkie prawa zastrzeżone.</p>
+	  <h5>Stworzone przez <a href="https://rojowskiprojects.pl/" target="_blank">Rojowski Projects</a></h5>
+	</footer>
+
+  <script src="{% static 'js/faq.js' %}"></script>
+  </body>
+</html>
+
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body{
+    background-image: linear-gradient(to right ,#e49bfa, #ffffff, #e49bfa);
+    font-family: 'Montserrat';
+  }
+
+  nav {
+    z-index:1;
+    background-color: #ffffff;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0px 3px 0px #bb00ff;
+  }
+
+  .nav-container {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1650px;
+    margin: 0 auto;
+  }
+
+  section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+</style>

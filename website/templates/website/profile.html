@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<main class="profile-page layout layout--3">
+  <div class="container">
+    {% include 'website/topics_component.html' %}
+    <div class="roomList">
+      <div class="profile">
+        <div class="profile__avatar">
+          <div class="avatar avatar--large active">
+            <img src="{{user.avatar.url}}" />
+          </div>
+        </div>
+        <div class="profile__info">
+          <p>{{user.username}}</p>
+          {% if request.user == user %}
+            <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
+          {% endif %}
+        </div>
+        <div class="profile__about lesson-link">
+          <h3>O mnie</h3>
+          <p>
+           {{user.bio}}
+          </p>
+        </div>
+      </div>
+
+      <div class="roomList__header">
+        <div>
+          <h2>Posty utworzone przez {{user.username}}</a>
+          </h2>
+        </div>
+      </div>
+      {% include 'website/feed_component.html' %}
+    </div>
+    {% include 'website/activity_component.html' %}
+  </div>
+</main>
+{% endblock content %}

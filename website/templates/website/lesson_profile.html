@@ -1,0 +1,208 @@
+{% extends 'baseLessons.html' %}
+{% load static %}
+{% block content %}
+{% include navbar_template %}
+<main class="profile-page layout layout--3">
+  <div class="container">
+
+    {% include courses_component %}
+    <div class="roomList">
+      <div class="profile">
+        <div class="profile__avatar">
+          <div class="avatar avatar--large active">
+            <img src="{{user.avatar.url}}" />
+          </div>
+        </div>
+        <div class="profile__info">
+          <h3>{{user.first_name}} {{user.last_name}}</h3>
+          <p>@{{user.username}}</p>
+          {% if request.user == user %}
+            <a href="{% url 'update-user-lessons' %}" class="btn btn--main btn--pill">Ustawienia</a>
+          {% endif %}
+        </div>
+        <div class="profile__about lesson-link">
+          <h3>O mnie</h3>
+          <p>
+            {{user.bio}}
+          </p>
+        </div>
+
+        {% if request.user == user and is_teacher %}
+        <div class="profile__about">
+          <h3>Przychody:</h3>
+          <div class="animated-progress1">
+            <p>W tym miesiącu:</p>
+            <h5>{{ month_earnings }} zł</h5>
+            <canvas id="monthEarningsChart" width="400" height="200"></canvas>
+          </div>
+          <div class="animated-progress2">
+            <p>Ogólne:</p>
+            <h5>{{ all_earnings }} zł</h5>
+            <canvas id="allEarningsChart" width="400" height="200"></canvas>
+          </div>
+        </div>
+        {% endif %}
+
+        {% if request.user == user and not is_teacher or request.user != user and is_teacher %}
+        <div class="profile__about">
+          <div class="info-box">
+            <h3>Liczba zajęć do wykorzystania w bieżącym pakiecie</h3>
+            <p class="highlight">{{ package }}</p>
+          </div>
+        </div>
+
+        <div class="profile__about">
+          <div class="info-box">
+            <h3>Liczba wykorzystanych zajęć</h3>
+            <p class="highlight">{{ all_package }}</p>
+          </div>
+        </div>
+        {% endif %}
+
+      {% if request.user == user %}
+      <div class="profile__about">
+        <h3>Twoje kursy:</h3>
+        <div class="course-cards">
+          {% for course in courses %}
+            <div class="course-card">
+              {% if course.students.count == 1 and not course.students.first.is_teacher %}
+                <div class="profile-picture">
+                  <img src="{{ course.students.first.avatar.url }}" alt="Profile Picture">
+                </div>
+              {% elif course.teacher %}
+                <div class="profile-picture">
+                  <img src="{{ course.teacher.avatar.url }}" alt="Profile Picture">
+                </div>
+              {% endif %}
+
+              <div class="lesson-count">
+                  <p>{{ course.get_lessons_with_feedback_count }} lekcji</p>
+              </div>
+              {% if is_teacher %}
+              <a href="{% url 'teacherPage' %}?q={{course.name}}">
+                <h3 class="lesson-title">{{ course.name }}</h3>
+              </a>
+              {% else %}
+              <a href="{% url 'studentPage' %}?q={{course.name}}">
+                <h3 class="lesson-title">{{ course.name }}</h3>
+              </a>
+              {% endif %}
+              <p style="color:#000000">Uczniowie:</p>
+              <ul>
+                {% for student in course.students.all %}
+                  <li>{{ student.first_name }} {{ student.last_name }} [ {{ student.lessons }} ]</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if request.user == user and is_teacher%}
+        <div class="profile__about">
+          <h3>Więcej opcji:</h3>
+          <a href="{% url 'resignation' %}" class="btn resignation" style="margin-top:15px;">Rezygnacja</a>
+        </div>
+      {% endif %}
+
+      </div>
+    </div>
+
+    {% include 'website/activity_component_lessons.html' %}
+  </div>
+</main>
+
+<script>
+  var monthEarnings = {{ month_earnings }};
+  var allEarnings = {{ all_earnings }};
+
+  var monthEarningsChart = new Chart(document.getElementById('monthEarningsChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Miesiąc'],
+    datasets: [{
+      label: 'Miesięczne Przychody',
+      data: [monthEarnings],
+      backgroundColor: 'rgba(46, 204, 113, 0.5)',
+    }],
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 5000,
+        ticks: {
+          callback: function (value, index, values) {
+            return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            var label = context.dataset.label || '';
+
+            if (label) {
+              label += ': ';
+            }
+            var totalLessons = {{ user.lessons }} + {{ user.lessons_intermediate }};
+            label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessons + ' - przeprowadzonych ' + {{user.break_lessons}} + ' - opuszczonych przez ucznia ' + {{user.missed_lessons}} + ' - opuszczonych przez korepetytora)';
+            return label;
+          },
+        },
+      },
+    },
+  },
+});
+
+var allEarningsChart = new Chart(document.getElementById('allEarningsChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Ogólnie'],
+    datasets: [{
+      label: 'Ogólne Przychody',
+      data: [allEarnings],
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    }],
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true,
+        max: 10000,
+        ticks: {
+          callback: function (value, index, values) {
+            return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+          },
+        },
+      },
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            var label = context.dataset.label || '';
+
+            if (label) {
+              label += ': ';
+            }
+          var totalLessonsMonth = {{ user.all_lessons }} + {{ user.all_lessons_intermediate }};
+          label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessonsMonth  + ' - przeprowadzonych ' + {{user.all_break_lessons}} + ' - opuszczonych przez ucznia ' + {{user.all_missed_lessons}} + ' - opuszczonych przez korepetytora)';
+          return label;
+          },
+        },
+      },
+    },
+  },
+});
+</script>
+{% endblock content %}

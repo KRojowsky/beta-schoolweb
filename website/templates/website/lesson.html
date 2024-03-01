@@ -1,0 +1,223 @@
+{% extends 'baseLessons.html' %}
+{% load static %}
+{% block content %}
+{% include navbar_template %}
+<main class="profile-page layout layout--2">
+  <div class="container">
+    <div class="room">
+      <div class="room__top">
+        <div class="room__topLeft">
+          <a href="{{ back_link }}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>Cofnij</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"
+              ></path>
+            </svg>
+          </a>
+
+          {% if lesson.host == request.user %}
+            <a href="{% url 'updateLesson' lesson.id %}">
+              <svg
+                enable-background="new 0 0 24 24" height="32" viewBox="0 0 24 24" width="32"
+                xmlns="http://www.w3.org/2000/svg"  style="margin-left:10px;">
+                <title>Edytuj</title>
+                <g>
+                  <path d="m23.5 22h-15c-.276 0-.5-.224-.5-.5s.224-.5.5-.5h15c.276 0 .5.224.5.5s-.224.5-.5.5z" />
+                </g>
+                <g>
+                  <g>
+                    <path d="m2.5 22c-.131 0-.259-.052-.354-.146-.123-.123-.173-.3-.133-.468l1.09-4.625c.021-.09.067-.173.133-.239l14.143-14.143c.565-.566
+                    1.554-.566 2.121 0l2.121 2.121c.283.283.439.66.439 1.061s-.156.778-.439
+                    1.061l-14.142 14.141c-.065.066-.148.112-.239.133l-4.625 1.09c-.038.01-.077.014-.115.014zm1.544-4.873-.872
+                    3.7 3.7-.872 14.042-14.041c.095-.095.146-.22.146-.354
+                    0-.133-.052-.259-.146-.354l-2.121-2.121c-.19-.189-.518-.189-.707 0zm3.081 3.283h.01z" />
+                  </g>
+                  <g>
+                    <path d="m17.889 10.146c-.128 0-.256-.049-.354-.146l-3.535-3.536c-.195-.195-.195-.512
+                    0-.707s.512-.195.707 0l3.536 3.536c.195.195.195.512 0 .707-.098.098-.226.146-.354.146z" />
+                  </g>
+                </g>
+              </svg>
+            </a>
+          {% endif %}
+
+          <h3>{{lesson.title}}</h3>
+        </div>
+
+      </div>
+      <div class="room__box scroll">
+        <div class="room__header scroll">
+          <div class="room__info">
+            <h3>{{lesson.title}}</h3>
+            <span>{{lesson.postCreated|timesince}} temu</span>
+          </div>
+          <div class="room__hosted">
+            <p>Utworzone przez</p>
+            {% if lesson.host %}
+            <a href="{% url 'lesson-profile' lesson.host.id %}" class="room__author">
+              <div class="avatar avatar--small">
+                <img src="{{lesson.host.avatar.url}}" />
+              </div>
+              <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
+            </a>
+          {% else %}
+            <div class="room__author">
+              <div class="avatar avatar--small">
+                <img src="{% static 'img/avatar.svg' %}" />
+              </div>
+              <span>Użytkownik usunięty</span>
+            </div>
+          {% endif %}
+          </div>
+          <div class="room__details scroll">
+            {{lesson.description}}
+          </div>
+          <br>
+          {% if room.image %}
+            <a href="{{ lesson.image.url }}" class="popup-image" target="_blank">
+              <img src="{{ lesson.image.url }}" alt="Zdjęcie pokoju" style="max-width: 700px; max-height: 500px;">
+            </a>
+          {% endif %}
+          <br>
+          <span class="room__topics">{{lesson.course}}</span>
+        </div>
+        <hr>
+
+        <div class="room__conversation">
+          <div class="threads scroll">
+            {% if lesson_messages %}
+              {% for message in lesson_messages %}
+              <div class="thread">
+                <div class="thread__top">
+                  <div class="thread__author">
+                    {% if message.user %}
+                      <a href="{% url 'lesson-profile' message.user.id %}" class="thread__authorInfo">
+                        <div class="avatar avatar--small">
+                          <img src="{{message.user.avatar.url}}" />
+                        </div>
+                        <span title="Zobacz profil">{{message.user.first_name}}</span>
+                      </a>
+                    {% else %}
+                      <div class="thread__authorInfo">
+                        <div class="avatar avatar--small">
+                          <img src="{% static 'img/avatar.svg' %}" />
+                        </div>
+                        <span>Użytkownik usunięty</span>
+                      </div>
+                    {% endif %}
+                    <span class="thread__date">{{message.messageCreated|timesince}} temu</span>
+                  </div>
+
+                  {% if request.user == message.user %}
+                  <a href="{% url 'deleteLessonMessage' message.id %}">
+                    <div class="thread__delete">
+                      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                        <title>Usuń</title>
+                        <path
+                          d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"
+                        ></path>
+                      </svg>
+                    </div>
+                    </a>
+                  {% endif %}
+                </div>
+                <div class="thread__details">
+                  {{message.body}}
+                  <br>
+                  {% if message.image %}
+                      <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
+                          <img src="{{ message.image.url }}" alt="Message Image" style="max-width: 500px; max-height: 500px;" />
+                      </a>
+                  {% endif %}
+                  {% if message.file %}
+                      <div class="file-name-wrapper">
+                          <a href="{{ message.file.url }}" target="_blank" title="Otwórz">{{ message.file.name }}</a>
+                      </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            {% else %}
+              <div class="thread">
+                  <div class="thread__details">
+                    <i>Brak komentarzy do tego posta.</i>
+                  </div>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% if request.user.is_authenticated %}
+      <div class="room__message">
+          <form action="" method="POST" onsubmit="return validateForm()" enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="input-container">
+                  <div id="left-side" class="left-side scroll-target">
+                      <input name="body" id="message-input" placeholder="Napisz wiadomość . . ." />
+                  </div>
+                  <div class="right-side">
+                      <label for="image" class="file-upload-button">
+                          <i class="fa fa-camera upload-icon"  title="Dodaj zdjęcie"></i>
+                      </label>
+                      <input type="file" id="image" name="image" accept="image/*" multiple style="display: none;" onchange="displaySelectedFileName()" />
+
+                      <label for="file" class="file-upload-button">
+                          <i class="fa fa-file upload-icon" title="Dodaj plik"></i>
+                      </label>
+                      <input type="file" id="file" name="file" accept=".pdf, .docx, .xlsx" multiple style="display: none;" onchange="displaySelectedFileName()" />
+
+                      <span id="selected-file-name"></span>
+                      <button class="transparent-button" title="Wyślij"><i class="fa">&#xf1d9;</i></button>
+                  </div>
+              </div>
+          </form>
+      </div>
+      <script>
+          function displaySelectedFileName() {
+              const fileInput = document.getElementById('image');
+              const fileInput2 = document.getElementById('file');
+              const selectedFileName = document.getElementById('selected-file-name');
+
+              if (fileInput.files.length > 0 || fileInput2.files.length > 0) {
+                  const fullFileName = fileInput.files.length > 0 ? fileInput.files[0].name : fileInput2.files[0].name;
+                  const fileExtension = fullFileName.split('.').pop();
+
+                  const maxLength = 5;
+                  let displayedFileName = fullFileName.length > maxLength ? fullFileName.slice(0, maxLength) + '...' : fullFileName;
+
+                  selectedFileName.textContent = displayedFileName + '.' + fileExtension;
+              } else {
+                  selectedFileName.textContent = '';
+              }
+          }
+      </script>
+      {% endif %}
+    </div>
+
+    <div class="participants">
+      <h3 class="participants__top">Członkowie <span>({{participants.count}} dołączyło)</span></h3>
+      <div class="participants__list scroll">
+       {% for user in participants %}
+        <a href="{% url 'lesson-profile' lesson.host.id %}" class="participant">
+          <div class="avatar avatar--medium">
+            <img src="{{user.avatar.url}}" />
+          </div>
+          <p>
+            {{user.first_name}}
+            <span title="Zobacz profil">@{{user.username}}</span>
+          </p>
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</main>
+<script src="{% static 'js/script.js' %}"></script>
+<style>
+.file-name-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+</style>
+{% endblock content %}

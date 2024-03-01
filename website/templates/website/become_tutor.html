@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Dołącz do grona korepetytorów SchoolWeb i skorzytaj z możliwości zarabiania
+        z każdego miejsca na świecie">
+    <meta name="keywords" content="korepetytor, uczniowie, edukacja, korepetycje, korki, nauka, schoolweb, lekcje,
+		matematyka, fizyka, polski, angielski, chemia, lekcje dodatkowe, zostań korepetytorem, dołącz jako korepetytor,
+		praca SchoolWeb">
+    <title>SchoolWeb | Zostań korepetytorem</title>
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link href="{% static "css/widget.css" %}" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="bordered-image">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'img/logo.png' %}"  title="Wróć do menu głównego" alt="Logo SchoolWeb"/>
+            </a>
+        </div>
+        <div class="container">
+          <h2 class="title">
+              <span class="title-word title-word-1">School</span>
+              <span class="title-word title-word-2">Web</span>
+          </h2>
+        </div>
+        <div class="hamburger-menu">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#register" class="nav-option">Zostań korepetytorem</a></li>
+          <li><a href="#earings" class="nav-option">Zarobki i korzyści</a></li>
+          <li><a href="#benefits" class="nav-option">Benefity</a></li>
+          <li><a href="#howtostart" class="nav-option">Jak zacząć?</a></li>
+          <li><a href="#worth" class="nav-option">Dlaczego warto?</a></li>
+          <li><a href="{% url 'lessons-home' %}" class="hvr-bounce-in" style="color: #bb00ff; font-size: 18px; font-weight: 900;">STREFA KOREPETYCJI</a></li>
+          <li><a href="{% url 'dashboard' %}" class="hvr-bounce-in" style="color: #bb00ff; font-size: 18px; font-weight: 900;">STREFA WIEDZY</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div id = "register" class="heroes">
+		<section class="hero-zero" style="margin-top:120px;">
+		  <div class="container-zero">
+			<div class="hero-image-zero">
+			  <img src="{% static 'img/start.png' %}" width=275" height="275", alt="Dołącz do korepetytorów SchoolWeb">
+			</div>
+			<div class="hero-label-zero">
+			  <h1 class="hero-heading-zero">Dołącz do korepetytorów<span> Schoolweb</span></h1>
+			  <p class="hero-text-zero" style="margin-top: 30px;">Czy marzysz o fascynującej przygodzie z nauką?
+                Cenisz sobie elastyczny czas pracy i chciałbyś być częścią innowacyjnej platformy edukacyjnej? SchoolWeb
+                to nie tylko miejsce nauki, to także przestrzeń, gdzie Twoje umiejętności mogą zabłysnąć,
+                a Twoja pasja do nauczania znaleźć pełne wyrazu.
+              </p>
+              <br><br><a id = "earings" href="{% url 'newTeacher' %}" class="hvr-buzz-out" style="font-size: 17px;
+              text-decoration: none; background-color: #bb00ff; color: #ffffff; padding:10px 20px;
+              border: 2px solid #bb00ff; border-radius:7px; font-weight: 900; text-align: center;">ZOSTAŃ KOREPETYTOREM</a>
+            </div>
+		  </div>
+		</section>
+
+        <section class="hero-first">
+          <div class="container-first">
+            <div class="hero-label-first">
+              <h1 class="hero-heading-first"><span>Zarobki</span> i korzyści</h1>
+              <p class="hero-text-first" style="margin-top: 30px;">Jako korepetytor na SchoolWeb masz możliwość
+                  zdobywania atrakcyjnych zarobków, ceniąc jednocześnie elastyczność i innowacyjność naszej platformy
+                  edukacyjnej. Dzięki stawce godzinowej za jedne zajęcia oraz elastycznemu grafikowi, Twój wysiłek
+                  będzie odpowiednio doceniony. <br><br> Dołącz do nas już dziś i rozwijaj się zawodowo, inspirując
+                  uczniów oraz czerpiąc korzyści z pozytywnej atmosfery naszej społeczności.
+              </p>
+              <h2 style="margin-top:90px">ILE MOGĘ ZAROBIĆ?</h2>
+              <div class="calculator-container">
+                <label for="lessonsPerWeek">Liczba zajęć tygodniowo:</label>
+                <input type="number" id="lessonsPerWeek" min="0" placeholder="Wprowadź liczbę zajęć" />
+                <button onclick="calculateEarnings()">Oblicz zarobki</button>
+                <p id="monthlyEarnings" class="result-text"></p>
+                  <p id = "benefits" style="margin: 15px; font-size:12px;">*Nauczając przedmiotów na poziomie rozszerzonym zarobki są
+                      zdecydowanie wyższe.</p>
+              </div>
+            </div>
+            <div class="hero-image-first">
+              <img src="{% static 'img/tutor_2.png' %}" width="375" height="375" alt="Zarobki i korzyści">
+            </div>
+          </div>
+        </section>
+
+        <section class="hero-second">
+            <div class="container-second">
+                <div class="hero-image-second">
+                    <img src="{% static 'img/tutor_5.png' %}" width="375" height="375"  alt="Dlaczego powinienem wybrać SchoolWeb?">
+                </div>
+                <div class="hero-label-second">
+                    <h1 class="hero-heading-second">Dlaczego powinienem wybrać<span> SchoolWeb</span>?</h1>
+                    <ul class="custom-list" style="margin-top:10px">
+                        <ul class="custom-list">
+                          <li><span>💻 Łatwy Dostęp do Uczniów: </span>Na SchoolWeb nie musisz samodzielnie szukać
+                            uczniów. Dzięki naszej platformie masz natychmiastowy dostęp do wielu uczniów, gotowych
+                            do nauki.</li>
+                          <li><span>💼 Profesjonalne Połączenia: </span>Oferujemy łatwe i profesjonalne połączenie
+                            z uczniami. Nie martw się o techniczne kwestie - my się tym zajmujemy, a Ty skup się
+                            na nauczaniu.</li>
+                          <li><span>📈 Zarządzanie Lekcjami w Kilku Kliknięciach: </span>Rozpoczęcie lekcji to
+                            zaledwie kilka kliknięć. Dzięki intuicyjnemu interfejsowi możesz sprawnie zarządzać
+                            swoim planem zajęć.</li>
+                          <li><span>👩‍ Opieka i Wsparcie: </span>Nasi przedstawiciele są zawsze gotowi pomóc.
+                            Dbamy o relacje, łącząc Cię z uczniami i wspierając w każdym etapie Twojej kariery
+                            korepetytora.</li>
+                          <li><span>🌈 Platforma online vs. Zajęcia stacjonarne: </span>W świecie online
+                            eliminujemy bariery geograficzne. Nauczanie online na SchoolWeb daje Ci dostęp do
+                            uczniów z różnych miejsc, co zwiększa Twój zasięg.</li>
+                          <li><span>🔐 Bezpieczeństwo i Prywatność: </span>Gwarantujemy bezpieczeństwo Twoich
+                            danych i prywatność. Dzięki naszej platformie możesz swobodnie dzielić się wiedzą,
+                            wiedząc, że jesteś w bezpiecznym środowisku.</li>
+                        </ul>
+                         <br><br><a id="howtostart" href="{% url 'newTeacher' %}" class="hvr-buzz-out" style="font-size: 17px; text-decoration: none; background-color: #bb00ff; color: #ffffff; padding:10px 20px; border: 2px solid #bb00ff; border-radius:7px; font-weight: 900;">ZOSTAŃ KOREPETYTOREM</a>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+      <section class="hero-fourth">
+        <div class="container-fourth">
+          <div class="hero-label-fourth">
+            <h1 class="hero-heading-fourth">Jak<span> zacząć</span> . . . ?</h1>
+            <ol class="hero-list-fourth">
+              <li onclick="toggleInfo(1)">
+                <div class="title">Zarejestruj się jako korepetytor</div>
+                <span id="toggle-icon-1" class="toggle-icon">&#9660;</span>
+              </li>
+              <div id="info-1" class="additional-info fadeIn">
+                Ten krok to szybkie i proste wypełnienie formularza rejestracyjnego oraz potwierdzenie swoich danych
+                osobowych. Poświęć zaledwie pięć minut, aby otworzyć drzwi do fascynującej podróży w świecie nauczania.
+              </div>
+              <li onclick="toggleInfo(2)">
+                <div class="title">Rozwiąż poprawnie przygotowany test</div>
+                <span id="toggle-icon-2" class="toggle-icon">&#9660;</span>
+              </li>
+              <div id="info-2" class="additional-info fadeIn">
+                Wykaż się wiedzą i umiejętnościami, rozwiązując specjalnie przygotowany test z przedmiotów,
+                które chcesz nauczać. To doskonała okazja, aby pokazać, jak dobrze znasz swoją dziedzinę i
+                  dostosować się do potrzeb uczniów.
+              </div>
+              <li onclick="toggleInfo(3)">
+                <div class="title">Pierwsze Spotkanie: Przedstaw Się</div>
+                <span id="toggle-icon-3" class="toggle-icon">&#9660;</span>
+              </li>
+              <div id="info-3" class="additional-info fadeIn">
+                Zaplanuj krótką i przyjemną rozmowę 1:1 z naszym zespołem SchoolWeb. To szybkie spotkanie, podczas
+                którego możesz podzielić się swoją pasją do nauki. Naszym celem jest lepsze zrozumienie Ciebie oraz
+                przedstawienie, w jaki sposób funkcjonuje platforma edukacyjna - SchoolWeb. Ta kameralna rozmowa
+                pomoże nam dostosować się do Twoich oczekiwań i stworzyć pozytywne pierwsze wrażenie związane
+                z Twoim uczestnictwem.
+              </div>
+              <li id = "worth" onclick="toggleInfo(4)">
+                  <div class="title">Rozpocznij przygodę ze SchoolWeb</div>
+                <span id="toggle-icon-4" class="toggle-icon">&#9660;</span>
+              </li>
+              <div id="info-4" class="additional-info fadeIn">
+                Jesteś teraz oficjalnym członkiem zespołu korepetytorów SchoolWeb! Czas poznać swoich uczniów, planować
+                inspirujące lekcje i dzielić się swoją pasją do nauki. Twoja przygoda z edukacją zaczyna się tutaj!
+              </div>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="hero-second">
+        <div class="container-second">
+            <div class="hero-label-second">
+                <h1 class="hero-heading-zero">Dlaczego warto zostać<span> korepetytorem</span>?</h1><br>
+                <ul class="custom-list">
+                  <ul class="custom-list">
+                    <li><span>🚀 Innowacyjna Platforma Edukacyjna: </span>Dołącz do społeczności przesuwającej granice nauczania. Nasza platforma umożliwia dynamiczne lekcje online dostosowane do potrzeb uczniów.</li>
+                    <li><span>💼 Wysokie Zarobki: </span>Twoja praca jest ceniona. Oferujemy atrakcyjne wynagrodzenie i stawkę godzinową, doceniając Twoje wysiłki.</li>
+                    <li><span>🌟 Elastyczny Czas Pracy: </span>Opanuj sztukę równowagi między życiem prywatnym a zawodowym dzięki elastycznemu grafikowi.</li>
+                    <li><span>👩‍ Świetna Atmosfera: </span>Dołącz do zgranego zespołu, gdzie każdy korepetytor to inspiracja dla uczniów, tworzymy pozytywną atmosferę sprzyjającą rozwojowi.</li>
+                    <li><span>🌈 Rozwój Osobisty: </span>Stale się rozwijaj! Dostęp do nowoczesnych narzędzi edukacyjnych i wsparcie administracji pozwolą Twoim umiejętnościom stale ewoluować.</li>
+                  </ul>
+                </ul>
+                <br><br><a href="{% url 'newTeacher' %}" class="hvr-buzz-out" style="font-size: 17px; text-decoration: none; background-color: #bb00ff; color: #ffffff; padding:10px 20px; border: 2px solid #bb00ff; border-radius:7px; font-weight: 900; text-align: center;">ZOSTAŃ KOREPETYTOREM</a>
+            </div>
+            <div class="hero-image-second">
+                <img src="{% static 'img/tutor_1.png' %}" width="375" height="375" alt="Dlaczego warto zostać Korepetytorem?">
+            </div>
+        </div>
+      </section>
+
+      <section id = "questions" class="hero-second">
+          <div class="container-second">
+              <div class="hero-image-second">
+                  <img src="{% static 'img/tutor_4.png' %}" width="375" height="375" alt="Masz pytania?">
+              </div>
+              <div class="hero-label-second">
+                  <h1 class="hero-heading-second">Masz<span> pytania?</span></h1>
+                  <p class="hero-text-second" style="margin-top: 30px;">
+                      Jeśli masz jakieś pytania sprawdź pytania i odpowiedzi w naszym FAQ lub zadaj pytanie poprzez
+                      formularz kontaktowy na naszej stronie głównej
+                  </p>
+                  <br><br>
+                  <a href="/#contact" style="display: inline-block; font-size: 16px; text-decoration: none; color: #bb00ff; border: 2px solid #bb00ff; padding: 7px; border-radius: 7px; font-weight: 900; margin-bottom: 10px;">ZADAJ PYTANIE TUTAJ</a>
+                  <a href="/faq/#faq4" style="display: inline-block; font-size: 16px; text-decoration: none; color: #bb00ff; border: 2px solid #bb00ff; padding: 7px; border-radius: 7px; font-weight: 900;">FAQ - KOREPETYTORZY</a>
+              </div>
+          </div>
+      </section>
+    </div>
+
+    <section class="hero-first">
+      <div class="container-first">
+        <div class="hero-label-first" >
+          <h1 class="hero-heading-first">Wypróbuj korepetycje<span> już dziś</span>!</h1>
+          <p class="hero-text-first" style="margin-top: 30px;">Nawiązujemy naszą współpracę z doświadczonymi korepetytorami,
+              gotowymi wesprzeć Twoje dziecko na każdym etapie nauki. Nasza oferta skupia się na
+              inspirującym procesie edukacyjnym, kształtując umiejętności i rozwijając samodyscyplinę.
+              Dołącz już teraz, abyśmy mogli razem odkrywać potencjał Twojego dziecka!
+          </p>
+          <br><br><a href="{% url 'newStudent' %}" class="hvr-buzz-out" style="font-size: 17px; text-decoration: none; background-color: #bb00ff; color: #ffffff; padding:10px 20px; border: 2px solid #bb00ff; border-radius:7px; font-weight: 900;">Umów pierwsze zajęcia</a>
+        </div>
+        <div class="hero-image-first">
+          <img src="{% static 'img/tutor_3.png' %}" width="375" height="375" alt="Wybróbuj korepetycje już dziś">
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-top: 100px; margin-bottom:0px;">
+	  <div class="footer-columns">
+		<div class="footer-column">
+		  <h4>Obsługa klienta</h4>
+		  <ul>
+			<li><a href="{% url 'faq' %}">FAQ</a></li>
+			<li><a href="{% url 'contact-info' %}">Skontaktuj się z nami</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Informacje</h4>
+		  <ul>
+			<li><a href="{% url 'statute' %}">Regulamin</a></li>
+			<li><a href="https://forms.office.com/r/ikfnznRhjN" target="_blank">Badanie potrzeb ucznia</a></li>
+			  <li><a href="https://forms.gle/mPxPnYdmZ5rGJmT16" target="_blank">Badanie preferencji klientów</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Znajdź nas</h4>
+		  <a href="https://www.facebook.com/profile.php?id=61553842207855" class="fa fa-facebook"></a>
+		  <a href="https://www.instagram.com/schoolweb_polska/" class="fa fa-instagram"></a>
+		</div>
+	  </div>
+	  <p>&copy; 2024 SchoolWeb. Wszelkie prawa zastrzeżone.</p>
+	  <h5>Stworzone przez <a href="https://rojowskiprojects.pl/" target="_blank">Rojowski Projects</a></h5>
+	</footer>
+
+    <script src="{% static 'js/faq.js' %}"></script>
+  </body>
+</html>
+
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body{
+    font-family: 'Montserrat';
+  }
+
+  nav {
+    z-index:1;
+    background-color: #ffffff;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0px 3px 0px #bb00ff;
+  }
+
+  .nav-container {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1650px;
+    margin: 0 auto;
+  }
+
+  .hero-fourth{
+    width:96%;
+  }
+
+  .hero-list-fourth {
+      list-style-type: none;
+      padding: 0;
+  }
+
+  .hero-list-fourth .title{
+      font-size:20px;
+      margin-right:20px;
+      line-height: 1.5;
+  }
+
+  .hero-list-fourth li {
+      position: relative;
+      overflow: hidden;
+  }
+</style>

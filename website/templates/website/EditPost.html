@@ -1,0 +1,55 @@
+{% extends 'baseLessons.html' %}
+{% block content %}
+{% include 'navbarTeacher.html' %}
+<main class="create-room layout">
+  <div class="container">
+    <div class="layout__box">
+      <div class="layout__boxHeader">
+        <div class="layout__boxTitle">
+          <a href="{% url 'teacherPage' %}">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>Cofnij</title>
+              <path
+                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+              </path>
+            </svg>
+          </a>
+          <h3>Edytuj lekcję</h3>
+        </div>
+      </div>
+      <div class="layout__body">
+        {% if can_edit %}
+          <form class="form" action="" method="POST">
+            {% csrf_token %}
+
+            <div class="form__group">
+              <label for="room_name">Temat lekcji:</label>
+              <input type="text" id="room_name" name="title" value="{{ form.instance.title }}">
+            </div>
+
+            <div class="form__group">
+              <label for="room_description">Notatki(opis):</label>
+              <textarea id="room_description" name="description">{{ form.instance.description }}</textarea>
+            </div>
+
+            <div class="form__group">
+              <label for="room_event_datetime">Data:</label>
+              <input type="datetime-local" id="room_event_datetime" name="event_datetime" value="{{ form.instance.event_datetime|date:'Y-m-d\TH:i:s' }}">
+              {% for error in form.event_datetime.errors %}
+                <div class="alert alert-danger" style="color: red;">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <div class="form__action">
+              <a class="btn btn--dark" href="{{request.META.HTTP_REFERER}}">Anuluj</a>
+              <button class="btn btn--main" type="submit">Zatwierdź</button>
+            </div>
+          </form>
+        {% else %}
+          <p>Nie można już edytować lekcji.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

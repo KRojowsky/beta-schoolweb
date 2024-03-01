@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SchoolWeb to wyjątkowa platforma edukacyjna, która zapewnia nie tylko
+		konkurencyjne cenowo lekcje, lecz także szereg innych narzędzi.">
+  <meta name="keywords" content="korepetytor, uczniowie, edukacja, korepetycje, korki, nauka, schoolweb, lekcje,
+		matematyka, fizyka, polski, angielski, chemia, lekcje dodatkowe, forum, strefa wiedzy, zadaj pytanie, pytania
+        odpowiedzi, zadania domowe">
+  <title>SchoolWeb | Twórz z nami najlepszą platformę edukacyjną</title>
+  <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+  <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <link href="{% static "css/style.css" %}" rel="stylesheet">
+
+  <style>
+    body {
+      background-image: url('{% static "img/bg_pattern.png" %}');
+      background-repeat: repeat;
+      background-size: 512px 512px;
+      background-attachment: fixed;
+    }
+  </style>
+</head>
+
+<body>
+    {% include 'navbar.html' %}
+    {% block content %}
+
+    {% endblock %}
+    <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

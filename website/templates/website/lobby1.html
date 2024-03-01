@@ -1,0 +1,54 @@
+{% extends 'website/lesson_converse_main.html' %}
+{% load static %}
+{% block content %}
+<main>
+    <section id="form-container">
+        <img id="logo" src="{% static 'img/chat-icon.png' %}" />
+
+        <div id="welcome-message">
+            <h1>Witaj w SchoolWeb Converse</h1>
+            <p>Usługa komunikacji wideo platformy edukacyjnej SchoolWeb</p>
+        </div>
+
+        <form id="form">
+            <div class="form-field">
+                <input type="text" name="converse" placeholder="Podaj kod lekcji..."/>
+            </div>
+
+            <div class="form-field">
+                <input type="text" name="username" placeholder="Podaj swoje imię..." value="{{ first_name }}">
+            </div>
+
+            <div class="form-field">
+                <input type="submit" value="Dołącz" />
+            </div>
+        </form>
+
+    </section>
+</main>
+
+<script type="text/javascript">
+    let form = document.getElementById('form')
+    let name = "{{ first_name }}";
+
+    let handleSubmit = async (e) => {
+        e.preventDefault()
+        let converse = e.target.converse.value
+        let name = e.target.username.value
+
+        let response = await fetch(`/get_token/?channel=${converse}`)
+        let data = await response.json()
+
+        let UID = data.uid
+        let token = data.token
+
+        sessionStorage.setItem('UID', UID)
+        sessionStorage.setItem('token', token)
+        sessionStorage.setItem('converse', converse)
+        sessionStorage.setItem('name', name);
+
+        window.open('/converse/', '_self')
+    }
+    form.addEventListener('submit', handleSubmit)
+</script>
+{% endblock content %}

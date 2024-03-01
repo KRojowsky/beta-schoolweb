@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SchoolWeb FAQ - najczęściej zadawane pytania i odpowiedzi ">
+    <meta name="keywords" content="korepetytor, uczniowie, edukacja, korepetycje, korki, nauka, schoolweb, lekcje,
+		matematyka, fizyka, polski, angielski, chemia, lekcje dodatkowe, FAQ, pytania, odpowiedzi, cena lekcji">
+    <title>SchoolWeb | FAQ</title>
+    <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon" />
+    <link href="{% static "css/widget.css" %}" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <div class="bordered-image">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'img/logo.png' %}"  title="Wróć do menu głównego" alt="Logo SchoolWeb"/>
+            </a>
+        </div>
+        <div class="container">
+          <h2 class="title">
+              <span class="title-word title-word-1">School</span>
+              <span class="title-word title-word-2">Web</span>
+          </h2>
+        </div>
+        <div class="hamburger-menu">
+          <div class="bar"></div>
+          <div class="bar"></div>
+          <div class="bar"></div>
+        </div>
+        <ul class="nav-links">
+          <li><a href="#faq1" class="nav-option">O SchoolWeb</a></li>
+          <li><a href="#faq2" class="nav-option">Korepetycje online</a></li>
+          <li><a href="#faq3" class="nav-option">Ceny</a></li>
+          <li><a href="#faq4" class="nav-option">Dla korepetytorów</a></li>
+          <li><a href="#faq5" class="nav-option">Rezerwacje zajęć</a></li>
+          <li><a href="{% url 'lessons-home' %}" class="hvr-bounce-in" style="color: #bb00ff; font-size: 18px; font-weight: 900;" title = "Korepetycje">STREFA KOREPETYCJI</a></li>
+          <li><a href="{% url 'dashboard' %}" class="hvr-bounce-in" style="color: #bb00ff; font-size: 18px; font-weight: 900;" title = "Forum">STREFA WIEDZY</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <section>
+      <div id = "faq1" class="faq-logo">
+        <h1>FAQ - najczęściej zadawane pytania i odpowiedzi</h1>
+      </div>
+      <h2 class="faq-title">O SchoolWeb</h2>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Czym jest SchoolWeb?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            W SchoolWeb przyszłość korepetycji nabiera nowego wymiaru. Naszym celem jest odkrycie pełnego potencjału
+            uczniów, redefiniując tradycyjne korepetycje dzięki zaawansowanym rozwiązaniom online. Tworzymy
+            interaktywne i innowacyjne środowisko edukacyjne, dostarczając pasjonujące lekcje. W SchoolWeb uczniowie
+            doświadczają wspaniałej nauki, rozwijają się i osiągają sukcesy w przystępny i nowoczesny sposób.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Dla kogo przeznaczone jest SchoolWeb?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            SchoolWeb oferuje wsparcie edukacyjne dla uczniów szkół oraz  osób w każdym wieku, umożliwiając
+            wykorzystanie pełni ich potencjału poprzez spersonalizowane lekcje online i zaawansowane technologie.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Nasi korepetytorzy</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            W SchoolWeb korepetytorzy to oddani specjaliści, ekspert w swoich dziedzinach. Przechodzą dokładną kontrolę
+            jakości przed rozpoczęciem zajęć, aby zapewnić najwyższy standard nauczania.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div id = "faq2" class="question">
+          <h3>Jakie usługi oferuje SchoolWeb?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Oferujemy interaktywną platformę edukacyjną SchoolWeb zapewniającą dostęp do innowacyjnych korepetycji,
+            forum do zadawania pytań, platformę korepetytorską, na której odbywają się zajęcia, dodatkowo jest to
+            miejsce, w którym można kontakować z korepetytorem oraz przechowywać notatki, aby uprościć i ulepszyć
+            proces nauki uczniów.
+          </p>
+        </div>
+      </div>
+
+
+      <h2 class="faq-title">Korepetycje online</h2>
+      <div class="faq">
+        <div class="question">
+          <h3>Jak działają korepetycje online</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Korepetycje online to wirtualne spotkania ucznia i korepetytora, gdzie komunikują się za pomocą transmisji
+            w czasie rzeczywistym. Dzięki temu mogą się widzieć, słyszeć i wspólnie pracować nad nauką, niezależnie od
+            swojego położenia geograficznego. To wygodna forma nauki na odległość, umożliwiająca efektywną interakcję
+            i współpracę między uczniem a nauczycielem.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Czego potrzebuję, aby uczestniczyć w zajęciach</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+           Aby brać udział w korepetycjach, wystarczy, że będziesz miał działający mikrofon, który pozwoli na rozmowę
+           z korepetytorem oraz stabilne łącze internetowe. Kamera nie jest obowiązkowa - najważniejsze, żebyście mogli
+           się wzajemnie słyszeć i komunikować podczas zajęć.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>W jaki sposób mogę się umówić na zajęcia?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Zapraszamy na naszą stronę główną, gdzie masz możliwość zapisania się na lekcję próbną. Możesz zapisać się
+            również kontaktując się bezpośrednio z administracją platformy: telefonicznie: 572930585 lub mailowo:
+            supportsw@schoolweb.pl Masz możliwość wybrać dowolny przedmiot oraz termin, który Ci odpowiada. Skorzystaj
+            z tej okazji, aby poznać naszą platformę i doświadczyć profesjonalnych korepetycji. Serdecznie zachęcamy do
+            zapoznania się z naszą ofertą i rejestracji na lekcję próbną już teraz!
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak długo trwają zajęcia?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Czas trwania jednej lekcji wynosi 50 minut.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div id = "faq3" class="question">
+          <h3>Zalety korepetycji online</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Korepetycje online mają wiele zalet, takich jak: dostępność niezależnie od odległości, elastyczność czasowa,
+            wsparcie technologiczne, indywidualne podejście do ucznia, większy wybór korepetytorów, interaktywne
+            środowisko edukacyjne, oszczędność czasu i kosztów, przygotowanie do przyszłościowego świata.
+          </p>
+        </div>
+      </div>
+
+
+      <h2 class="faq-title">Ceny</h2>
+      <div class="faq">
+        <div class="question">
+          <h3>Ile kosztują prywatne korepetycje?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Zapewniamy korzystne ceny korepetycji, w zakresie od 35 zł do 50 zł (za pojedyncze zajęcia), dostosowane do
+            różnych typów członkostwa. Możesz skorzystać również z pakietów zajęć po okazyjnych cenach. Naszym
+            priorytetem jest stworzenie idealnej oferty, która spełni potrzeby każdego ucznia. Więcej szczegółów i
+            informacji można znaleźć na naszej stronie. Zapraszamy do zapoznania się z naszą ofertą!
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Metody płatności</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Przyjmujemy płatności za pośrednictwem przelewu na podany numer lub bezpośrednio na nasze konto. Dzięki
+            temu zapewniamy prosty i bezpieczny proces płatności dla naszych klientów. Jeśli masz jakiekolwiek pytania
+            dotyczące płatności lub potrzebujesz informacji o numerze konta, służymy pomocą i zachęcamy do kontaktu.
+            Twoja wygoda i bezpieczeństwo są dla nas najważniejsze.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Co się stanie jeśli nie pojawię się na zajęciach?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Jeśli uczeń nie pojawi się na zajęciach, ale poinformuje swojego korepetytora z co najmniej 15 minutowym
+            wyprzedzeniem, zajęcia zostaną przełożone na termin uzgodniony z uczniem, bez dodatkowych kosztów. Jednak
+            jeśli nie poinformuje korepetytora z wyprzedzeniem, zajęcia zostaną pobrane z pakietu ucznia i przepadną.
+          </p>
+        </div>
+      </div>
+
+      <div id="faq4" class="faq">
+        <div class="question">
+          <h3>Czy mogę anulować wykupiony pakiet?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Niestety, nie ma możliwości anulacji wykupionych pakietów lekcji. Wszystkie zakupione lekcje powinny zostać
+            wykorzystane, ponieważ platforma nie zwraca pieniędzy za zapłacone lekcje. Zachęcamy do dokładnego
+            rozważenia ilości lekcji przed dokonaniem zakupu i planowania swoich zajęć, aby jak najlepiej wykorzystać
+            dostępne zasoby. Dla Twojej wygody jesteśmy tutaj, aby pomóc dostosować plan zajęć do Twoich potrzeb i
+            możliwości.
+          </p>
+        </div>
+      </div>
+
+
+      <h2 class="faq-title">Dla korepetytorów</h2>
+      <div class="faq">
+        <div class="question">
+          <h3>Jak zostać korepetytorem w SchoolWeb?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Na stronie głównej platformy wybierz w menu "Zostań korepetytorem", a następnie uzupełnij formularz i
+            zarejestruj się. Możesz również zrobić to wchodząc w "Korepetycje", a następnie "Dołącz" w
+            "Zostań korepetytorem". Inną możliwością jest kontakt z administracją platformy mailowo:
+            rekrutacjasw@schoolweb.pl lub telefonicznie: 572930585.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Czy każdy może zostać korepetytorem?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            W przypadku prowadzenia korepetycji 1 na 1 konieczne jest osiągnięcie pełnoletniości oraz posiadanie
+            głębokiej wiedzy i umiejętności w danej dziedzinie, a także zdolności do efektywnego przekazywania tej
+            wiedzy innym.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak wygląda proces rekrutacji?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Po przesłaniu Twojej aplikacji, zaplanujemy rozmowę wideo, podczas której szczegółowo omówimy wszystkie
+            szczegóły i ocenimy Twoje kompetencje w kontekście pracy jako korepetytor. Po pomyślnym przejściu tej
+            rozmowy oraz zaliczeniu testu związanego z daną dziedziną, przystąpimy do organizacji Twojej pierwszej
+            lekcji.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div id = "faq5" class="question">
+          <h3>Ile mogę zarobić w miesiąc?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Twoje potencjalne miesięczne dochody będą uzależnione od kilku czynników, w tym dostępności w wybranych
+            dziedzinach, które zamierzasz nauczać, oraz liczby i rodzaju lekcji, które planujesz przeprowadzić w ciągu
+            miesiąca.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div id = "faq5" class="question">
+          <h3>Jak wygląda moja praca jako korepetytor?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            W SchoolWeb otrzymujesz wynagrodzenie na podstawie stawki godzinowej. Nie masz stałej umowy i pracujesz na
+            własny rachunek. W przypadku, gdy Twoje miesięczne dochody przekroczą próg zwolnienia od podatku, jesteś
+            zobowiązany/a do zgłoszenia tego faktu odpowiednim urzędom.
+          </p>
+        </div>
+      </div>
+
+
+      <h2 class="faq-title">Rezerwacje</h2>
+      <div class="faq">
+        <div class="question">
+          <h3>Jak zapisać się na zajęcia do wybranego korepetytora?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Celem zapisania się do wybranego korepetytora napisz wiadomość na stonie głównej platformy w "Kontakt"
+            lub skontaktuj się w tej sprawie z administracją platformy.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak dostać się na moje zajęcia?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Na stronie główniej w menu wejdź w "Korepetycje". Po poprawnym zalogowaniu będziesz widział/a nadchodzące
+            oraz poprzednie zajęcia. Celem dostania się na zajęcia kliknij "Dołącz na zajęcia", wpisz nazwę pokoju
+            podaną przez korepetytora oraz swoje imię, a następnie kliknij "Dołącz".
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak sprawdzić ile zajęć zostało do wykorzystania?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Liczba zajęć pozostałych do wykorzystania jest widoczna w sekcji korepetycji po wejściu na swój profil
+            (Kliknij w swoje imię na górnym pasku).
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak skontaktować się z korepetytorem?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Kontakt z korepetytorem jest możliwy poprzez czat dołączony do każdych zajęć po wejściu w szczegóły lub
+            poprzez aplikację mobilną WhatsApp.
+          </p>
+        </div>
+      </div>
+
+      <div class="faq">
+        <div class="question">
+          <h3>Jak odwołać lub zmienić termin zajęć?</h3>
+          <svg width="18" height="13" viewBox="0 0 42 25">
+            <path  d="M3 3L21 21L39 3" />
+          </svg>
+        </div>
+        <div class="answer">
+          <p>
+            Odwołanie lub zmiana terminu zajęcia powinny być wspólnie ustalone pomiędzy uczniem, a korepetytorem. Celem
+            zmiany terminu zajęć lub ich usunięcia wejdź w szczegóły zajęć i wybierz jedną z opcji w prawym górnym rogu
+            "Edycja"/"Usuń" - Możliwe do zrobienia przez stronę korepetytora.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer style="margin-bottom:0px;">
+	  <div class="footer-columns">
+		<div class="footer-column">
+		  <h4>Obsługa klienta</h4>
+		  <ul>
+			<li><a href="{% url 'faq' %}">FAQ</a></li>
+			<li><a href="{% url 'contact-info' %}">Skontaktuj się z nami</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Informacje</h4>
+		  <ul>
+			<li><a href="{% url 'statute' %}">Regulamin</a></li>
+			<li><a href="https://forms.office.com/r/ikfnznRhjN" target="_blank">Badanie potrzeb ucznia</a></li>
+			  <li><a href="https://forms.gle/mPxPnYdmZ5rGJmT16" target="_blank">Badanie preferencji klientów</a></li>
+		  </ul>
+		</div>
+		<div class="footer-column">
+		  <h4>Znajdź nas</h4>
+		  <a href="https://www.facebook.com/profile.php?id=61553842207855" target="_blank" class="fa fa-facebook"></a>
+		  <a href="https://www.instagram.com/schoolweb_polska/" target="_blank" class="fa fa-instagram"></a>
+		</div>
+	  </div>
+	  <p>&copy; 2024 SchoolWeb. Wszelkie prawa zastrzeżone.</p>
+	  <h5>Stworzone przez <a href="https://rojowskiprojects.pl/" target="_blank">Rojowski Projects</a></h5>
+	</footer>
+
+  <script src="{% static 'js/faq.js' %}"></script>
+  </body>
+</html>
+
+<style>
+  *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body{
+    background-image: linear-gradient(to right ,#e49bfa, #ffffff, #e49bfa);
+    font-family: 'Montserrat';
+  }
+
+  nav {
+    z-index:1;
+    background-color: #ffffff;
+    position: fixed;
+    width: 100%;
+    box-shadow: 0px 3px 0px #bb00ff;
+  }
+
+  .nav-container {
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1650px;
+    margin: 0 auto;
+  }
+
+  section {
+    min-height: 100vh;
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom:50px;
+  }
+</style>

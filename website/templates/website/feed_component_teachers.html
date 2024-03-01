@@ -1,0 +1,108 @@
+{% for lesson in lessons %}
+{% load static %}
+<div class="roomListRoom {% if lesson.event_datetime and lesson.event_datetime <= time_threshold %}expired-lesson{% endif %}">
+    <div class="roomListRoom__header">
+      {% if lesson.host %}
+      <a href="{% url 'lesson-profile' lesson.host.id %}" class="roomListRoom__author">
+        <div class="avatar avatar--small">
+          <img src="{{ lesson.host.avatar.url }}" />
+        </div>
+        <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
+      </a>
+      {% else %}
+      <div class="roomListRoom__author">
+        <div class="avatar avatar--small">
+          <img src="path_to_default_avatar_image.png" />
+        </div>
+        <span>Użytkownik usunięty</span>
+      </div>
+      {% endif %}
+      <div style="text-align: right;">
+        {% if lesson.event_datetime %}
+            {% if lesson.event_datetime > now %}
+                <a href="{% url 'lobby' lesson.id %}" target="_blank" class="joinButton">
+                    <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
+                </a>
+            {% elif lesson.event_datetime <= time_threshold %}
+                {% if lesson.feedback is not None and lesson.feedback != "-" %}
+                        <div class="inactiveButton" style="display: inline-block;">
+                            <span class="lock-icon"><i class="fa fa-lock"></i></span>
+                        </div>
+                    {% if not lesson.lessoncorrection_set.all %}
+                        <a href="{% url 'lessonCorrection' lesson.id %}" class="resetAmountButton" style="display: inline-block;">
+                            <i class="fa fa-refresh"></i>
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'lesson_feedback' lesson.id %}" class="feedback pulse-animation">
+                        <div style="display: flex; align-items: center;">
+                            <i class="fa fa-edit" style="margin-right: 5px;"></i>
+                            UZUPEŁNIJ
+                        </div>
+                    </a>
+                {% endif %}
+            {% else %}
+                <div class="inactiveButton">
+                    <span class="lock-icon"><i class="fa fa-lock"></i></span>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="inactiveButton">
+                <span class="lock-icon"><i class="fa fa-lock"></i></span>
+            </div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="roomListRoom__content">
+      <div style="display: inline;">
+        <h1 style="display: inline; margin-right: 2px;">Data:</h1>
+        <h1 style="display: inline;" class="{% if lesson.event_datetime > now %}date-pulse{% endif %}">{{ lesson.event_datetime|date:"Y-m-d H:i" }}</h1>
+      </div>
+      <br>
+      <div style="display: inline;">
+        <h1 style="display: inline; margin-right: 2px;">Temat zajęć:</h1>
+        <a href="{% url 'lesson' lesson.id %}" class="lesson-link" title="Zobacz lekcję">{{lesson.title}}</a>
+      </div>
+    </div>
+    <div>
+        <h1 style="font-size: 1.6rem; color:#000000; display: inline; margin-right: 2px;">Uczestnicy:</h1>
+        {% for student in lesson.course.students.all %}
+            <a style="font-size: 1.7rem; display: inline; margin-right: 2px;" href="{% url 'lesson-profile' student.id %}" class="participant-link">{{ student.first_name }} {{ student.last_name }},</a>
+        {% endfor %}
+    </div>
+
+    <div class="roomListRoom__meta">
+      <a href="{% url 'lesson' lesson.id %}" class="roomListRoom__joined">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+            <path d="M30.539 20.766c-2.69-1.547-5.75-2.427-8.92-2.662 0.649 0.291 1.303 0.575 1.918 0.928 0.715
+            0.412 1.288 1.005 1.71 1.694 1.507 0.419 2.956 1.003 4.298 1.774 0.281 0.162 0.456 0.487 0.456
+            0.85v4.65h-4v2h5c0.553 0 1-0.447 1-1v-5.65c0-1.077-0.56-2.067-1.461-2.584z" ></path>
+            <path d="M22.539 20.766c-6.295-3.619-14.783-3.619-21.078 0-0.901 0.519-1.461 1.508-1.461 2.584v5.65c0
+            0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-5.651c0-1.075-0.56-2.064-1.461-2.583zM22 28h-20v-4.65c0-0.362
+            0.175-0.688 0.457-0.85 5.691-3.271 13.394-3.271 19.086 0 0.282 0.162 0.457
+            0.487 0.457 0.849v4.651z" ></path>
+            <path d="M19.502 4.047c0.166-0.017 0.33-0.047 0.498-0.047 2.757 0 5 2.243 5 5s-2.243 5-5 5c-0.168
+            0-0.332-0.030-0.498-0.047-0.424 0.641-0.944 1.204-1.513 1.716 0.651 0.201 1.323 0.331
+            2.011 0.331 3.859 0 7-3.141 7-7s-3.141-7-7-7c-0.688 0-1.36 0.131-2.011 0.331 0.57 0.512
+            1.089 1.075 1.513 1.716z" ></path>
+            <path d="M12 16c3.859 0 7-3.141 7-7s-3.141-7-7-7c-3.859 0-7 3.141-7 7s3.141 7 7 7zM12 4c2.757 0
+            5 2.243 5 5s-2.243 5-5 5-5-2.243-5-5c0-2.757 2.243-5 5-5z" ></path>
+        </svg>
+        {{ lesson.participants.all.count }} użytkowników dołączyło
+      </a>
+
+      <p class="roomListRoom__topic">{{ lesson.course.name }}</p>
+
+    </div>
+    <div class="comment-counter">
+        <img src="{% static 'img/comment.png' %}">
+        <div class="comment-info">
+           {{ lesson.coursemessage_set.count }} wiadomości
+        </div>
+    </div>
+    <div class="roomListRoom__actions">
+        <i class="fa fa-clock-o" style="font-size:20px; color: #000000"></i>
+        <span>Utworzono: {{lesson.postCreated|timesince}} temu</span>
+    </div>
+</div>
+{% endfor %}

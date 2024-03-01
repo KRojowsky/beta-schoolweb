@@ -1,0 +1,82 @@
+{% extends 'baseLessons.html' %}
+{% load static %}
+{% block content %}
+{% include 'navbarStudent.html' %}
+<main class="layout layout--3">
+  <div class="container">
+    {% include 'website/courses_component_students.html' %}
+
+    <div class="roomList">
+      <div class="mobile-menu">
+        <form action="{% url 'studentPage' %}" method="GET" class="header__search">
+          <label>
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+              <title>Szukaj</title>
+              <path d="M32 30.586l-10.845-10.845c1.771-2.092 2.845-4.791 2.845-7.741 0-6.617-5.383-12-12-12s-12
+              5.383-12 12c0 6.617 5.383 12 12 12 2.949 0 5.649-1.074 7.741-2.845l10.845 10.845 1.414-1.414zM12
+              22c-5.514 0-10-4.486-10-10s4.486-10 10-10c5.514 0 10 4.486 10 10s-4.486 10-10 10z" ></path>
+            </svg>
+            <input name="q" placeholder="Wyszukaj lekcji..." />
+          </label>
+        </form>
+        <div class="mobile-menuItems">
+          <a class="btn btn--main btn--pill" href="{% url 'courses_students' %}">Twoje kursy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'activity-lesson' %}">Ostatnie aktywności</a>
+        </div>
+      </div>
+      <div class="roomList__header">
+        <div>
+          <h2>Twoje lekcje</h2>
+          <p>{{post_count}} lekcji w tym kursie</p>
+        </div>
+      </div>
+
+      {% if courses.count == 0 %}
+        <div class="no-courses-info">
+          <h2 class="welcome-title">Witaj w SchoolWeb</h2>
+          <p>Cieszymy się, że dołączyłeś/aś do naszej platformy jako nowy uczeń. Życzymy Ci powodzenia w nauce
+          na SchoolWeb!<br><br> Jeśli napotkasz jakiekolwiek problemy lub potrzebujesz pomocy, jesteśmy dostępni,
+          aby Ci pomóc. Skontaktuj się z nami w razie potrzeby.<br><br> Poniżej znajdziesz podstawowe instrukcje,
+            które pomogą Ci lepiej korzystać z naszej platformy.</p>
+          <ul class="info-list">
+            <li>
+              <img src="{% static 'img/opis2.png' %}" alt="Ikona 2" class="icon">
+              <span>Przejdź do zakładki "TWOJE KURSY", gdzie znajdziesz listę kursów, których jesteś korepetytorem.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/opis3.png' %}" alt="Ikona 3" class="icon">
+              <span>Ostatnie aktywności związane z Twoimi kursami znajdziesz w zakładce "OSTATNIE AKTYWNOŚCI".</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/opis4.png' %}" alt="Ikona 4" class="icon">
+              <span>W pasku nawigacji możesz wyszukać interesującą Cię lekcję.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/opis5.png' %}" alt="Ikona 5" class="icon">
+              <span>Klikając logo SchoolWeb wrócisz na stronę główną.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/opis6.png' %}" alt="Ikona 6" class="icon">
+              <span>Klikając w swoje imię na pasku nawigacji przejdziesz do swojego profilu.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/opis7.png' %}" alt="Ikona 7" class="icon">
+              <span>Klikając "Edytuj profil" będziesz w stanie edytować swój profil.</span>
+            </li>
+          </ul>
+          <p><i>Informacja zniknie, gdy zostaniesz dodany/a do swojego pierwszego kursu.</i></p>
+        </div>
+       {% endif %}
+
+      {% include 'website/feed_component_students.html' %}
+    </div>
+
+    {% include 'website/activity_component_lessons.html' %}
+  </div>
+</main>
+{% endblock %}
