@@ -1,0 +1,388 @@
+{% extends 'widget.html' %}
+{% load static %}
+
+{% block description %}
+<meta name="description" content="SchoolWeb FAQ - najważniejsze pytania i odpowiedzi.">
+{% endblock description %}
+
+{% block title %}SchoolWeb | FAQ{% endblock title %}
+
+{% block content %}
+<script src="{% static 'js/faq.js' %}" defer></script>
+
+<div class="hero main-container">
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">O nas</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-2.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">Korepetycje online</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-2.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">Ceny</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-3.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">Dla korepetytorów</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-3.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">Rezerwacje zajęć</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-6.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+
+    <div class="item">
+        <a href="#">
+            <h2 class="sub-hero-heading small">Inne</h2>
+            <div class="image-container">
+                <img src="{% static 'img/faq/tutor-7.png' %}" alt="Opis obrazka">
+            </div>
+        </a>
+    </div>
+</div>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">O nas</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(1)">
+                    <div class="title">Czym jest SchoolWeb?</div>
+                    <span id="toggle-icon-1" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-1" class="additional-info fadeIn">
+                    W SchoolWeb przyszłość korepetycji nabiera nowego wymiaru. Naszym celem jest odkrycie pełnego
+                    potencjału uczniów, redefiniując tradycyjne korepetycje dzięki zaawansowanym rozwiązaniom online.
+                    Tworzymy interaktywne i innowacyjne środowisko edukacyjne, dostarczając pasjonujące lekcje.
+                    W SchoolWeb uczniowie doświadczają wspaniałej nauki, rozwijają się i osiągają sukcesy w
+                    przystępny i nowoczesny sposób.
+                </div>
+                <li onclick="toggleInfo(2)">
+                    <div class="title">Dla kogo przeznaczone jest SchoolWeb?</div>
+                    <span id="toggle-icon-2" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-2" class="additional-info fadeIn">
+                    SchoolWeb oferuje wsparcie edukacyjne dla uczniów szkół oraz osób w każdym wieku, umożliwiając
+                    wykorzystanie pełni ich potencjału poprzez spersonalizowane lekcje online i zaawansowane
+                    technologie.
+                </div>
+                <li onclick="toggleInfo(3)">
+                    <div class="title">Nasi korepetytorzy</div>
+                    <span id="toggle-icon-3" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-3" class="additional-info fadeIn">
+                    W SchoolWeb korepetytorzy to oddani specjaliści, ekspert w swoich dziedzinach. Przechodzą dokładną
+                    kontrolę jakości przed rozpoczęciem zajęć, aby zapewnić najwyższy standard nauczania.
+                </div>
+                <li onclick="toggleInfo(4)">
+                    <div class="title">Jakie usługi oferuje SchoolWeb?</div>
+                    <span id="toggle-icon-4" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-4" class="additional-info fadeIn">
+                    Oferujemy interaktywną platformę edukacyjną SchoolWeb zapewniającą dostęp do innowacyjnych
+                    korepetycji, forum do zadawania pytań, platformę korepetytorską, na której odbywają się zajęcia,
+                    dodatkowo jest to miejsce, w którym można kontakować z korepetytorem oraz przechowywać notatki,
+                    aby uprościć i ulepszyć proces nauki uczniów.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">Korepetycje online</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(5)">
+                    <div class="title">Jak działają korepetycje online</div>
+                    <span id="toggle-icon-5" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-5" class="additional-info fadeIn">
+                    Korepetycje online to wirtualne spotkania ucznia i korepetytora, gdzie komunikują się za pomocą
+                    transmisji w czasie rzeczywistym. Dzięki temu mogą się widzieć, słyszeć i wspólnie pracować nad
+                    nauką, niezależnie od swojego położenia geograficznego. To wygodna forma nauki na odległość,
+                    umożliwiająca efektywną interakcję i współpracę między uczniem a nauczycielem.
+                </div>
+                <li onclick="toggleInfo(6)">
+                    <div class="title">Czego potrzebuję, aby uczestniczyć w zajęciach</div>
+                    <span id="toggle-icon-6" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-6" class="additional-info fadeIn">
+                    Aby brać udział w korepetycjach, wystarczy, że będziesz miał działający mikrofon, który pozwoli na
+                    rozmowę z korepetytorem oraz stabilne łącze internetowe. Kamera nie jest obowiązkowa -
+                    najważniejsze, żebyście mogli się wzajemnie słyszeć i komunikować podczas zajęć.
+                </div>
+                <li onclick="toggleInfo(7)">
+                    <div class="title">W jaki sposób mogę się umówić na zajęcia?</div>
+                    <span id="toggle-icon-7" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-7" class="additional-info fadeIn">
+                    Zapraszamy na naszą stronę główną, gdzie masz możliwość zapisania się na lekcję próbną. Możesz
+                    zapisać się również kontaktując się bezpośrednio z administracją platformy: telefonicznie:
+                    572930585 lub mailowo: supportsw@schoolweb.pl Masz możliwość wybrać dowolny przedmiot oraz termin,
+                    który Ci odpowiada. Skorzystaj z tej okazji, aby poznać naszą platformę i doświadczyć
+                    profesjonalnych korepetycji. Serdecznie zachęcamy do zapoznania się z naszą ofertą i rejestracji
+                    na lekcję próbną już teraz!
+                </div>
+                <li onclick="toggleInfo(8)">
+                    <div class="title">Jak długo trwają zajęcia?</div>
+                    <span id="toggle-icon-8" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-8" class="additional-info fadeIn">
+                    Czas trwania jednej lekcji wynosi 50 minut.
+                </div>
+                <li onclick="toggleInfo(9)">
+                    <div class="title">Zalety korepetycji online</div>
+                    <span id="toggle-icon-9" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-9" class="additional-info fadeIn">
+                    Korepetycje online mają wiele zalet, takich jak: dostępność niezależnie od odległości, elastyczność
+                    czasowa, wsparcie technologiczne, indywidualne podejście do ucznia, większy wybór korepetytorów,
+                    interaktywne środowisko edukacyjne, oszczędność czasu i kosztów, przygotowanie do
+                    przyszłościowego świata.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">Ceny</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(10)">
+                    <div class="title">Ile kosztują prywatne korepetycje?</div>
+                    <span id="toggle-icon-10" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-10" class="additional-info fadeIn">
+                    Zapewniamy korzystne ceny korepetycji, w zakresie od 35 zł do 50 zł (za pojedyncze zajęcia),
+                    dostosowane do różnych typów członkostwa. Możesz skorzystać również z pakietów zajęć po okazyjnych
+                    cenach. Naszym priorytetem jest stworzenie idealnej oferty, która spełni potrzeby każdego ucznia.
+                    Więcej szczegółów i informacji można znaleźć na naszej stronie. Zapraszamy do zapoznania się z
+                    naszą ofertą!
+                </div>
+                <li onclick="toggleInfo(11)">
+                    <div class="title">Metody płatności</div>
+                    <span id="toggle-icon-11" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-11" class="additional-info fadeIn">
+                    Przyjmujemy płatności za pośrednictwem przelewu na podany numer lub bezpośrednio na nasze konto.
+                    Dzięki temu zapewniamy prosty i bezpieczny proces płatności dla naszych klientów. Jeśli masz
+                    jakiekolwiek pytania dotyczące płatności lub potrzebujesz informacji o numerze konta, służymy
+                    pomocą i zachęcamy do kontaktu. Twoja wygoda i bezpieczeństwo są dla nas najważniejsze.
+                </div>
+                <li onclick="toggleInfo(12)">
+                    <div class="title">Co się stanie jeśli nie pojawię się na zajęciach?</div>
+                    <span id="toggle-icon-12" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-12" class="additional-info fadeIn">
+                    Jeśli uczeń nie pojawi się na zajęciach, ale poinformuje swojego korepetytora z co najmniej 15
+                    minutowym wyprzedzeniem, zajęcia zostaną przełożone na termin uzgodniony z uczniem, bez dodatkowych
+                    kosztów. Jednak jeśli nie poinformuje korepetytora z wyprzedzeniem, zajęcia zostaną pobrane z
+                    pakietu ucznia i przepadną.
+                </div>
+                <li onclick="toggleInfo(13)">
+                    <div class="title">Czy mogę anulować wykupiony pakiet?</div>
+                    <span id="toggle-icon-13" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-13" class="additional-info fadeIn">
+                    Niestety, nie ma możliwości anulacji wykupionych pakietów lekcji. Wszystkie zakupione lekcje
+                    powinny zostać wykorzystane, ponieważ platforma nie zwraca pieniędzy za zapłacone lekcje.
+                    Zachęcamy do dokładnego rozważenia ilości lekcji przed dokonaniem zakupu i planowania swoich
+                    zajęć, aby jak najlepiej wykorzystać dostępne zasoby. Dla Twojej wygody jesteśmy tutaj, aby pomóc
+                    dostosować plan zajęć do Twoich potrzeb i możliwości.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">Dla korepetytorów</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(14)">
+                    <div class="title">Jak zostać korepetytorem w SchoolWeb?</div>
+                    <span id="toggle-icon-14" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-14" class="additional-info fadeIn">
+                    Na stronie głównej platformy wybierz w menu "Zostań korepetytorem", a następnie uzupełnij
+                    formularz i zarejestruj się. Możesz również zrobić to wchodząc w "Korepetycje", a następnie
+                    "Dołącz" w "Zostań korepetytorem". Inną możliwością jest kontakt z administracją platformy
+                    mailowo: rekrutacjasw@schoolweb.pl lub telefonicznie: 572930585.
+                </div>
+                <li onclick="toggleInfo(15)">
+                    <div class="title">Czy każdy może zostać korepetytorem?</div>
+                    <span id="toggle-icon-15" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-15" class="additional-info fadeIn">
+                    W przypadku prowadzenia korepetycji 1 na 1 konieczne jest osiągnięcie pełnoletniości oraz
+                    posiadanie głębokiej wiedzy i umiejętności w danej dziedzinie, a także zdolności do efektywnego
+                    przekazywania tej wiedzy innym.
+                </div>
+                <li onclick="toggleInfo(16)">
+                    <div class="title">Jak wygląda proces rekrutacji?</div>
+                    <span id="toggle-icon-16" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-16" class="additional-info fadeIn">
+                    Po przesłaniu Twojej aplikacji, zaplanujemy rozmowę wideo, podczas której szczegółowo omówimy
+                    wszystkie szczegóły i ocenimy Twoje kompetencje w kontekście pracy jako korepetytor. Po pomyślnym
+                    przejściu tej rozmowy oraz zaliczeniu testu związanego z daną dziedziną, przystąpimy do
+                    organizacji Twojej pierwszej lekcji.
+                </div>
+                <li onclick="toggleInfo(17)">
+                    <div class="title">Ile mogę zarobić w miesiąc?</div>
+                    <span id="toggle-icon-17" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-17" class="additional-info fadeIn">
+                    Twoje potencjalne miesięczne dochody będą uzależnione od kilku czynników, w tym dostępności w
+                    wybranych dziedzinach, które zamierzasz nauczać, oraz liczby i rodzaju lekcji, które planujesz
+                    przeprowadzić w ciągu miesiąca.
+                </div>
+                <li onclick="toggleInfo(18)">
+                    <div class="title">Jak będzie wyglądać moja praca jako korepetytora?</div>
+                    <span id="toggle-icon-18" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-18" class="additional-info fadeIn">
+                    W SchoolWeb otrzymujesz wynagrodzenie na podstawie stawki godzinowej. Nie masz stałej umowy i
+                    pracujesz na własny rachunek. W przypadku, gdy Twoje miesięczne dochody przekroczą próg zwolnienia
+                    od podatku, jesteś zobowiązany/a do zgłoszenia tego faktu odpowiednim urzędom.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">Rezerwacje zajęć</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(19)">
+                    <div class="title">Jak zapisać się na zajęcia do wybranego korepetytora?</div>
+                    <span id="toggle-icon-19" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-19" class="additional-info fadeIn">
+                    Celem zapisania się do wybranego korepetytora napisz wiadomość na stonie głównej platformy w
+                    "Kontakt" lub skontaktuj się w tej sprawie z administracją platformy.
+                </div>
+                <li onclick="toggleInfo(20)">
+                    <div class="title">Jak dostać się na moje zajęcia?</div>
+                    <span id="toggle-icon-20" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-20" class="additional-info fadeIn">
+                    Na stronie główniej w menu wejdź w "Korepetycje". Po poprawnym zalogowaniu będziesz widział/a
+                    nadchodzące oraz poprzednie zajęcia. Celem dostania się na zajęcia kliknij "Dołącz na zajęcia",
+                    wpisz nazwę pokoju podaną przez korepetytora oraz swoje imię, a następnie kliknij "Dołącz".
+                </div>
+                <li onclick="toggleInfo(21)">
+                    <div class="title">Jak sprawdzić ile zajęć zostało do wykorzystania?</div>
+                    <span id="toggle-icon-21" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-21" class="additional-info fadeIn">
+                    Liczba zajęć pozostałych do wykorzystania jest widoczna w sekcji korepetycji po wejściu na swój
+                    profil (Kliknij w swoje imię na górnym pasku).
+                </div>
+                <li onclick="toggleInfo(22)">
+                    <div class="title">Jak skontaktować się z korepetytorem?</div>
+                    <span id="toggle-icon-22" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-22" class="additional-info fadeIn">
+                    Kontakt z korepetytorem jest możliwy poprzez czat dołączony do każdych zajęć po wejściu w szczegóły
+                    lub poprzez aplikację mobilną WhatsApp.
+                </div>
+                <li onclick="toggleInfo(23)">
+                    <div class="title">Jak odwołać lub zmienić termin zajęć?</div>
+                    <span id="toggle-icon-23" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-23" class="additional-info fadeIn">
+                    Odwołanie lub zmiana terminu zajęcia powinny być wspólnie ustalone pomiędzy uczniem,
+                    a korepetytorem. Celem zmiany terminu zajęć lub ich usunięcia wejdź w szczegóły zajęć i wybierz
+                    jedną z opcji w prawym górnym rogu "Edycja"/"Usuń" - Możliwe do zrobienia przez stronę korepetytora.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+<section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label-list">
+            <h1 class="sub-hero-heading">Inne</h1>
+            <ol class="hero-list no-numbers">
+                <li onclick="toggleInfo(24)">
+                    <div class="title">Jak zapisać się na zajęcia do wybranego korepetytora?</div>
+                    <span id="toggle-icon-24" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-24" class="additional-info fadeIn">
+                    Celem zapisania się do wybranego korepetytora napisz wiadomość na stonie głównej platformy w
+                    "Kontakt" lub skontaktuj się w tej sprawie z administracją platformy.
+                </div>
+                <li onclick="toggleInfo(25)">
+                    <div class="title">Jak dostać się na moje zajęcia?</div>
+                    <span id="toggle-icon-25" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-25" class="additional-info fadeIn">
+                    Na stronie główniej w menu wejdź w "Korepetycje". Po poprawnym zalogowaniu będziesz widział/a
+                    nadchodzące oraz poprzednie zajęcia. Celem dostania się na zajęcia kliknij "Dołącz na zajęcia",
+                    wpisz nazwę pokoju podaną przez korepetytora oraz swoje imię, a następnie kliknij "Dołącz".
+                </div>
+                <li onclick="toggleInfo(26)">
+                    <div class="title">Jak sprawdzić ile zajęć zostało do wykorzystania?</div>
+                    <span id="toggle-icon-26" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-26" class="additional-info fadeIn">
+                    Liczba zajęć pozostałych do wykorzystania jest widoczna w sekcji korepetycji po wejściu na swój
+                    profil (Kliknij w swoje imię na górnym pasku).
+                </div>
+                <li onclick="toggleInfo(27)">
+                    <div class="title">Jak skontaktować się z korepetytorem?</div>
+                    <span id="toggle-icon-27" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-27" class="additional-info fadeIn">
+                    Kontakt z korepetytorem jest możliwy poprzez czat dołączony do każdych zajęć po wejściu w szczegóły
+                    lub poprzez aplikację mobilną WhatsApp.
+                </div>
+                <li onclick="toggleInfo(28)">
+                    <div class="title">Jak odwołać lub zmienić termin zajęć?</div>
+                    <span id="toggle-icon-28" class="toggle-icon">&#9660;</span>
+                </li>
+                <div id="info-28" class="additional-info fadeIn">
+                    Odwołanie lub zmiana terminu zajęcia powinny być wspólnie ustalone pomiędzy uczniem,
+                    a korepetytorem. Celem zmiany terminu zajęć lub ich usunięcia wejdź w szczegóły zajęć i wybierz
+                    jedną z opcji w prawym górnym rogu "Edycja"/"Usuń" - Możliwe do zrobienia przez stronę korepetytora.
+                </div>
+            </ol>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}

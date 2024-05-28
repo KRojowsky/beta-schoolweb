@@ -2,13 +2,18 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
+app_name = 'schoolweb'
 
 urlpatterns = [
     path('', views.home, name="home"),
+    path('zostan-korepetytorem/', views.become_tutor, name="become-tutor"),
+    path('faq/', views.faq, name="faq"),
+    path('regulamin/', views.statute, name="statute"),
+    path('kontakt/', views.contact, name='contact'),
+
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
     path('register/', views.registerPage, name="register"),
-    path('contact/', views.contact_view, name='contact'),
 
     path('dashboard/', views.dashboard, name="dashboard"),
     path('room/<str:pk>/', views.room, name="room"),
@@ -65,11 +70,6 @@ urlpatterns = [
     path('new-teacher/', views.newTeacher, name='newTeacher'),
 
     path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
-
-    path('faq/', views.FAQ, name="faq"),
-    path('contact-info/', views.ContactInfo, name="contact-info"),
-    path('become-tutor/', views.becomeTutor, name="become-tutor"),
-    path('statute/', views.Statute, name="statute"),
 
     path('lobby/<str:pk>/', views.Lobby, name='lobby'),
     path('converse/', views.converse, name='converse'),

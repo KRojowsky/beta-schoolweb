@@ -25,6 +25,27 @@ from datetime import timedelta
 from .forms import AvailabilityForm
 from .models import Availability
 
+
+def home(request):
+    return render(request, 'widget/main-view.html')
+
+
+def become_tutor(request):
+    return render(request, 'widget/become-tutor.html')
+
+
+def faq(request):
+    return render(request, 'widget/faq.html')
+
+
+def statute(request):
+    return render(request, 'widget/statute.html')
+
+
+def contact(request):
+    return render(request, 'widget/contact.html')
+
+
 def getToken(request):
     appId = '770b21a50e5c43f7afee0b043509cdbb'
     appCertificate = '1e44bf1ba1fd49018795989293a7382c'
@@ -72,10 +93,6 @@ def change_user_group(user, new_group_name):
         return False
 
 
-def home(request):
-    return render(request, 'website/widget.html')
-
-
 def contact_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -84,7 +101,7 @@ def contact_view(request):
 
         ContactMessage.objects.create(email=email, phone_number=phone_number, message=message)
 
-    return render(request, 'website/widget.html')
+    return render(request, 'widget.html')
 
 
 def loginPage(request):
@@ -1006,22 +1023,6 @@ def get_availability(request, selected_date):
         availability_data = {}
 
     return JsonResponse(availability_data)
-
-
-def FAQ(request):
-    return render(request, 'website/FAQ.html')
-
-
-def ContactInfo(request):
-    return render(request, 'website/contact.html')
-
-
-def becomeTutor(request):
-    return render(request, 'website/become_tutor.html')
-
-
-def Statute(request):
-    return render(request, 'website/statute.html')
 
 
 @login_required(login_url='lessonsLogin')
