@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pl">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    {% block description %}
+    <meta name="description" content="Strefa wiedzy platofrmy edukacyjnej SchoolWeb - zadaj pytanie związane z Twoim
+    problemem i uzyskaj odpowiedź już teraz!">
+    {% endblock description %}
+
+    <title>{% block title %}SchoolWeb | Strefa wiedzy{% endblock title %}</title>
+
+    <link rel="icon" type="image/x-icon" href="{% static 'img/logo.png' %}">
+    <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+    <link href="{% static 'css/knowledge-zone.css' %}" rel="stylesheet">
+    <script src="{% static 'js/knowledge-zone-dropdown-menu.js' %}" defer></script>
+
+</head>
+
+<body>
+    {% include 'knowledge-zone/nav-knowledge-zone.html' %}
+
+    {% block content %}
+    {% endblock content %}
+</body>
+</html>

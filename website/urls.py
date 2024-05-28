@@ -11,11 +11,12 @@ urlpatterns = [
     path('regulamin/', views.statute, name="statute"),
     path('kontakt/', views.contact, name='contact'),
 
+    path('strefa-wiedzy/', views.knowledge_zone, name="knowledge_zone"),
+
     path('login/', views.loginPage, name="login"),
     path('logout/', views.logoutUser, name="logout"),
     path('register/', views.registerPage, name="register"),
 
-    path('dashboard/', views.dashboard, name="dashboard"),
     path('room/<str:pk>/', views.room, name="room"),
     path('like-room/<int:pk>/', views.like_room, name='like-room'),
     path('profile/<str:pk>/', views.userProfile, name="user-profile"),

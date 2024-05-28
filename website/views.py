@@ -46,6 +46,22 @@ def contact(request):
     return render(request, 'widget/contact.html')
 
 
+def knowledge_zone(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) |
+        Q(name__icontains=q) |
+        Q(description__icontains=q)
+    )
+
+    topics = Topic.objects.all()[0:28]
+    room_count = rooms.count()
+    room_messages = Message.objects.all()[0:12]
+    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count,
+               'room_messages': room_messages}
+    return render(request, 'knowledge-zone/knowledge-zone.html', context)
+
+
 def getToken(request):
     appId = '770b21a50e5c43f7afee0b043509cdbb'
     appCertificate = '1e44bf1ba1fd49018795989293a7382c'
@@ -173,22 +189,6 @@ def registerPage(request):
 
     context = {'form': form}
     return render(request, 'website/login_register.html', context)
-
-
-def dashboard(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    rooms = Room.objects.filter(
-        Q(topic__name__icontains=q) |
-        Q(name__icontains=q) |
-        Q(description__icontains=q)
-    )
-
-    topics = Topic.objects.all()[0:28]
-    room_count = rooms.count()
-    room_messages = Message.objects.all()[0:12]
-    context = {'rooms': rooms, 'topics': topics, 'room_count': room_count,
-               'room_messages': room_messages}
-    return render(request, 'website/dashboard.html', context)
 
 
 def room(request, pk):

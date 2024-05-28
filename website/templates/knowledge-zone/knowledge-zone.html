@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base-knowledge-zone.html' %}
 {% block content %}
 <main class="layout layout--3">
   <div class="container">
-    {% include 'website/topics_component.html' %}
+    {% include 'knowledge-zone/topics-knowledge-zone.html' %}
     <div class="roomList">
       <div class="mobile-menu">
-        <form action="{% url 'dashboard' %}" method="GET" class="header__search">
+        <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET" class="header__search">
           <label>
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Szukaj</title>
@@ -17,8 +17,8 @@
           </label>
         </form>
         <div class="mobile-menuItems">
-          <a class="btn btn--main btn--pill" href="{% url 'topics' %}">Tematy</a>
-          <a class="btn btn--main btn--pill" href="{% url 'activity' %}">Aktywności</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:topics' %}">Tematy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity' %}">Aktywności</a>
         </div>
       </div>
       <div class="roomList__header">
@@ -26,7 +26,7 @@
           <h2>Tablica tematów</h2>
           <p>Znalezione tematy: {{room_count}}</p>
         </div>
-        <a class="btn btn--main" href="{% url 'create-room' %}" title="Utwórz nowy post">
+        <a class="btn btn--main" href="{% url 'schoolweb:create-room' %}" title="Utwórz nowy post">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <title>Dodaj</title>
             <path d="M16.943
@@ -35,9 +35,9 @@
           Utwórz Post
         </a>
       </div>
-      {% include 'website/feed_component.html' %}
+      {% include 'knowledge-zone/feed-knowledge-zone.html' %}
     </div>
-    {% include 'website/activity_component.html' %}
+    {% include 'knowledge-zone/activity-knowledge-zone.html' %}
   </div>
 </main>
 {% endblock %}
