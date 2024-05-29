@@ -46,6 +46,77 @@ def contact(request):
     return render(request, 'widget/contact.html')
 
 
+def loginPage(request):
+    page = 'login'
+
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except:
+            messages.error(request, 'Użytkownik nie istnieje')
+
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            login(request, user)
+            return redirect('schoolweb:knowledge_zone')
+        else:
+            messages.error(request, 'Błędny Email lub Hasło')
+
+    context = {'page': page}
+    return render(request, 'knowledge-zone/login_register.html', context)
+
+
+def logoutUser(request):
+    logout(request)
+    return redirect('schoolweb:knowledge_zone')
+
+
+def registerPage(request):
+    form = MyUserCreationForm()
+
+    if request.method == 'POST':
+        form = MyUserCreationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+
+            if check_user_exists_in_group(username):
+                messages.error(request, 'Użytkownik już istnieje w grupie.')
+                return redirect('schoolweb:registerPage')
+
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+
+            try:
+                writers_group = Group.objects.get(name='Writers')
+            except Group.DoesNotExist:
+                messages.error(request, 'Grupa "Writers" nie istnieje.')
+                return redirect('schoolweb:registerPage')
+
+            try:
+                user.groups.add(writers_group)
+            except Exception as e:
+                return redirect('schoolweb:registerPage')
+
+            login(request, user)
+            return redirect('schoolweb:knowledge_zone')
+
+        else:
+            error_messages = [error for field, errors in form.errors.items() for error in errors]
+            for error in error_messages:
+                messages.error(request, error)
+
+    context = {'form': form}
+    return render(request, 'knowledge-zone/login_register.html', context)
+
+
 def knowledge_zone(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     rooms = Room.objects.filter(
@@ -60,6 +131,131 @@ def knowledge_zone(request):
     context = {'rooms': rooms, 'topics': topics, 'room_count': room_count,
                'room_messages': room_messages}
     return render(request, 'knowledge-zone/knowledge-zone.html', context)
+
+
+def room(request, pk):
+    room = Room.objects.get(id=pk)
+    room_messages = room.message_set.all().order_by('-created')
+    participants = room.participants.all()
+
+    if request.method == 'POST':
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get('body'),
+            image=request.FILES.get('image'),
+            file=request.FILES.get('file')
+        )
+        room.participants.add(request.user)
+
+        message.save()
+        return redirect('schoolweb:room', pk=room.id)
+
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
+    return render(request, 'knowledge-zone/room.html', context)
+
+
+@login_required(login_url='login')
+def createRoom(request):
+    form = RoomForm(request.POST, request.FILES)
+    topics = Topic.objects.all()
+    if request.method == 'POST':
+        topic_name = request.POST.get('topic')
+        topic = get_object_or_404(Topic, id=topic_name)
+
+        room = Room(
+            host=request.user,
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+            topic=topic,
+        )
+
+        if 'image' in request.FILES:
+            image_file = request.FILES['image']
+            room.image.save(image_file.name, ContentFile(image_file.read()))
+
+        room.save()
+        return redirect('schoolweb:knowledge_zone')
+
+    context = {'form': form, 'topics': topics}
+    return render(request, 'knowledge-zone/room_form.html', context)
+
+
+@login_required(login_url='login')
+def updateRoom(request, pk):
+    room = Room.objects.get(id=pk)
+
+    if request.user != room.host:
+        return HttpResponse('Operacja wzbroniona.')
+
+    current_likes = room.likes.all()
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES, instance=room)
+        if form.is_valid():
+            updated_room = form.save(commit=False)
+            updated_room.likes.set(current_likes)
+            updated_room.save()
+            return redirect('room', pk=room.id)
+    else:
+        form = RoomForm(instance=room)
+
+    topics = Topic.objects.all()
+    context = {'form': form, 'topics': topics}
+    return render(request, 'knowledge-zone/room_form.html', context)
+
+
+@login_required(login_url='login')
+def deleteRoom(request, pk):
+    room = Room.objects.get(id=pk)
+
+    if request.user != room.host:
+        return HttpResponse('Operacja wzbroniona.')
+
+    if request.method == 'POST':
+        room.delete()
+        return redirect('schoolweb:knowledge_zone')
+    return render(request, 'knowledge-zone/delete.html', {'obj': room})
+
+
+@login_required(login_url='login')
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.user != message.user:
+        return HttpResponse('Operacja wzbroniona.')
+
+    if request.method == 'POST':
+        message.delete()
+        return redirect('schoolweb:knowledge_zone')
+    return render(request, 'knowledge-zone/delete.html', {'obj': message})
+
+
+def userProfile(request, pk):
+    user = User.objects.get(id=pk)
+    rooms = user.room_set.all()
+    room_messages = user.message_set.all()
+    topics = Topic.objects.all()
+    context = {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics}
+    return render(request, 'knowledge-zone/profile.html', context)
+
+
+@login_required(login_url='login')
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('schoolweb:user-profile', pk=user.id)
+
+    error_messages = [error for field, errors in form.errors.items() for error in errors]
+    for error in error_messages:
+        messages.error(request, error)
+
+    return render(request, 'knowledge-zone/update-user.html', {'form': form})
 
 
 def getToken(request):
@@ -120,98 +316,6 @@ def contact_view(request):
     return render(request, 'widget.html')
 
 
-def loginPage(request):
-    page = 'login'
-
-    if request.user.is_authenticated:
-        return redirect('dashboard')
-
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(email=email)
-        except:
-            messages.error(request, 'Użytkownik nie istnieje')
-
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            login(request, user)
-            return redirect('dashboard')
-        else:
-            messages.error(request, 'Błędny Email lub Hasło')
-
-    context = {'page': page}
-    return render(request, 'website/login_register.html', context)
-
-
-def logoutUser(request):
-    logout(request)
-    return redirect('dashboard')
-
-
-def registerPage(request):
-    form = MyUserCreationForm()
-
-    if request.method == 'POST':
-        form = MyUserCreationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-
-            if check_user_exists_in_group(username):
-                messages.error(request, 'Użytkownik już istnieje w grupie.')
-                return redirect('registerPage')
-
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-
-            try:
-                writers_group = Group.objects.get(name='Writers')
-            except Group.DoesNotExist:
-                messages.error(request, 'Grupa "Writers" nie istnieje.')
-                return redirect('registerPage')
-
-            try:
-                user.groups.add(writers_group)
-            except Exception as e:
-                return redirect('registerPage')
-
-            login(request, user)
-            return redirect('dashboard')
-
-        else:
-            error_messages = [error for field, errors in form.errors.items() for error in errors]
-            for error in error_messages:
-                messages.error(request, error)
-
-    context = {'form': form}
-    return render(request, 'website/login_register.html', context)
-
-
-def room(request, pk):
-    room = Room.objects.get(id=pk)
-    room_messages = room.message_set.all().order_by('-created')
-    participants = room.participants.all()
-
-    if request.method == 'POST':
-        message = Message.objects.create(
-            user=request.user,
-            room=room,
-            body=request.POST.get('body'),
-            image=request.FILES.get('image'),
-            file=request.FILES.get('file')
-        )
-        room.participants.add(request.user)
-
-        message.save()
-        return redirect('room', pk=room.id)
-
-    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
-    return render(request, 'website/room.html', context)
-
 
 def like_room(request, pk):
     room = get_object_or_404(Room, pk=pk)
@@ -223,108 +327,6 @@ def like_room(request, pk):
             room.likes.add(request.user)
 
     return redirect('room', pk=room.id)
-
-def userProfile(request, pk):
-    user = User.objects.get(id=pk)
-    rooms = user.room_set.all()
-    room_messages = user.message_set.all()
-    topics = Topic.objects.all()
-    context = {'user': user, 'rooms': rooms, 'room_messages': room_messages, 'topics': topics}
-    return render(request, 'website/profile.html', context)
-
-
-@login_required(login_url='login')
-def createRoom(request):
-    form = RoomForm(request.POST, request.FILES)
-    topics = Topic.objects.all()
-    if request.method == 'POST':
-        topic_name = request.POST.get('topic')
-        topic = get_object_or_404(Topic, id=topic_name)
-
-        room = Room(
-            host=request.user,
-            name=request.POST.get('name'),
-            description=request.POST.get('description'),
-            topic=topic,
-        )
-
-        if 'image' in request.FILES:
-            image_file = request.FILES['image']
-            room.image.save(image_file.name, ContentFile(image_file.read()))
-
-        room.save()
-        return redirect('dashboard')
-
-    context = {'form': form, 'topics': topics}
-    return render(request, 'website/room_form.html', context)
-
-
-@login_required(login_url='login')
-def updateRoom(request, pk):
-    room = Room.objects.get(id=pk)
-
-    if request.user != room.host:
-        return HttpResponse('Operacja wzbroniona.')
-
-    current_likes = room.likes.all()
-
-    if request.method == 'POST':
-        form = RoomForm(request.POST, request.FILES, instance=room)
-        if form.is_valid():
-            updated_room = form.save(commit=False)
-            updated_room.likes.set(current_likes)
-            updated_room.save()
-            return redirect('room', pk=room.id)
-    else:
-        form = RoomForm(instance=room)
-
-    topics = Topic.objects.all()
-    context = {'form': form, 'topics': topics}
-    return render(request, 'website/room_form.html', context)
-
-
-@login_required(login_url='login')
-def deleteRoom(request, pk):
-    room = Room.objects.get(id=pk)
-
-    if request.user != room.host:
-        return HttpResponse('Operacja wzbroniona.')
-
-    if request.method == 'POST':
-        room.delete()
-        return redirect('dashboard')
-    return render(request, 'website/delete.html', {'obj': room})
-
-
-@login_required(login_url='login')
-def deleteMessage(request, pk):
-    message = Message.objects.get(id=pk)
-
-    if request.user != message.user:
-        return HttpResponse('Operacja wzbroniona.')
-
-    if request.method == 'POST':
-        message.delete()
-        return redirect('dashboard')
-    return render(request, 'website/delete.html', {'obj': message})
-
-
-@login_required(login_url='login')
-def updateUser(request):
-    user = request.user
-    form = UserForm(instance=user)
-
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('user-profile', pk=user.id)
-
-    error_messages = [error for field, errors in form.errors.items() for error in errors]
-    for error in error_messages:
-        messages.error(request, error)
-
-    return render(request, 'website/update-user.html', {'form': form})
 
 
 def toggle_like(request, message_id):

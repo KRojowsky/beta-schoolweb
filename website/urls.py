@@ -11,26 +11,32 @@ urlpatterns = [
     path('regulamin/', views.statute, name="statute"),
     path('kontakt/', views.contact, name='contact'),
 
+    path('zaloguj/', views.loginPage, name="login"),
+    path('wyloguj/', views.logoutUser, name="logout"),
+    path('rejestracja/', views.registerPage, name="register"),
+
     path('strefa-wiedzy/', views.knowledge_zone, name="knowledge_zone"),
 
-    path('login/', views.loginPage, name="login"),
-    path('logout/', views.logoutUser, name="logout"),
-    path('register/', views.registerPage, name="register"),
-
     path('room/<str:pk>/', views.room, name="room"),
-    path('like-room/<int:pk>/', views.like_room, name='like-room'),
-    path('profile/<str:pk>/', views.userProfile, name="user-profile"),
-
     path('create-room/', views.createRoom, name="create-room"),
     path('update-room/<str:pk>/', views.updateRoom, name="update-room"),
     path('delete-room/<str:pk>/', views.deleteRoom, name="delete-room"),
     path('delete-message/<str:pk>/', views.deleteMessage, name="delete-message"),
+
+    path('profile/<str:pk>/', views.userProfile, name="user-profile"),
+    path('update-user/', views.updateUser, name="update-user"),
+
+
+
+
+
+
+    path('like-room/<int:pk>/', views.like_room, name='like-room'),
+
     path('toggle-like/<int:message_id>/', views.toggle_like, name='toggle-like'),
     path('get_likes/<int:message_id>/', views.get_likes, name='get_likes'),
     path('get_room_likes/<int:room_id>/', views.get_room_likes, name='get_room_likes'),
     path('toggle-like-room/<int:room_id>/', views.toggle_like_room, name='toggle_like_room'),
-
-    path('update-user/', views.updateUser, name="update-user"),
 
     path('topics/', views.topicsPage, name="topics"),
     path('courses-students/', views.courses_studentsPage, name="courses_students"),

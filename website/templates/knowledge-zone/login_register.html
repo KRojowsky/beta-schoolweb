@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base-knowledge-zone.html' %}
 {% block content %}
 <main class="auth layout">
   {% if page == 'login' %}
@@ -55,12 +55,12 @@
         <div class="auth__actions">
           <div class="auth__action">
             <p>Nie posiadasz konta?</p>
-            <a href="{% url 'register' %}" class="btn btn--link">Zarejestruj się</a>
+            <a href="{% url 'schoolweb:register' %}" class="btn btn--link">Zarejestruj się</a>
           </div>
 
           <div class="auth__action">
               <p>Zapomniałeś hasła?</p>
-              <a href="{% url 'reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
+              <a href="{% url 'schoolweb:reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
           </div>
         </div>
       </div>
@@ -107,7 +107,7 @@
 
         <div class="auth__action">
           <p>Posiadasz już konto?</p>
-          <a href="{% url 'login' %}" class="btn btn--link">Zaloguj się</a>
+          <a href="{% url 'schoolweb:login' %}" class="btn btn--link">Zaloguj się</a>
         </div>
       </div>
     </div>

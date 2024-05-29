@@ -7,7 +7,7 @@
     <div class="activities__box">
       <div class="activities__boxHeader roomListRoom__header">
         {% if message.user and message.user.id %}
-          <a href="{% url 'user-profile' message.user.id %}" class="roomListRoom__author">
+          <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
             <div class="avatar avatar--small">
               <img src="{{ message.user.avatar.url }}" alt="Autor komentarza"/>
             </div>
@@ -18,7 +18,7 @@
           </a>
           {% if request.user == message.user %}
             <div class="roomListRoom__actions">
-              <a href="{% url 'delete-message' message.id %}">
+              <a href="{% url 'schoolweb:delete-message' message.id %}">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                   <title>Usuń</title>
                   <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333
@@ -44,7 +44,7 @@
       <div class="activities__boxContent">
         {% if message.room.id %}
           <p title="Zobacz post">
-            Odpisał/a na: "<a href="{% url 'room' message.room.id %}" class="lesson-link">{{ message.room.name }}</a>"
+            Odpisał/a na: "<a href="{% url 'schoolweb:room' message.room.id %}" class="lesson-link">{{ message.room.name }}</a>"
           </p>
           {% if message.body %}
             <div class="activities__boxRoomContent lesson-link">
