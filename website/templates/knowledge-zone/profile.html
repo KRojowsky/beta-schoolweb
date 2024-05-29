@@ -1,19 +1,20 @@
-{% extends 'base.html' %}
+{% extends 'base-knowledge-zone.html' %}
 {% block content %}
+{% load static %}
 <main class="profile-page layout layout--3">
   <div class="container">
-    {% include 'website/topics_component.html' %}
+    {% include 'knowledge-zone/topics-knowledge-zone.html' %}
     <div class="roomList">
       <div class="profile">
         <div class="profile__avatar">
           <div class="avatar avatar--large active">
-            <img src="{{user.avatar.url}}" />
+            <img src="{% static 'img/avatar.svg' %}" />
           </div>
         </div>
         <div class="profile__info">
           <p>{{user.username}}</p>
           {% if request.user == user %}
-            <a href="{% url 'update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
+            <a href="{% url 'schoolweb:update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
           {% endif %}
         </div>
         <div class="profile__about lesson-link">
@@ -30,9 +31,9 @@
           </h2>
         </div>
       </div>
-      {% include 'website/feed_component.html' %}
+      {% include 'knowledge-zone/feed-knowledge-zone.html' %}
     </div>
-    {% include 'website/activity_component.html' %}
+    {% include 'knowledge-zone/activity-knowledge-zone.html' %}
   </div>
 </main>
 {% endblock content %}

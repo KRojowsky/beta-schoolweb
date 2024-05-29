@@ -274,7 +274,7 @@
       <h3 class="participants__top">Członkowie <span>({{participants.count}} dołączyło)</span></h3>
       <div class="participants__list scroll">
         {% for user in participants %}
-        <a href="{% url 'user-profile' user.id %}" class="participant">
+        <a href="{% url 'schoolweb:user-profile' user.id %}" class="participant">
           <div class="avatar avatar--medium">
             <img src="{{user.avatar.url}}" />
           </div>
