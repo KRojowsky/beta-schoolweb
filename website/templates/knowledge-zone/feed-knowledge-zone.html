@@ -1,9 +1,9 @@
 {% for room in rooms %}
 {% load static %}
 <div class="roomListRoom">
-  <div class="roomListRoom__header">
+  <div class="roomListRoom__header__container">
     {% if room.host %}
-        <div class="roomListRoom__author-container">
+        <div class="roomListRoom__header">
             <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="roomListRoom__author">
                 <div class="avatar avatar--small active">
                     <img src="{% static 'img/avatar.svg' %}" />
@@ -67,6 +67,11 @@
       <div class="like-topic-container">
           <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
               <i class="fa fa-envelope" aria-hidden="true"></i> Komentarze
+          </a>
+      </div>
+      <div class="like-topic-container">
+          <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
+              <i class="fa fa-info-circle" aria-hidden="true"></i> Zgłoś
           </a>
       </div>
    </div>

@@ -450,21 +450,21 @@ a {
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FEED-COMPONENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .roomListRoom {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     background: #FFF;
     border-radius: 5px;
     padding: 20px;
     box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.2);
 }
 
-.roomListRoom__header {
+.roomListRoom__header__container {
     display: flex;
     justify-content: space-between;
     align-items: center;
     color: #000;
 }
 
-.roomListRoom__author-container {
+.roomListRoom__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -512,7 +512,7 @@ a {
 }
 
 .roomListRoom__content {
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
 .roomListRoom__content img {
@@ -523,7 +523,7 @@ a {
 .roomListRoom__content a {
     font-size: 2rem;
     font-weight: 500;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-weight: 900;
     color: #BB00FF;
     transition: 0.3s;
@@ -534,58 +534,36 @@ a {
     font-weight: 900;
 }
 
-.roomListRoom__meta {
-    padding-top: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.roomListRoom__joined {
-    color: #000;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 12px;
-}
-
-.roomListRoom__joined svg {
-    fill: #696969;
-    width: 18px;
-    height: 18px;
-}
-
 .comment-counter img {
-    width: 1.8rem;
-    height: 1.8rem;
-    fill: #222440;
+    width: 15px;
+    height: 15px;
     margin-right: 12px;
     margin-top: 3px;
 }
 
 .comment-counter {
     display: flex;
-    margin-bottom: 3px;
 }
 
 .comment-counter .comment-info {
-    color: #000000;
-    font-size: 1.6rem;
-    font-weight: 500;
+    color: #000;
+    font-size: 13px;
 }
 
 .roomListRoom .container {
-    border-top: 1px solid #000000;
+    border-top: 1px solid #DBDBDB;
     display: flex;
     justify-content: space-between;
     width: 100%;
+    margin-top: 15px;
+    padding: 0;
 }
 
 .like-topic-container {
     width: 50%;
     text-align: center;
     color: black;
-    font-size: 1.6rem;
+    font-size: 14px;
 }
 
 .envelope-link {
@@ -595,12 +573,16 @@ a {
     text-align: center;
     text-decoration: none;
     color: inherit;
-    transition: background-color 0.3s ease-in-out;
+    transition: 0.3s;
     border-radius: 5px;
 }
 
+.envelope-link i{
+    margin-right: 3px;
+}
+
 .envelope-link:hover {
-    background-color: #d9d9d9;
+    background: #F0F0F0;
 }
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ACTIVITY-COMPONENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -738,4 +720,398 @@ a {
     font-weight: 500;
     color: #000;
     font-size:14px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ROOM~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.layout--2 > .container > div:first-child {
+    flex-basis: 72%;
+}
+
+.layout--2 > .container > div:last-child {
+    flex-basis: 25%;
+}
+
+.room-info{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.room-info-detail {
+    width: 50%;
+    text-align: center;
+    color: black;
+    font-size: 1.6rem;
+}
+
+.roomListRoom__topic {
+    padding: 5px 1.5rem;
+    background-color: #222440;
+    border-radius: 5rem;
+    font-weight: 500;
+    font-size: 1.3rem;
+}
+
+.roomListRoom__topic {
+    padding: 5px 1.5rem;
+    background-color: #222440;
+    border-radius: 5rem;
+    font-weight: 500;
+    font-size: 1.3rem;
+}
+
+.room__details {
+    overflow-wrap: break-word;
+    max-width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    padding:7px;
+    border-radius:5px;
+    background-color: #222440;
+    font-size: 1.7rem;
+}
+
+.room,
+.participants {
+    margin-top: 90px;
+    margin-bottom: 10px;
+    background: var(--color-dark);
+    border-radius: 0.7rem;
+    overflow: hidden;
+    position: relative;
+}
+
+@media screen and (max-width: 900px) {
+    .participants {
+        display: none;
+    }
+
+    .layout--2 > .container > div:first-child {
+        flex-basis: 96%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .create-room{
+        flex-basis: 97%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.room__top,
+.participants__top {
+    background: #222440;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    position: relative;
+}
+
+.room__top svg,
+.thread__top svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    fill: var(--color-light);
+    cursor: pointer;
+}
+
+.room__topLeft {
+    align-items: flex-end;
+    gap: 1rem;
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+}
+
+.room__topLeft h3,
+.participants__top {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-light);
+}
+
+.room__topLeft svg {
+    width: 1.6rem;
+    height: 1.6rem;
+    fill: var(--color-light);
+}
+
+.room__topRight {
+    display: flex;
+    column-gap: 1em;
+}
+
+.room__topRight svg {
+    fill: var(--color-main-light);
+}
+
+.room__header {
+    width: 100%;
+    background: var(--color-dark);
+    z-index: 999;
+    top: 4.4rem;
+    padding-top: 2rem;
+    padding-bottom: 1rem;
+}
+
+@media screen and (max-width: 500px) {
+    .room__header {
+        top: 4.3rem;
+        padding-right: 2rem;
+    }
+}
+
+.room__box {
+    padding-left: 2rem;
+    padding-right: 2rem;
+    padding-bottom: 0;
+}
+
+.room__info {
+    justify-content: space-between;
+    word-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
+}
+
+.room__info h3 {
+    font-size: 2.4rem;
+    font-weight: 500;
+    color: var(--color-main);
+}
+
+@media (max-width: 768px) {
+    .room__info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+.room__hosted p {
+    text-transform: uppercase;
+    color: var(--color-gray);
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 2;
+}
+
+.room__author {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.room__author:hover {
+    text-decoration: underline;
+}
+
+.room__topics {
+    padding: 0.5rem 1.5rem;
+    background: var(--color-dark-light);
+    color: var(--color-light);
+    display: inline-block;
+    font-size: 1.4rem;
+    border-radius: 1.5rem;
+    margin: .5rem 0;
+}
+
+.room__conversation {
+    margin-top: 1rem;
+    margin-bottom: 4rem;
+    height: 64%;
+}
+
+.threads h3 {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--color-gray);
+}
+
+.threads {
+    background: var(--color-bg);
+    border-radius: 0.7rem;
+    overflow-y: auto;
+    height: 100%;
+    margin-top: 1vh;
+    padding: 0 2rem 2rem 2rem;
+}
+
+.thread {
+    border-left: 2px solid var(--color-dark);
+    padding-left: 1rem;
+    margin: 2rem 0;
+    padding: 2rem;
+}
+
+.thread__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.thread__top svg {
+    fill: var(--color-dark-light);
+}
+
+.thread__author {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    font-size: 1.4rem;
+}
+
+.thread__authorInfo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.thread__details {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    word-wrap: break-word;
+}
+
+.thread__delete {
+    display: flex;
+    flex-direction: column;
+}
+
+.room__message {
+    padding: 2rem;
+    position: absolute;
+    z-index: 111;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-side {
+    flex: 1;
+    scroll-behavior: smooth;
+}
+
+.right-side {
+    resize: none;
+    background-color: var(--color-dark-light);
+    color: white;
+    border: none;
+    outline: none;
+    height: 4.5rem;
+    padding-top: .4rem;
+    padding-right: .8rem;
+    padding-left: .6rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    border-bottom-right-radius: 7px;
+}
+
+#message-input {
+    resize: none;
+    background-color: var(--color-dark-light);
+    color: white;
+    border: none;
+    outline: none;
+    height: 4.5rem;
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1.7rem;
+    font-weight: 500;
+    position: relative;
+    border-bottom-left-radius: 7px;
+}
+
+#message-input::placeholder {
+    color: lightgrey;
+}
+
+.room__message > form > input::placeholder {
+    color: var(--color-light-gray);
+}
+
+.transparent-button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    padding-left:7px;
+}
+
+.file-upload-button{
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+.participants__top span {
+    color: var(--color-main);
+    font-size: 1.3rem;
+    text-transform: none;
+}
+
+.participants__top {
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.participants__list {
+    padding: 2rem;
+    height: 84vh;
+    overflow-y: scroll;
+    padding-bottom: 0;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.participant p {
+    color: var(--color-light-gray);
+    line-height: 1.2;
+}
+
+.participant span {
+    display: block;
+    font-weight: 500;
+    color: var(--color-main);
+    font-weight: 1.4rem;
+}
+
+.errorlist{
+    list-style-type: none;
+    color: red;
+    padding: 0;
+    margin: 0;
+}
+
+ul.messages {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul.messages li {
+    margin-bottom: 10px;
+    padding: 0;
+    color: red;
 }
