@@ -27,6 +27,9 @@ urlpatterns = [
     path('update-user/', views.updateUser, name="update-user"),
 
 
+    path('lessons/', views.lessonsHome, name="lessons-home"),
+    path('lessons-login/', views.lessonsLogin, name="lessonsLogin"),
+
 
 
 
@@ -44,7 +47,6 @@ urlpatterns = [
     path('activity/', views.activityPage, name="activity"),
     path('activity-lesson/', views.activity_lessonPage, name="activity-lesson"),
 
-    path('lessons-login/', views.lessonsLogin, name="lessonsLogin"),
     path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="website/password_reset.html"), name='reset_password'),
@@ -53,7 +55,6 @@ urlpatterns = [
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="website/password_reset_done.html"), name='password_reset_complete'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="website/password_reset_done.html"), name='password_reset_complete'),
 
-    path('lessons/', views.lessonsHome, name="lessons-home"),
     path('lesson_feedback/<int:pk>/', views.lesson_feedback, name='lesson_feedback'),
     path('lesson/<str:pk>/', views.lesson, name="lesson"),
     path('lesson-profile/<str:pk>/', views.lessonProfile, name="lesson-profile"),

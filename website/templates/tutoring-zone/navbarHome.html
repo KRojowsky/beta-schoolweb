@@ -1,12 +1,12 @@
 {% load static %}
 <header class="header header--loggedIn">
   <div class="container">
-    <a href="{% url 'home' %}" class="header__logo">
-      <img src="{% static 'img/logo.png' %}" />
+    <a href="{% url 'schoolweb:home' %}" class="header__logo">
+      <img src="{% static 'img/widget-main-view/logo.png' %}" />
       <h1>SchoolWeb</h1>
     </a>
     <nav class="header__menu">
-      <a href="{% url 'lessonsLogin' %}">
+      <a href="{% url 'schoolweb:lessonsLogin' %}">
         <img src="{% static 'img/avatar.svg' %}" />
         <p>Zaloguj</p>
       </a>

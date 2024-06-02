@@ -258,6 +258,78 @@ def updateUser(request):
     return render(request, 'knowledge-zone/update-user.html', {'form': form})
 
 
+
+
+
+
+
+
+
+
+
+def lessonsHome(request):
+    user = request.user
+
+    if user.groups.filter(name='Teachers').exists():
+        return redirect('schoolweb:knowledge_zone')
+    elif user.groups.filter(name='Students').exists():
+        return redirect('schoolweb:knowledge_zone')
+
+    return render(request, 'tutoring-zone/lessonsHome.html')
+
+
+def lessonsLogin(request):
+    page = 'lessonsLogin'
+
+    if request.user.groups.filter(name='NewStudents').exists() or request.user.groups.filter(
+            name='NewTeachers').exists():
+        return redirect('coursesLoader')
+
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except:
+            messages.error(request, 'Użytkownik nie istnieje')
+
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None and (user.groups.filter(name='Students').exists() or
+                                 user.groups.filter(name='Teachers').exists() or
+                                 user.groups.filter(name='NONE').exists() or
+                                 user.groups.filter(name='Writers').exists() or
+                                 user.groups.filter(name='Migrates').exists() or
+                                 user.groups.filter(name='NewStudents').exists() or
+                                 user.groups.filter(name='NewTeachers').exists()):
+            if user.groups.filter(name='Teachers').exists():
+                login(request, user)
+                return redirect('teacherPage')
+            elif user.groups.filter(name='Students').exists():
+                if user.lessons > 0 or user.lessons_intermediate > 0:
+                    login(request, user)
+                    return redirect('studentPage')
+                else:
+                    return redirect('noLessons')
+            elif user.groups.filter(name='NONE').exists():
+                return redirect('coursesLoader')
+            elif user.groups.filter(name='Migrates').exists():
+                return redirect('coursesLoader')
+            elif user.groups.filter(name='Writers').exists():
+                change_user_group(user, 'Migrates')
+                return redirect('coursesLoader')
+            elif user.groups.filter(name='NewStudents').exists():
+                return redirect('coursesLoader')
+            elif user.groups.filter(name='NewTeachers').exists():
+                return redirect('coursesLoader')
+        else:
+            messages.error(request, 'Błędny Email lub Hasło')
+
+    context = {'page': page}
+    return render(request, 'website/login_register_lessons.html', context)
+
+
 def getToken(request):
     appId = '770b21a50e5c43f7afee0b043509cdbb'
     appCertificate = '1e44bf1ba1fd49018795989293a7382c'
@@ -568,17 +640,6 @@ def studentPage(request):
         'time_threshold': time_threshold
     }
     return render(request, 'website/studentPage.html', context)
-
-
-def lessonsHome(request):
-    user = request.user
-
-    if user.groups.filter(name='Teachers').exists():
-        return redirect('teacherPage')
-    elif user.groups.filter(name='Students').exists():
-        return redirect('studentPage')
-
-    return render(request, 'website/lessonsHome.html')
 
 
 @login_required(login_url='lessonsLogin')

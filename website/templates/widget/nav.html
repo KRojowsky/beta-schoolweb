@@ -2,14 +2,14 @@
 <nav>
     <div class="nav-container">
         <a class="nav-brand" href="{% url 'schoolweb:home' %}" title="Wróć do strony głównej">
-            <img src="{% static 'img/logo.png' %}" alt="Logo SchoolWeb">
+            <img src="{% static 'img/widget-main-view/logo.png' %}" alt="Logo SchoolWeb">
             <div class="nav-brand-name">
                 <span class="title-word title-word-1">School</span>
                 <span class="title-word title-word-2">Web</span>
             </div>
         </a>
         <ul class="nav-links">
-            <li><a href="#" class="upper-btn" title="Korepetycje">STREFA KOREPETYCJI</a></li>
+            <li><a href="{% url 'schoolweb:lessons-home' %}" class="upper-btn" title="Korepetycje">STREFA KOREPETYCJI</a></li>
             <li><a href="{% url 'schoolweb:knowledge_zone' %}" class="upper-btn" title="Forum">STREFA WIEDZY</a></li>
         </ul>
         <div class="hamburger-menu">
