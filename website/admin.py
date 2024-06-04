@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models import Room, Topic, Message, Course, Post, CourseMessage, User, ContactMessage, NewStudent, \
+from .models import Room, Topic, Message, Course, Post, CourseMessage, User, PlatformMessage, NewStudent, \
     RoomMember, NewTeacher, LessonCorrection, Resign, Availability
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
 from django import forms
+
+
+class PlatformMessageAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone_number', 'message', 'created')
+
+
+
 
 
 class CustomUserAdmin(UserAdmin):
@@ -16,10 +23,6 @@ class CustomUserAdmin(UserAdmin):
         return ", ".join([group.name for group in obj.groups.all()])
 
     display_groups.short_description = 'Groups'
-
-
-class ContactMessageAdmin(admin.ModelAdmin):
-    list_display = ('email', 'phone_number', 'message', 'created')
 
 
 class LessonInfo(admin.ModelAdmin):
@@ -190,6 +193,8 @@ class RoomAdmin(admin.ModelAdmin):
     total_likes.short_description = 'Likes'
 
 
+admin.site.register(PlatformMessage, PlatformMessageAdmin)
+
 admin.site.register(Availability, AvailabilityAdmin)
 admin.site.register(LessonCorrection, LessonCorrectionAdmin)
 admin.site.register(User, CustomUserAdmin)
@@ -201,6 +206,5 @@ admin.site.register(Message, MessageAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Post, LessonInfo)
 admin.site.register(CourseMessage, CourseMessageAdmin)
-admin.site.register(ContactMessage, ContactMessageAdmin)
 admin.site.register(RoomMember)
 admin.site.register(Resign, ResignationAdmin)

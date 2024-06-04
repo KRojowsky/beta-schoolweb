@@ -3,11 +3,10 @@
 {% block content %}
 <script src="{% static 'js/widget-menu-dropdown.js' %}" defer></script>
 <script src="{% static 'js/widget-slider.js' %}" defer></script>
+<script src="{% static 'js/contact-form.js' %}" defer></script>
 
 <section class="hero hero-main">
-    <h1 class="hero-heading">Twórz z nami
-        <span>najlepszą platformę edukacyjną</span>
-    </h1>
+    <h1 class="hero-heading">Twórz z nami <span>najlepszą platformę edukacyjną</span></h1>
     <div class="hero-container">
         <p class="hero-subtitle">
             <span>✔</span> Prywatne lub grupowe zajęcia od  <u>35 zł</u>.
@@ -345,11 +344,12 @@
 
 <section class="contact">
     <h2 class="sub-hero-heading">Kontakt</h2>
-    <form id="contact-form" method="post" action="#">
+    <form id="contact-form" method="post" action="{% url 'schoolweb:user-message' %}" data-url="{% url 'schoolweb:user-message' %}">
         {% csrf_token %}
         <input type="email" name="email" placeholder="E-mail" required>
         <input type="text" name="phone_number" placeholder="Numer telefonu" required>
         <textarea name="message" placeholder="Napisz wiadomość . . ." required></textarea>
+        <div id="success-message">Wiadomość wysłana!</div>
         <button type="submit">Wyślij</button>
     </form>
 </section>

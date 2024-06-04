@@ -11,6 +11,8 @@ urlpatterns = [
     path('regulamin/', views.statute, name="statute"),
     path('kontakt/', views.contact, name='contact'),
 
+    path('wiadomość/', views.user_message, name='user-message'),
+
     path('zaloguj/', views.loginPage, name="login"),
     path('wyloguj/', views.logoutUser, name="logout"),
     path('rejestracja/', views.registerPage, name="register"),

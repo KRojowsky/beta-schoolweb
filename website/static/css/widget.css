@@ -17,6 +17,8 @@ a{
     text-decoration: none;
 }
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NAV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
 nav{
     background: #FFF;
     z-index: 999;
@@ -76,7 +78,7 @@ nav{
     padding: 7px 10px;
     border-radius: 5px;
     border: 1px solid #000;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .nav-links .upper-btn:hover{
@@ -88,7 +90,7 @@ nav{
 .additional-nav{
     border-bottom: 1px solid #E3E3E3;
     padding: 12px 10%;
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .nav-links .nav-option::before{
@@ -245,7 +247,7 @@ span{
 }
 
 .hero-subtitle{
-    font-size: 19px;
+    font-size: 20px;
     letter-spacing: .4px;
     text-align: left;
     line-height: 1.6;
@@ -534,7 +536,7 @@ span{
     margin-right: 10px;
 }
 
-@media (max-width: 1150px) {
+@media (max-width: 1150px){
     .hero-list{
         padding: 0;
         margin: 30px 0 0 0;
@@ -830,14 +832,26 @@ th, td{
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONTACT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+#contact-form{
+    position: relative;
+}
+
 #success-message{
-    color: #bb00ff;
-    margin-bottom: 15px;
-    margin-top: 0px;
-    font-weight: 950;
+    display: none;
+    color: #000;
+    font-weight: 600;
     text-transform: uppercase;
     font-size: 17px;
-    display: none;
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #7CFC00;
+    padding: 30px 50px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    z-index: 10;
+    text-align: center;
 }
 
 form input,
@@ -876,9 +890,17 @@ form button:hover{
     transition: .3s;
 }
 
+@media (max-width: 867px){
+    #success-message{
+        font-size: 16px;
+        padding: 30px 20px;
+        width: 80%;
+    }
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FOOTER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-footer {
+footer{
     bottom: 0;
     width: 100%;
     background: #F5F5F5;

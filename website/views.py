@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Room, Topic, Message, Course, Post, CourseMessage, ContactMessage, RoomMember
+from .models import User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember
 from .forms import RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm, \
     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm, ResignationForm
 from django.contrib.auth.decorators import user_passes_test
@@ -44,6 +44,17 @@ def statute(request):
 
 def contact(request):
     return render(request, 'widget/contact.html')
+
+
+def user_message(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        phone_number = request.POST.get('phone_number')
+        message = request.POST.get('message')
+
+        PlatformMessage.objects.create(email=email, phone_number=phone_number, message=message)
+
+    return render(request, 'widget.html')
 
 
 def loginPage(request):
@@ -375,18 +386,6 @@ def change_user_group(user, new_group_name):
         return True
     except Group.DoesNotExist:
         return False
-
-
-def contact_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        phone_number = request.POST.get('phone_number')
-        message = request.POST.get('message')
-
-        ContactMessage.objects.create(email=email, phone_number=phone_number, message=message)
-
-    return render(request, 'widget.html')
-
 
 
 def like_room(request, pk):
