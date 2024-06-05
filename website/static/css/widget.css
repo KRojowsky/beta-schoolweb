@@ -481,7 +481,7 @@ span{
     }
 
     .sub-hero-text{
-        margin: 0;
+        margin: 20px 0 0 0;
     }
 
     .sub-hero-image img{
@@ -503,9 +503,12 @@ span{
     width: 100%;
 }
 
+.sub-hero-label-list .sub-hero-heading{
+    padding: 0 0 40px 0;
+}
+
 .hero-list{
     list-style: none;
-    padding: 45px 0 0 0;
     text-align: left;
 }
 
@@ -539,7 +542,7 @@ span{
 @media (max-width: 1150px){
     .hero-list{
         padding: 0;
-        margin: 30px 0 0 0;
+        margin: 0;
     }
 
     .hero-list li{
@@ -1012,7 +1015,7 @@ footer h5{
 
 .item{
     border: 1px solid rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    border-radius: 5px;
     font-size: 30px;
     text-align: center;
     display: flex;
@@ -1038,11 +1041,80 @@ footer h5{
     justify-content: center;
 }
 
+.sub-hero-label h2{
+    margin: 50px 0 0 0;
+}
+
 .image-container img{
     max-width: 60%;
     max-height: 60%;
     object-fit: contain;
     margin-bottom: -25px;
+}
+
+.custom-list{
+    padding: 0;
+    list-style-type: none;
+    line-height: 1.5;
+}
+
+.custom-list li{
+    margin-top: 35px;
+    font-size: 16px;
+    text-align: left;
+    line-height: 1.5;
+}
+
+.custom-list span{
+    font-size: 17px;
+    font-weight: 900;
+    color: #bb00ff;
+}
+
+.toggle-icon{
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: transform 0.3s ease-in-out;
+    margin-right: 10px;
+    color: #000;
+}
+
+.additional-info{
+    display: none;
+    text-align: left;
+    transition: max-height 0.3s ease-in-out;
+    margin:25px;
+    font-size:16px;
+    line-height:1.5;
+}
+
+.sub-hero-label .button {
+    display: inline-block;
+    margin-right: 15px;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.fadeIn{
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.fadeIn{
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn{
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
 }
 
 @media (max-width: 1150px) {
@@ -1060,6 +1132,14 @@ footer h5{
         max-height: 40%;
         object-fit: contain;
         margin-bottom: -20px;
+    }
+
+    .right-side{
+        margin: 15px 0 0 0;
+    }
+
+    .left-side{
+        margin: 15px 0 0 0;
     }
 }
 
@@ -1116,64 +1196,10 @@ button:hover{
     transition: 0.3s;
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.custom-list{
-    padding: 0;
-    list-style-type: none;
-    line-height: 1.5;
-}
-
-.custom-list li{
-    margin-top: 35px;
-    font-size: 16px;
-    text-align: left;
-    line-height: 1.5;
-}
-
-.custom-list span{
-    font-size: 17px;
+.result-text{
+    padding: 10px 0 15px 0;
+    text-transform: uppercase;
     font-weight: 900;
-    color: #bb00ff;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.toggle-icon{
-    cursor: pointer;
-    position: absolute;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: transform 0.3s ease-in-out;
-    margin-right: 10px;
-    color: #000;
-}
-
-.additional-info{
-    display: none;
-    text-align: left;
-    transition: max-height 0.3s ease-in-out;
-    margin:25px;
-    font-size:16px;
-    line-height:1.5;
-}
-
-.fadeIn{
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.fadeIn{
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn{
-    from{
-        opacity: 0;
-    }
-    to{
-        opacity: 1;
-    }
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FAQ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -1188,17 +1214,20 @@ button:hover{
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~STATUTE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
-.statute-container{
+.statute-container, .contact-container{
     border: 1px solid #000;
     padding: 20px 20px;
     border-radius: 10px;
     background: #F5F5F5;
-    margin: 170px 0 120px 0;
+    margin: 190px 0 120px 0;
+    width: 100%;
 }
 
-.statute-container h1{
+.statute-container h1, .contact-container h1{
     text-align: center;
-    margin-bottom: 50px;
+    margin: 20px 0 70px 0;
+    text-transform: uppercase;
+    letter-spacing: .7px;
 }
 
 .statute-container h2{
@@ -1218,7 +1247,7 @@ button:hover{
         margin: 100px 0;
     }
 
-   .statute-container h1{
+   .statute-container h1, .contact-container h1{
         font-size: 25px;
     }
 
@@ -1226,7 +1255,36 @@ button:hover{
         font-size: 20px;
     }
 
-    .statute-container p{
+    .statute-container p, .contact-widget p{
         font-size: 15px;
+    }
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONTACT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.contact-container{
+    padding: 20px;
+    font-size: 16px;
+}
+
+.contact-widget{
+    text-align: left;
+    padding: 0 0 0 20px;
+}
+
+.contact-widget h4{
+    margin: 30px 0 10px 0;
+}
+
+.contact-widget p{
+    margin: 0 0 0 20px;
+    color: #333;
+    font-size: 17px;
+}
+
+@media (max-width: 867px){
+    .contact-container{
+        margin: 150px 0;
+        padding: 10px 0 20px 0;
     }
 }
