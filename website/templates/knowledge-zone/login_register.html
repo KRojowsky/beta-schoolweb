@@ -1,4 +1,9 @@
 {% extends 'base-knowledge-zone.html' %}
+
+{% block navbar %}
+  {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
 <main class="auth layout">
   {% if page == 'login' %}

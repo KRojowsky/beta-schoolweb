@@ -46,6 +46,10 @@ def contact(request):
     return render(request, 'widget/contact.html')
 
 
+def subjects(request):
+    return render(request, 'widget/subjects.html')
+
+
 def user_message(request):
     if request.method == 'POST':
         email = request.POST.get('email')

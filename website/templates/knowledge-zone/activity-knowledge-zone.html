@@ -9,7 +9,7 @@
         {% if message.user and message.user.id %}
           <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
             <div class="avatar avatar--small">
-              <img src="{{ message.user.avatar.url }}" alt="Autor komentarza"/>
+              <img src="{% static 'img/avatar.svg' %}" alt="Autor komentarza"/>
             </div>
             <p title="Zobacz profil">
               @{{ message.user.username }}
