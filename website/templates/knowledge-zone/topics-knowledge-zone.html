@@ -5,7 +5,7 @@
       </div>
       <ul class="topics__list">
         <li class="all">
-          <a href="#" class="active">
+          <a href="{% url 'schoolweb:knowledge_zone' %}" class="active">
               <div>
                   <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
                   Wszystkie
@@ -15,7 +15,7 @@
         </li>
         {% for topic in topics %}
         <li>
-          <a href="#">
+          <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">
               <div>
                   <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
                   {{topic.name}}

@@ -489,12 +489,12 @@ a {
     flex-direction: column;
 }
 
-.avatar.avatar--small img {
+.avatar--small img {
     width: 40px;
     height: 40px;
 }
 
-.avatar.avatar--small:after {
+.avatar--small:after {
     width: 8px;
     height: 8px;
     bottom: 0px;
@@ -517,7 +517,7 @@ a {
 }
 
 .roomListRoom__content {
-    margin: 15px 0;
+    margin: 5px 0 0 0;
 }
 
 .roomListRoom__content img {
@@ -539,11 +539,25 @@ a {
     font-weight: 900;
 }
 
+.roomListRoom__content p {
+    font-size: 14px;
+}
+
+.comment-counters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    border-top: 1px solid #DBDBDB;
+    padding: 5px 0;
+}
+
 .comment-counter img {
     width: 15px;
     height: 15px;
-    margin-right: 12px;
+    margin-right: 5px;
     margin-top: 3px;
+    fill: #696969;
 }
 
 .comment-counter {
@@ -551,8 +565,25 @@ a {
 }
 
 .comment-counter .comment-info {
-    color: #000;
+    color: #696969;
     font-size: 13px;
+}
+
+.participants-avatars {
+    display: flex;
+    align-items: center;
+}
+
+.avatar--participant img{
+    width: 32px;
+    height: 32px;
+    margin: 0 -10px 0 0;
+}
+
+.more-participants {
+    font-size: 12px;
+    color: #696969;
+    margin: 0 0 0 15px;
 }
 
 .roomListRoom .container {
@@ -560,7 +591,6 @@ a {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin-top: 15px;
     padding: 0;
 }
 
@@ -689,7 +719,6 @@ a {
 .btn--pill {
     border-radius: 5px;
     font-size: 14px;
-    font-weight: 700;
     padding: 5px 15px;
     color: #000;
 }
@@ -1124,21 +1153,21 @@ ul.messages li {
 
 .layout__box {
     width: 100%;
-    max-width: 68rem;
+    max-width: 50rem;
     margin: 0 auto;
     background: #FFF;
     border-radius: 1rem;
     overflow: hidden;
     justify-content: center;
     margin-top: 100px;
-    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.3);
 }
 
 .layout__boxHeader {
     display: flex;
-    padding: 10px 15px;
+    padding: 5px;
     background: #F0F0F0;
-    font-size: 15px;
+    font-size: 18px;
 }
 
 .layout__boxTitle {
@@ -1183,7 +1212,7 @@ ul.messages li {
 .form__group textarea,
 .form__group select {
     background: transparent;
-    border: 1px solid #000;
+    border: 1px solid #A9A9A9;
     padding: 1rem;
     border-radius: 3px;
     width: 100%;
@@ -1214,6 +1243,65 @@ ul.messages li {
     padding: 0 10rem;
 }
 
+.auth__tagline {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 1.8rem;
+}
+
+.auth .layout__boxHeader {
+    text-align: center;
+    justify-content: center;
+}
+
+.auth__actions {
+    margin-top: 2.5rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.auth__action{
+    text-align: center;
+    margin-top: 3rem;
+}
+
+@media (max-width: 768px) {
+    .auth__actions {
+        grid-template-columns: 1fr;
+        gap: 5px;
+    }
+    .auth__action {
+        margin-top: 1.5rem;
+    }
+}
+
+.password-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-password svg {
+    fill: #696969;
+}
+
+.toggle-password svg:hover {
+    fill: #000;
+    transition: 0.2s ease;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PROFILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .profile {
@@ -1224,6 +1312,20 @@ ul.messages li {
     text-align: center;
 }
 
+.avatar.avatar--large img {
+    display: block;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
+.avatar.avatar--large:after {
+    width: 10px;
+    height: 10px;
+    bottom: 5px;
+    right: 20px;
+}
+
 .profile__info {
     text-align: center;
 }
@@ -1231,12 +1333,12 @@ ul.messages li {
 .profile__info p {
     color: #000000;
     font-weight: 900;
-    margin-bottom: 1rem;
-    font-size: 2rem;
+    margin: 0 0 30px 0;
+    font-size: 20px;
 }
 
 .profile__info a {
-    background-color: #222440;
+    background-color: #FFF;
     font-size: 15px;
 }
 

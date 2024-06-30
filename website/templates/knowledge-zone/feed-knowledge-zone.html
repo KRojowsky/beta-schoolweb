@@ -6,7 +6,7 @@
         <div class="roomListRoom__header">
             <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="roomListRoom__author">
                 <div class="avatar avatar--small active">
-                    <img src="{% static 'img/avatar.svg' %}" />
+                    <img src="{{room.host.avatar.url}}" />
                 </div>
                 <div class="roomListRoom__details">
                     <span title="Zobacz profil">@{{room.host.username}}</span>
@@ -30,6 +30,7 @@
   </div>
   <div class="roomListRoom__content">
     <a href="{% url 'schoolweb:room' room.id %}" class="lesson-link" title="Zobacz post">{{room.name}}</a>
+      <p>{{ room.description|truncatechars:150 }}</p>
     <br>
     {% if room.image %}
       <a href="{{ room.image.url }}" class="popup-image" target="_blank">
@@ -38,25 +39,32 @@
     {% endif %}
   </div>
 
-   <div class="comment-counter">
-      <img src="{% static 'img/filled.png' %}" alt="Polubienia">
-        <div class="comment-info">
-          {{ room.likes.all.count }} polubień
-        </div>
-   </div>
-   <div class="comment-counter">
-      <img src="{% static 'img/comment.png' %}" alt="Komentarze">
-        <div class="comment-info">
-          {{ room.message_set.count }} odpowiedzi
-        </div>
+   <div class="participants-avatars">
+       {% for participant in room.participants.all %}
+            {% if forloop.counter <= 2 %}
+            <div class="avatar avatar--participant">
+              <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
+            </div>
+            {% endif %}
+       {% endfor %}
+       {% if room.participants.all.count > 2 %}
+            <span class="more-participants">+{{ room.participants.all.count|add:-2 }} użytkowników odpowiedziało</span>
+       {% endif %}
    </div>
 
-   <div class="comment-counter">
-      <img src="{% static 'img/comment.png' %}" alt="Komentarze">
-        <div class="comment-info">
-          {{room.participants.all.count}} użytkowników dołączyło
-        </div>
-   </div>
+   <div class="comment-counters-container">
+       <div class="comment-counter">
+            <img src="{% static 'img/filled.png' %}" alt="Polubienia">
+            <div class="comment-info">
+                {{ room.likes.all.count }}
+            </div>
+       </div>
+       <div class="comment-counter">
+            <div class="comment-info">
+                {{ room.message_set.count }} odpowiedzi
+            </div>
+       </div>
+    </div>
 
    <div class="container">
       <div class="like-topic-container">

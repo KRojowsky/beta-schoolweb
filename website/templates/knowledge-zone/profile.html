@@ -1,4 +1,9 @@
 {% extends 'base-knowledge-zone.html' %}
+
+{% block navbar %}
+  {% include 'knowledge-zone/nav-knowledge-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
 {% load static %}
 <main class="profile-page layout layout--3">
@@ -8,7 +13,7 @@
       <div class="profile">
         <div class="profile__avatar">
           <div class="avatar avatar--large active">
-            <img src="{% static 'img/avatar.svg' %}" />
+            <img src="{{user.avatar.url}}" />
           </div>
         </div>
         <div class="profile__info">

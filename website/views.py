@@ -65,7 +65,7 @@ def loginPage(request):
     page = 'login'
 
     if request.user.is_authenticated:
-        return redirect('dashboard')
+        return redirect('schoolweb:knowledge_zone')
 
     if request.method == 'POST':
         email = request.POST.get('email').lower()
@@ -170,7 +170,7 @@ def room(request, pk):
     return render(request, 'knowledge-zone/room.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='schoolweb:login')
 def createRoom(request):
     form = RoomForm(request.POST, request.FILES)
     topics = Topic.objects.all()
