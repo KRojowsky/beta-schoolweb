@@ -211,7 +211,7 @@ def updateRoom(request, pk):
             updated_room = form.save(commit=False)
             updated_room.likes.set(current_likes)
             updated_room.save()
-            return redirect('room', pk=room.id)
+            return redirect('schoolweb:room', pk=room.id)
     else:
         form = RoomForm(instance=room)
 
@@ -271,6 +271,17 @@ def updateUser(request):
         messages.error(request, error)
 
     return render(request, 'knowledge-zone/update-user.html', {'form': form})
+
+
+def activityPage(request):
+    room_messages = Message.objects.all()[0:12]
+    return render(request, 'knowledge-zone/activity.html', {'room_messages': room_messages})
+
+
+def topicsPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    topics = Topic.objects.filter(name__icontains=q)
+    return render(request, 'knowledge-zone/topics.html', {'topics': topics})
 
 
 
@@ -452,12 +463,6 @@ def get_likes(request, message_id):
     return JsonResponse({'liked_users': liked_users_data})
 
 
-def topicsPage(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    topics = Topic.objects.filter(name__icontains=q)
-    return render(request, 'website/topics.html', {'topics': topics})
-
-
 def courses_studentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     courses = Course.objects.filter(name__icontains=q)
@@ -470,14 +475,9 @@ def courses_teachersPage(request):
     return render(request, 'website/courses_teachers.html', {'courses': courses})
 
 
-def activityPage(request):
-    room_messages = Message.objects.all()[0:12]
-    return render(request, 'website/activity.html', {'room_messages': room_messages})
-
-
 def activity_lessonPage(request):
     lesson_messages = CourseMessage.objects.all()[0:12]
-    return render(request, 'website/activity_lesson.html', {'lesson_messages': lesson_messages})
+    return render(request, 'knowledge-zone/activity_lesson.html', {'lesson_messages': lesson_messages})
 
 
 def lessonsLogin(request):

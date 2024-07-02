@@ -235,12 +235,12 @@ a {
 .dropdown-menu {
     z-index: 111;
     position: absolute;
-    top: 55px;
+    top: 45px;
     background: #FFF;
     border-radius: 5px;
     overflow: hidden;
     display: none;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
 }
 
 .dropdown-menu.show {
@@ -248,10 +248,9 @@ a {
 }
 
 .dropdown-menu a {
-    padding: 10px 35px;
+    padding: 10px 25px;
     display: block;
     color: #000 !important;
-    font-weight: 500;
     font-size: 14px;
 }
 
@@ -265,7 +264,8 @@ a {
 }
 
 .dropdown-menu a svg {
-    fill: #000;
+    fill: #696969;
+    margin-right:5px;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~DASHBOARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -639,6 +639,7 @@ a {
     border: 1px solid #A9A9A9;
     border-radius: 5px;
     margin-bottom:2rem;
+    background: #F5F5F5;
 }
 
 .activities__boxHeader p {
@@ -1146,9 +1147,16 @@ ul.messages li {
 
 .create-room.layout, .auth.layout {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
-    height: 100vh; /* Full viewport height */
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+}
+
+.delete-item.layout {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
 }
 
 .layout__box {

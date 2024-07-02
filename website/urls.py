@@ -29,9 +29,17 @@ urlpatterns = [
     path('profile/<str:pk>/', views.userProfile, name="user-profile"),
     path('update-user/', views.updateUser, name="update-user"),
 
+    path('topics/', views.topicsPage, name="topics"),
+    path('activity/', views.activityPage, name="activity"),
 
     path('lessons/', views.lessonsHome, name="lessons-home"),
     path('lessons-login/', views.lessonsLogin, name="lessonsLogin"),
+
+    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="knowledge-zone/password_reset.html"), name='reset_password'),
+    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="knowledge-zone/password_reset_sent.html"), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="knowledge-zone/password_reset_form.html"), name='password_reset_confirm'),
+    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="knowledge-zone/password_reset_done.html"), name='password_reset_complete'),
+
 
 
 
@@ -44,19 +52,11 @@ urlpatterns = [
     path('get_room_likes/<int:room_id>/', views.get_room_likes, name='get_room_likes'),
     path('toggle-like-room/<int:room_id>/', views.toggle_like_room, name='toggle_like_room'),
 
-    path('topics/', views.topicsPage, name="topics"),
     path('courses-students/', views.courses_studentsPage, name="courses_students"),
     path('courses-teachers/', views.courses_teachersPage, name="courses_teachers"),
-    path('activity/', views.activityPage, name="activity"),
     path('activity-lesson/', views.activity_lessonPage, name="activity-lesson"),
 
     path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
-
-    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="website/password_reset.html"), name='reset_password'),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="website/password_reset_sent.html"), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="website/password_reset_form.html"), name='password_reset_confirm'),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="website/password_reset_done.html"), name='password_reset_complete'),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="website/password_reset_done.html"), name='password_reset_complete'),
 
     path('lesson_feedback/<int:pk>/', views.lesson_feedback, name='lesson_feedback'),
     path('lesson/<str:pk>/', views.lesson, name="lesson"),

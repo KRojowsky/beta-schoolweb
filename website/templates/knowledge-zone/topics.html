@@ -1,11 +1,16 @@
-{% extends 'base.html' %}
+{% extends 'base-knowledge-zone.html' %}
+
+{% block navbar %}
+  {% include 'knowledge-zone/nav-knowledge-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
 <main class="create-room layout">
   <div class="container">
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <a href="{% url 'dashboard' %}">
+          <a href="{% url 'schoolweb:knowledge_zone' %}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Cofnij</title>
               <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
@@ -33,11 +38,11 @@
 
         <ul class="topics__list">
           <li>
-            <a href="{% url 'dashboard' %}" class="active">Wszystkie<span>{{topics.count}}</span></a>
+            <a href="{% url 'schoolweb:knowledge_zone' %}" class="active">Wszystkie<span>{{topics.count}}</span></a>
           </li>
           {% for topic in topics %}
           <li>
-            <a href="{% url 'dashboard' %}?q={{topic.name}}">{{ topic.name }} <span>{{topic.room_set.all.count}}</span></a>
+            <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">{{ topic.name }} <span>{{topic.room_set.all.count}}</span></a>
           </li>
           {% endfor %}
         </ul>
