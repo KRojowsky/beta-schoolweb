@@ -1,6 +1,10 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'NavbarEmpty.html' %}
 <main class="auth layout">
   <div class="container">
     <div class="layout__box">
@@ -54,7 +58,7 @@
         <div class="auth__actions">
           <div class="auth__action">
             <p>Nie posiadasz konta?</p>
-            <a href="#" class="btn btn--link">Zarejestruj się</a>
+            <a href="{% url 'schoolweb:lessons-home' %}" class="btn btn--link">Zarejestruj się</a>
           </div>
 
           <div class="auth__action">

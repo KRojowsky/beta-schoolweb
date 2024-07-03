@@ -284,15 +284,6 @@ def topicsPage(request):
     return render(request, 'knowledge-zone/topics.html', {'topics': topics})
 
 
-
-
-
-
-
-
-
-
-
 def lessonsHome(request):
     user = request.user
 
@@ -301,7 +292,7 @@ def lessonsHome(request):
     elif user.groups.filter(name='Students').exists():
         return redirect('schoolweb:knowledge_zone')
 
-    return render(request, 'tutoring-zone/lessonsHome.html')
+    return render(request, 'tutoring-zone/lessons-home.html')
 
 
 def lessonsLogin(request):
@@ -309,7 +300,7 @@ def lessonsLogin(request):
 
     if request.user.groups.filter(name='NewStudents').exists() or request.user.groups.filter(
             name='NewTeachers').exists():
-        return redirect('coursesLoader')
+        return redirect('schoolweb:coursesLoader')
 
     if request.method == 'POST':
         email = request.POST.get('email').lower()
@@ -331,29 +322,112 @@ def lessonsLogin(request):
                                  user.groups.filter(name='NewTeachers').exists()):
             if user.groups.filter(name='Teachers').exists():
                 login(request, user)
-                return redirect('teacherPage')
+                return redirect('schoolweb:teacherPage')
             elif user.groups.filter(name='Students').exists():
                 if user.lessons > 0 or user.lessons_intermediate > 0:
                     login(request, user)
-                    return redirect('studentPage')
+                    return redirect('schoolweb:studentPage')
                 else:
-                    return redirect('noLessons')
+                    return redirect('schoolweb:noLessons')
             elif user.groups.filter(name='NONE').exists():
-                return redirect('coursesLoader')
+                return redirect('schoolweb:coursesLoader')
             elif user.groups.filter(name='Migrates').exists():
-                return redirect('coursesLoader')
+                return redirect('schoolweb:coursesLoader')
             elif user.groups.filter(name='Writers').exists():
                 change_user_group(user, 'Migrates')
-                return redirect('coursesLoader')
+                return redirect('schoolweb:coursesLoader')
             elif user.groups.filter(name='NewStudents').exists():
-                return redirect('coursesLoader')
+                return redirect('schoolweb:coursesLoader')
             elif user.groups.filter(name='NewTeachers').exists():
-                return redirect('coursesLoader')
+                return redirect('schoolweb:coursesLoader')
         else:
             messages.error(request, 'Błędny Email lub Hasło')
 
     context = {'page': page}
+    return render(request, 'tutoring-zone/login_register_lessons.html', context)
+
+
+def lessonsRegister(request):
+    form = MyUserCreationForm()
+
+    if request.method == 'POST':
+        form = MyUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            user.groups.add(Group.objects.get(name='NONE'))
+            return redirect('lessonsLogin')
+        else:
+            messages.error(request, 'Wystąpił błąd podczas próby rejestracji.')
+
+    context = {'form': form}
     return render(request, 'website/login_register_lessons.html', context)
+
+
+def lessonsLogout(request):
+    logout(request)
+    return redirect('lessons-home')
+
+
+def newStudent(request):
+    if request.method == 'POST':
+        form = NewStudentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('schoolweb:applyStudent'))
+    else:
+        form = NewStudentForm()
+
+    context = {'form': form}
+    return render(request, 'tutoring-zone/new-student.html', context)
+
+
+def applyStudent(request):
+    if request.method == 'POST':
+        form = ApplyStudentForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            group = Group.objects.get(name='NewStudents')
+            user.groups.add(group)
+            return redirect('schoolweb:lessonsLogin')
+    else:
+        form = ApplyStudentForm()
+    return render(request, 'tutoring-zone/apply-students.html', {'form': form})
+
+
+def newTeacher(request):
+    if request.method == 'POST':
+        form = NewTeacherForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('schoolweb:applyTeacher'))
+    else:
+        form = NewTeacherForm()
+
+    context = {'form': form}
+    return render(request, 'tutoring-zone/new-teacher.html', context)
+
+
+def applyTeacher(request):
+    if request.method == 'POST':
+        form = ApplyTeacherForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            group = Group.objects.get(name='NewTeachers')
+            user.groups.add(group)
+            return redirect('schoolweb:lessonsLogin')
+    else:
+        form = ApplyTeacherForm()
+    return render(request, 'tutoring-zone/apply-teacher.html', {'form': form})
+
+
+
+
+
+
+
+
 
 
 def getToken(request):
@@ -478,81 +552,6 @@ def courses_teachersPage(request):
 def activity_lessonPage(request):
     lesson_messages = CourseMessage.objects.all()[0:12]
     return render(request, 'knowledge-zone/activity_lesson.html', {'lesson_messages': lesson_messages})
-
-
-def lessonsLogin(request):
-    page = 'lessonsLogin'
-
-    if request.user.groups.filter(name='NewStudents').exists() or request.user.groups.filter(
-            name='NewTeachers').exists():
-        return redirect('coursesLoader')
-
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(email=email)
-        except:
-            messages.error(request, 'Użytkownik nie istnieje')
-
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None and (user.groups.filter(name='Students').exists() or
-                                 user.groups.filter(name='Teachers').exists() or
-                                 user.groups.filter(name='NONE').exists() or
-                                 user.groups.filter(name='Writers').exists() or
-                                 user.groups.filter(name='Migrates').exists() or
-                                 user.groups.filter(name='NewStudents').exists() or
-                                 user.groups.filter(name='NewTeachers').exists()):
-            if user.groups.filter(name='Teachers').exists():
-                login(request, user)
-                return redirect('teacherPage')
-            elif user.groups.filter(name='Students').exists():
-                if user.lessons > 0 or user.lessons_intermediate > 0:
-                    login(request, user)
-                    return redirect('studentPage')
-                else:
-                    return redirect('noLessons')
-            elif user.groups.filter(name='NONE').exists():
-                return redirect('coursesLoader')
-            elif user.groups.filter(name='Migrates').exists():
-                return redirect('coursesLoader')
-            elif user.groups.filter(name='Writers').exists():
-                change_user_group(user, 'Migrates')
-                return redirect('coursesLoader')
-            elif user.groups.filter(name='NewStudents').exists():
-                return redirect('coursesLoader')
-            elif user.groups.filter(name='NewTeachers').exists():
-                return redirect('coursesLoader')
-        else:
-            messages.error(request, 'Błędny Email lub Hasło')
-
-    context = {'page': page}
-    return render(request, 'website/login_register_lessons.html', context)
-
-
-def lessonsRegister(request):
-    form = MyUserCreationForm()
-
-    if request.method == 'POST':
-        form = MyUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            user.groups.add(Group.objects.get(name='NONE'))
-            return redirect('lessonsLogin')
-        else:
-            messages.error(request, 'Wystąpił błąd podczas próby rejestracji.')
-
-    context = {'form': form}
-    return render(request, 'website/login_register_lessons.html', context)
-
-
-def lessonsLogout(request):
-    logout(request)
-    return redirect('lessons-home')
 
 
 def coursesLoader(request):
@@ -958,58 +957,6 @@ def deleteLessonMessage(request, pk):
 
     context = {'obj': message, 'navbar_template': navbar_template}
     return render(request, 'website/deleteLessons.html', context)
-
-
-def newTeacher(request):
-    if request.method == 'POST':
-        form = NewTeacherForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('applyTeacher'))
-    else:
-        form = NewTeacherForm()
-
-    context = {'form': form}
-    return render(request, 'website/newTeacher.html', context)
-
-
-def applyTeacher(request):
-    if request.method == 'POST':
-        form = ApplyTeacherForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            group = Group.objects.get(name='NewTeachers')
-            user.groups.add(group)
-            return redirect('lessonsLogin')
-    else:
-        form = ApplyTeacherForm()
-    return render(request, 'website/applyTeacher.html', {'form': form})
-
-
-def newStudent(request):
-    if request.method == 'POST':
-        form = NewStudentForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('applyStudent'))
-    else:
-        form = NewStudentForm()
-
-    context = {'form': form}
-    return render(request, 'website/newStudent.html', context)
-
-
-def applyStudent(request):
-    if request.method == 'POST':
-        form = ApplyStudentForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            group = Group.objects.get(name='NewStudents')
-            user.groups.add(group)
-            return redirect('lessonsLogin')
-    else:
-        form = ApplyStudentForm()
-    return render(request, 'website/applyStudents.html', {'form': form})
 
 
 @login_required(login_url='lessonsLogin')

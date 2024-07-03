@@ -1,6 +1,10 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'tutoring-zone/navbarHome.html' %}
 <div class="background-pattern">
     <div class="registration-container">
         <div class="student_register">
@@ -24,7 +28,7 @@
                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
             </p>
             <div class="button-container">
-                <a href="#" class="button">❱ Dołącz ❰</a>
+                <a href="{% url 'schoolweb:newStudent' %}" class="button">❱ Dołącz ❰</a>
             </div>
         </div>
 
@@ -45,14 +49,14 @@
             <p class="mobile-text">Doświadcz radości płynącej z poszerzania horyzontów edukacyjnych, podziel się
                 wiedzą i wspieraj innych w ich naukowej podróży!</p>
             <div class="button-container">
-                <a href="#" class="button">❱ Dołącz ❰</a>
+                <a href="{% url 'schoolweb:newTeacher' %}" class="button">❱ Dołącz ❰</a>
             </div>
         </div>
     </div>
 
     <div class="home-info">
         <h2>Jeśli posiadasz już konto w <span>strefie korepetycji</span>
-            wystarczy się <a href="#">zalogować</a></h2>
+            wystarczy się <a href="{% url 'schoolweb:lessonsLogin' %}">zalogować</a></h2>
     </div>
 </div>
 {% endblock content %}

@@ -1371,7 +1371,11 @@ ul.messages li {
     color: var(--color-dark-light);
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LESSONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+
+
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .background-pattern {
     display: flex;
@@ -1400,6 +1404,7 @@ ul.messages li {
     align-items: center;
     text-align: center;
     background: #FFF;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
 
 .teacher_logo h2, .student_logo h2{
@@ -1426,5 +1431,5 @@ ul.messages li {
 }
 
 h2 span {
-    color: #ffcc00; /* Example color for highlighting */
+    color: #ffcc00;
 }

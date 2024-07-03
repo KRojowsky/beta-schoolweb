@@ -1,16 +1,20 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarHome.html' %}
 <main class="auth layout">
   <div class="container">
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <h3>Dołącz do korepetytorów SchoolWeb</h3>
+          <h3>Dołącz do uczniów SchoolWeb</h3>
         </div>
       </div>
       <div class="layout__body">
-        <h2 class="auth__tagline">Zostań nowym korepetytorem SchoolWeb<br>
+        <h2 class="auth__tagline">Zostań nowym uczniem SchoolWeb<br>
           <i><span>Uzupełni formularz, a następnie zarejestruj się</span></i>
         </h2>
 

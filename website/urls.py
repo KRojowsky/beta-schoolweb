@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'schoolweb'
 
 urlpatterns = [
+    # KNOWLEDGE ZONE
     path('', views.home, name="home"),
     path('zostan-korepetytorem/', views.become_tutor, name="become-tutor"),
     path('faq/', views.faq, name="faq"),
@@ -14,9 +15,9 @@ urlpatterns = [
 
     path('wiadomość/', views.user_message, name='user-message'),
 
-    path('zaloguj/', views.loginPage, name="login"),
-    path('wyloguj/', views.logoutUser, name="logout"),
-    path('rejestracja/', views.registerPage, name="register"),
+    path('logowanie-strefa-wiedzy/', views.loginPage, name="login"),
+    path('wylogowywanie-strefa-wiedzy/', views.logoutUser, name="logout"),
+    path('rejestracja-strefa-wiedzy/', views.registerPage, name="register"),
 
     path('strefa-wiedzy/', views.knowledge_zone, name="knowledge_zone"),
 
@@ -32,16 +33,21 @@ urlpatterns = [
     path('topics/', views.topicsPage, name="topics"),
     path('activity/', views.activityPage, name="activity"),
 
-    path('lessons/', views.lessonsHome, name="lessons-home"),
-    path('lessons-login/', views.lessonsLogin, name="lessonsLogin"),
-
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="knowledge-zone/password_reset.html"), name='reset_password'),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="knowledge-zone/password_reset_sent.html"), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="knowledge-zone/password_reset_form.html"), name='password_reset_confirm'),
     path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="knowledge-zone/password_reset_done.html"), name='password_reset_complete'),
 
 
+    # TUTORING ZONE
+    path('zaczynaj/', views.lessonsHome, name="lessons-home"),
+    path('logowanie-strefa-korepetycji/', views.lessonsLogin, name="lessonsLogin"),
 
+    path('nowy-uczen/', views.newStudent, name='newStudent'),
+    path('uczen-aplikuj/', views.applyStudent, name="applyStudent"),
+
+    path('nowy-korepetytor/', views.newTeacher, name='newTeacher'),
+    path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
 
 
 
@@ -74,11 +80,6 @@ urlpatterns = [
     path('update-lesson/<str:pk>/', views.updateLesson, name='updateLesson'),
     path('delete-lesson/<str:pk>/', views.deleteLesson, name='deleteLesson'),
     path('delete-lesson-message/<str:pk>/', views.deleteLessonMessage, name='deleteLessonMessage'),
-
-    path('apply-teacher/', views.applyTeacher, name="applyTeacher"),
-    path('apply-student/', views.applyStudent, name="applyStudent"),
-    path('new-student/', views.newStudent, name='newStudent'),
-    path('new-teacher/', views.newTeacher, name='newTeacher'),
 
     path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
 
