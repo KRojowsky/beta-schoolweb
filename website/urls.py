@@ -49,6 +49,8 @@ urlpatterns = [
     path('nowy-korepetytor/', views.newTeacher, name='newTeacher'),
     path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
 
+    path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacher-view"),
+
 
 
     path('like-room/<int:pk>/', views.like_room, name='like-room'),
@@ -71,7 +73,6 @@ urlpatterns = [
     path('resignation/', views.resignation, name='resignation'),
 
     path('student-page/', views.studentPage, name="studentPage"),
-    path('teacher-page/', views.teacherPage, name="teacherPage"),
     path('create-loader/', views.coursesLoader, name="coursesLoader"),
     path('no-lessons/', views.noLessons, name="noLessons"),
 

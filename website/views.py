@@ -288,9 +288,9 @@ def lessonsHome(request):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        return redirect('schoolweb:knowledge_zone')
+        return redirect('schoolweb:teacher-view')
     elif user.groups.filter(name='Students').exists():
-        return redirect('schoolweb:knowledge_zone')
+        return redirect('schoolweb:studentPage')
 
     return render(request, 'tutoring-zone/lessons-home.html')
 
@@ -420,6 +420,46 @@ def applyTeacher(request):
     else:
         form = ApplyTeacherForm()
     return render(request, 'tutoring-zone/apply-teacher.html', {'form': form})
+
+
+
+@user_passes_test(lambda user: user.groups.filter(name='Teachers').exists(), login_url='lessonsLogin')
+@login_required(login_url='lessonsLogin')
+def teacherPage(request):
+    now = datetime.now() - timedelta(minutes=15)
+    time_difference = timedelta(minutes=35)
+    time_threshold = now - time_difference
+    a = 0
+
+    q = request.GET.get('q') if request.GET.get('q') is not None else ''
+    teacher = request.user
+    courses = Course.objects.filter(teacher=teacher)
+    all_courses = Course.objects.all()
+
+    upcoming_lessons = Post.objects.filter(
+        Q(course__in=courses) & Q(event_datetime__gt=now) & (Q(course__name=q) | Q(title__icontains=q))
+    ).order_by('event_datetime')
+
+    past_lessons = Post.objects.filter(
+        Q(course__in=courses) & Q(event_datetime__lte=now) & (Q(course__name=q) | Q(title__icontains=q))
+    ).order_by('-event_datetime')
+
+    lessons = list(upcoming_lessons) + list(past_lessons)
+
+    post_count = len(lessons)
+    lesson_messages = CourseMessage.objects.filter(room__in=lessons)
+
+    context = {
+        'lessons': lessons,
+        'courses': courses,
+        'post_count': post_count,
+        'lesson_messages': lesson_messages,
+        'all_courses': all_courses,
+        'now': now,
+        'time_threshold': time_threshold,
+        'a': a
+    }
+    return render(request, 'tutoring-zone/teacher-view.html', context)
 
 
 
@@ -566,45 +606,6 @@ def noLessons(request):
     return render(request, 'website/noLessons.html')
 
 
-@user_passes_test(lambda user: user.groups.filter(name='Teachers').exists(), login_url='lessonsLogin')
-@login_required(login_url='lessonsLogin')
-def teacherPage(request):
-    now = datetime.now() - timedelta(minutes=15)
-    time_difference = timedelta(minutes=35)
-    time_threshold = now - time_difference
-    a = 0
-
-    q = request.GET.get('q') if request.GET.get('q') is not None else ''
-    teacher = request.user
-    courses = Course.objects.filter(teacher=teacher)
-    all_courses = Course.objects.all()
-
-    upcoming_lessons = Post.objects.filter(
-        Q(course__in=courses) & Q(event_datetime__gt=now) & (Q(course__name=q) | Q(title__icontains=q))
-    ).order_by('event_datetime')
-
-    past_lessons = Post.objects.filter(
-        Q(course__in=courses) & Q(event_datetime__lte=now) & (Q(course__name=q) | Q(title__icontains=q))
-    ).order_by('-event_datetime')
-
-    lessons = list(upcoming_lessons) + list(past_lessons)
-
-    post_count = len(lessons)
-    lesson_messages = CourseMessage.objects.filter(room__in=lessons)
-
-    context = {
-        'lessons': lessons,
-        'courses': courses,
-        'post_count': post_count,
-        'lesson_messages': lesson_messages,
-        'all_courses': all_courses,
-        'now': now,
-        'time_threshold': time_threshold,
-        'a': a
-    }
-    return render(request, 'website/teacherPage.html', context)
-
-
 @user_passes_test(lambda user: user.groups.filter(name='Students').exists(), login_url='lessonsLogin')
 @login_required(login_url='lessonsLogin')
 def studentPage(request):
@@ -673,7 +674,7 @@ def lesson(request, pk):
     back_link = ''
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'navbarTeacher.html'
+        navbar_template = 'nav-teacher-view.html'
         back_link = reverse('teacherPage')
     elif user.groups.filter(name='Students').exists():
         navbar_template = 'navbarStudent.html'
@@ -787,8 +788,8 @@ def lessonProfile(request, pk):
     is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
 
     if logged_in_user.groups.filter(name='Teachers').exists():
-        navbar_template = 'navbarTeacher.html'
-        courses_component = 'website/courses_component_teachers.html'
+        navbar_template = 'nav-teacher-view.html'
+        courses_component = 'website/courses-component-teachers.html'
         courses = Course.objects.filter(teacher=logged_in_user)
         accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
     elif logged_in_user.groups.filter(name='Students').exists():
@@ -927,7 +928,7 @@ def deleteLesson(request, pk):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'navbarTeacher.html'
+        navbar_template = 'nav-teacher-view.html'
         back_link = reverse('teacherPage')
 
     elif user.groups.filter(name='Students').exists():
@@ -950,7 +951,7 @@ def deleteLessonMessage(request, pk):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'navbarTeacher.html'
+        navbar_template = 'nav-teacher-view.html'
 
     elif user.groups.filter(name='Students').exists():
         navbar_template = 'navbarStudent.html'
@@ -970,7 +971,7 @@ def updateUserLessons(request):
             form.save()
             return redirect('lesson-profile', pk=user.id)
 
-    navbar_template = 'navbarTeacher.html'
+    navbar_template = 'nav-teacher-view.html'
     error_messages = [error for field, errors in form.errors.items() for error in errors]
     for error in error_messages:
         messages.error(request, error)
