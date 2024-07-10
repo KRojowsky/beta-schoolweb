@@ -288,7 +288,7 @@ def lessonsHome(request):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        return redirect('schoolweb:teacher-view')
+        return redirect('schoolweb:teacherPage')
     elif user.groups.filter(name='Students').exists():
         return redirect('schoolweb:studentPage')
 
@@ -367,7 +367,7 @@ def lessonsRegister(request):
 
 def lessonsLogout(request):
     logout(request)
-    return redirect('lessons-home')
+    return redirect('schoolweb:lessons-home')
 
 
 def newStudent(request):
@@ -461,6 +461,132 @@ def teacherPage(request):
     }
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
+
+@login_required(login_url='lessonsLogin')
+def lessonProfile(request, pk):
+    user = get_object_or_404(User, id=pk)
+    lessons = user.post_set.all()
+    lesson_messages = user.coursemessage_set.all()
+    package = user.lessons
+    all_package = user.all_lessons
+    month_earnings = 60 * user.lessons_intermediate + 40 * user.lessons + 20 * user.break_lessons - 50 * user.missed_lessons
+    all_earnings = 60 * user.all_lessons_intermediate + 40 * user.all_lessons + 20 * user.all_break_lessons - 50 * user.all_missed_lessons
+
+    logged_in_user = request.user
+
+    is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
+
+    if logged_in_user.groups.filter(name='Teachers').exists():
+        navbar_template = 'nav-teacher-view.html'
+        courses_component = 'tutoring-zone/courses-component-teachers.html'
+        courses = Course.objects.filter(teacher=logged_in_user)
+        accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
+    elif logged_in_user.groups.filter(name='Students').exists():
+        navbar_template = 'navbarStudent.html'
+        courses_component = 'tutoring-zone/courses-component-students.html'
+        courses = Course.objects.filter(students=logged_in_user)
+        accessible_users = (
+            User.objects
+            .filter(
+                Q(groups__name='Students', courses_enrolled__in=courses) |
+                Q(groups__name='Teachers', courses_taught__in=courses)
+            )
+            .distinct()
+        )
+
+    is_accessible_profile = (
+        logged_in_user == user or
+        (is_teacher and user in accessible_users) or
+        (logged_in_user.groups.filter(name='Students').exists() and user in accessible_users)
+    )
+
+    if not is_accessible_profile:
+        return render(request, 'tutoring-zone/lesson_no_exists.html')
+
+    context = {
+        'user': user,
+        'lessons': lessons,
+        'lesson_messages': lesson_messages,
+        'package': package,
+        'all_package': all_package,
+        'courses': courses,
+        'navbar_template': navbar_template,
+        'courses_component': courses_component,
+        'month_earnings': month_earnings,
+        'all_earnings': all_earnings,
+        'is_teacher': is_teacher,
+    }
+
+    return render(request, 'tutoring-zone/lesson-profile.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def updateUserLessons(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('lesson-profile', pk=user.id)
+
+    navbar_template = 'nav-teacher-view.html'
+    error_messages = [error for field, errors in form.errors.items() for error in errors]
+    for error in error_messages:
+        messages.error(request, error)
+
+    context = {'navbar_template': navbar_template, 'form': form}
+
+    return render(request, 'tutoring-zone/update-user-lessons.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def createLesson(request):
+    initial_data = {'host': request.user}
+    form = PostFormCreate(initial=initial_data)
+    current_date = timezone.now().strftime('%Y-%m-%dT%H:%M')
+
+    if request.method == 'POST':
+        form = PostFormCreate(request.POST, initial=initial_data)
+        minimum_datetime = timezone.now() + timedelta(minutes=15)
+
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.host = request.user
+
+            overlapping_lessons = Post.objects.filter(
+                course__teacher=request.user,
+                event_datetime__gte=post.event_datetime - timedelta(minutes=50),
+                event_datetime__lte=post.event_datetime + timedelta(minutes=50)
+            )
+
+            if overlapping_lessons.exists():
+                form.add_error('event_datetime', "W wybranym terminie istnieje już inna lekcja.")
+            elif post.event_datetime <= minimum_datetime:
+                form.add_error('event_datetime', "Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
+            else:
+                post.save()
+
+                students_in_course = post.course.students.all()
+                for student in students_in_course:
+                    student.lessons -= 1
+                    student.save()
+
+                return redirect('teacherPage')
+
+    return render(request, 'tutoring-zone/create-lesson.html', {'form': form, 'current_date': current_date})
+
+
+def courses_teachersPage(request):
+    q = request.GET.get('q') if request.GET.get('q') != None else ''
+    courses = Course.objects.filter(name__icontains=q)
+    return render(request, 'tutoring-zone/courses-teachers.html', {'courses': courses})
+
+
+def activity_lessonPage(request):
+    lesson_messages = CourseMessage.objects.all()[0:12]
+    return render(request, 'tutoring-zone/activity-lesson.html', {'lesson_messages': lesson_messages})
 
 
 
@@ -580,18 +706,7 @@ def get_likes(request, message_id):
 def courses_studentsPage(request):
     q = request.GET.get('q') if request.GET.get('q') != None else ''
     courses = Course.objects.filter(name__icontains=q)
-    return render(request, 'website/courses_students.html', {'courses': courses})
-
-
-def courses_teachersPage(request):
-    q = request.GET.get('q') if request.GET.get('q') != None else ''
-    courses = Course.objects.filter(name__icontains=q)
-    return render(request, 'website/courses_teachers.html', {'courses': courses})
-
-
-def activity_lessonPage(request):
-    lesson_messages = CourseMessage.objects.all()[0:12]
-    return render(request, 'knowledge-zone/activity_lesson.html', {'lesson_messages': lesson_messages})
+    return render(request, 'website/courses-students.html', {'courses': courses})
 
 
 def coursesLoader(request):
@@ -773,64 +888,6 @@ def lesson_correction(request, pk):
     return render(request, 'website/lesson_correction.html', context)
 
 
-@login_required(login_url='lessonsLogin')
-def lessonProfile(request, pk):
-    user = get_object_or_404(User, id=pk)
-    lessons = user.post_set.all()
-    lesson_messages = user.coursemessage_set.all()
-    package = user.lessons
-    all_package = user.all_lessons
-    month_earnings = 60 * user.lessons_intermediate + 40 * user.lessons + 20 * user.break_lessons - 50 * user.missed_lessons
-    all_earnings = 60 * user.all_lessons_intermediate + 40 * user.all_lessons + 20 * user.all_break_lessons - 50 * user.all_missed_lessons
-
-    logged_in_user = request.user
-
-    is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
-
-    if logged_in_user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
-        courses_component = 'website/courses-component-teachers.html'
-        courses = Course.objects.filter(teacher=logged_in_user)
-        accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
-    elif logged_in_user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
-        courses_component = 'website/courses_component_students.html'
-        courses = Course.objects.filter(students=logged_in_user)
-        accessible_users = (
-            User.objects
-            .filter(
-                Q(groups__name='Students', courses_enrolled__in=courses) |
-                Q(groups__name='Teachers', courses_taught__in=courses)
-            )
-            .distinct()
-        )
-
-    is_accessible_profile = (
-        logged_in_user == user or
-        (is_teacher and user in accessible_users) or
-        (logged_in_user.groups.filter(name='Students').exists() and user in accessible_users)
-    )
-
-    if not is_accessible_profile:
-        return render(request, 'website/lesson_no_exists.html')
-
-    context = {
-        'user': user,
-        'lessons': lessons,
-        'lesson_messages': lesson_messages,
-        'package': package,
-        'all_package': all_package,
-        'courses': courses,
-        'navbar_template': navbar_template,
-        'courses_component': courses_component,
-        'month_earnings': month_earnings,
-        'all_earnings': all_earnings,
-        'is_teacher': is_teacher,
-    }
-
-    return render(request, 'website/lesson_profile.html', context)
-
-
 def success_page(request):
     return render(request, 'website/success_page.html')
 
@@ -847,43 +904,6 @@ def resignation(request):
         form = ResignationForm()
 
     return render(request, 'website/resignation.html', {'form': form})
-
-
-@login_required(login_url='lessonsLogin')
-def createLesson(request):
-    initial_data = {'host': request.user}
-    form = PostFormCreate(initial=initial_data)
-    current_date = timezone.now().strftime('%Y-%m-%dT%H:%M')
-
-    if request.method == 'POST':
-        form = PostFormCreate(request.POST, initial=initial_data)
-        minimum_datetime = timezone.now() + timedelta(minutes=15)
-
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.host = request.user
-
-            overlapping_lessons = Post.objects.filter(
-                course__teacher=request.user,
-                event_datetime__gte=post.event_datetime - timedelta(minutes=50),
-                event_datetime__lte=post.event_datetime + timedelta(minutes=50)
-            )
-
-            if overlapping_lessons.exists():
-                form.add_error('event_datetime', "W wybranym terminie istnieje już inna lekcja.")
-            elif post.event_datetime <= minimum_datetime:
-                form.add_error('event_datetime', "Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
-            else:
-                post.save()
-
-                students_in_course = post.course.students.all()
-                for student in students_in_course:
-                    student.lessons -= 1
-                    student.save()
-
-                return redirect('teacherPage')
-
-    return render(request, 'website/createPost.html', {'form': form, 'current_date': current_date})
 
 
 @login_required(login_url='lessonsLogin')
@@ -958,27 +978,6 @@ def deleteLessonMessage(request, pk):
 
     context = {'obj': message, 'navbar_template': navbar_template}
     return render(request, 'website/deleteLessons.html', context)
-
-
-@login_required(login_url='lessonsLogin')
-def updateUserLessons(request):
-    user = request.user
-    form = UserForm(instance=user)
-
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('lesson-profile', pk=user.id)
-
-    navbar_template = 'nav-teacher-view.html'
-    error_messages = [error for field, errors in form.errors.items() for error in errors]
-    for error in error_messages:
-        messages.error(request, error)
-
-    context = {'navbar_template': navbar_template, 'form': form}
-
-    return render(request, 'website/update-user-lessons.html', context)
 
 
 @login_required

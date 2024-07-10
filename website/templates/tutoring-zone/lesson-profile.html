@@ -1,7 +1,11 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include navbar_template %}
 <main class="profile-page layout layout--3">
   <div class="container">
 
@@ -17,7 +21,7 @@
           <h3>{{user.first_name}} {{user.last_name}}</h3>
           <p>@{{user.username}}</p>
           {% if request.user == user %}
-            <a href="{% url 'update-user-lessons' %}" class="btn btn--main btn--pill">Ustawienia</a>
+            <a href="{% url 'schoolweb:update-user-lessons' %}" class="btn btn--main btn--pill">Ustawienia</a>
           {% endif %}
         </div>
         <div class="profile__about lesson-link">
@@ -102,7 +106,7 @@
       {% if request.user == user and is_teacher%}
         <div class="profile__about">
           <h3>Więcej opcji:</h3>
-          <a href="{% url 'resignation' %}" class="btn resignation" style="margin-top:15px;">Rezygnacja</a>
+          <a href="#" class="btn resignation" style="margin-top:15px;">Rezygnacja</a>
         </div>
       {% endif %}
 
@@ -113,6 +117,8 @@
   </div>
 </main>
 
+<!-- Add this script tag to include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   var monthEarnings = {{ month_earnings }};
   var allEarnings = {{ all_earnings }};

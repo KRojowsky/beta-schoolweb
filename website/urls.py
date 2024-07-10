@@ -49,7 +49,20 @@ urlpatterns = [
     path('nowy-korepetytor/', views.newTeacher, name='newTeacher'),
     path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
 
-    path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacher-view"),
+    path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
+
+    path('lesson-profile/<str:pk>/', views.lessonProfile, name="lesson-profile"),
+    path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
+
+    path('courses-teachers/', views.courses_teachersPage, name="courses-teachers"),
+
+    path('create-lesson/', views.createLesson, name='create-lesson'),
+    path('activity-lesson/', views.activity_lessonPage, name="activity-lesson"),
+
+    path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
+
+
+
 
 
 
@@ -61,14 +74,9 @@ urlpatterns = [
     path('toggle-like-room/<int:room_id>/', views.toggle_like_room, name='toggle_like_room'),
 
     path('courses-students/', views.courses_studentsPage, name="courses_students"),
-    path('courses-teachers/', views.courses_teachersPage, name="courses_teachers"),
-    path('activity-lesson/', views.activity_lessonPage, name="activity-lesson"),
-
-    path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
 
     path('lesson_feedback/<int:pk>/', views.lesson_feedback, name='lesson_feedback'),
     path('lesson/<str:pk>/', views.lesson, name="lesson"),
-    path('lesson-profile/<str:pk>/', views.lessonProfile, name="lesson-profile"),
     path('access-denied/', views.access_denied, name='access_denied'),
     path('resignation/', views.resignation, name='resignation'),
 
@@ -76,13 +84,11 @@ urlpatterns = [
     path('create-loader/', views.coursesLoader, name="coursesLoader"),
     path('no-lessons/', views.noLessons, name="noLessons"),
 
-    path('create-lesson/', views.createLesson, name='createLesson'),
     path('update-lesson/', views.updateLesson, name='updateLesson'),
     path('update-lesson/<str:pk>/', views.updateLesson, name='updateLesson'),
     path('delete-lesson/<str:pk>/', views.deleteLesson, name='deleteLesson'),
     path('delete-lesson-message/<str:pk>/', views.deleteLessonMessage, name='deleteLessonMessage'),
 
-    path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
 
     path('lobby/<str:pk>/', views.Lobby, name='lobby'),
     path('converse/', views.converse, name='converse'),

@@ -24,8 +24,8 @@
           </label>
         </form>
         <div class="mobile-menuItems">
-          <a class="btn btn--main btn--pill" href="#">Twoje kursy</a>
-          <a class="btn btn--main btn--pill" href="#">Ostatnie aktywności</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses-teachers' %}">Twoje kursy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-lesson' %}">Ostatnie aktywności</a>
         </div>
       </div>
       <div class="roomList__header">
@@ -33,7 +33,7 @@
           <h2>Twoje lekcje</h2>
           <p>{{post_count}} lekcji w tym kursie</p>
         </div>
-        <a class="btn btn--main" href="#" title="Utwórz nową lekcję">
+        <a class="btn btn--main" href="{% url 'schoolweb:create-lesson' %}" title="Utwórz nową lekcję">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <title>Dodaj</title>
             <path d="M16.943
@@ -89,9 +89,9 @@
           <p><i>Informacja zniknie, gdy zostaniesz dodany/a do swojego pierwszego kursu.</i></p>
         </div>
        {% endif %}
-      {% include 'website/feed_component_teachers.html' %}
+      {% include 'tutoring-zone/feed-component-teachers.html' %}
     </div>
-    {% include 'website/activity_component_lessons.html' %}
+    {% include 'tutoring-zone/activity-component-lessons.html' %}
   </div>
 </main>
 {% endblock %}

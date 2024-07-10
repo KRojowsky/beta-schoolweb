@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% block content %}
 <main class="create-room layout">
   <div class="container">
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <a href="{% url 'teacherPage' %}">
+          <a href="{% url 'schoolweb:teacherPage' %}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Cofnij</title>
               <path
@@ -34,11 +34,11 @@
 
         <ul class="topics__list">
           <li>
-            <a href="{% url 'teacherPage' %}" class="active">Wszystkie<span>{{courses.count}}</span></a>
+            <a href="{% url 'schoolweb:teacherPage' %}" class="active">Wszystkie<span>{{courses.count}}</span></a>
           </li>
           {% for course in courses %}
           <li>
-            <a href="{% url 'teacherPage' %}?q={{course.name}}">{{ course.name }} <span>{{course.post_set.all.count}}</span></a>
+            <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">{{ course.name }} <span>{{course.post_set.all.count}}</span></a>
           </li>
           {% endfor %}
         </ul>
