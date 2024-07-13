@@ -12,8 +12,7 @@
     {% endblock description %}
 
     <title>{% block title %}SchoolWeb | Twórz z nami najlepszą platformę edukacyjną{% endblock title %}</title>
-
-    <link rel="icon" type="image/x-icon" href="{% static 'img/widget-main-view/logo.png' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'img/widget/logo.png' %}">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
@@ -28,14 +27,13 @@
     {% endblock content %}
 
 	{% include 'widget/footer.html' %}
-</body>
 
-<div id="shop-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <p>Oficjalny sklep SchoolWeb</p>
-        <p>Już wkrótce!</p>
+    <div id="shop-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>Oficjalny sklep SchoolWeb</p>
+            <p>Już wkrótce!</p>
+        </div>
     </div>
-</div>
-
+</body>
 </html>

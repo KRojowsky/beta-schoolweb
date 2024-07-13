@@ -8,7 +8,7 @@ function calculateEarnings() {
         return;
     }
 
-    const hourlyRate = 40;
+    const hourlyRate = 50;
     const monthlyEarnings = (lessonsPerWeek * hourlyRate * 4) + (lessonsPerWeek / 5) * hourlyRate * 3;
     const resultText = `Zarobisz miesięcznie około: ${monthlyEarnings} zł`;
 

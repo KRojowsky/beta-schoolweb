@@ -5,8 +5,9 @@ from django.contrib.auth import views as auth_views
 app_name = 'schoolweb'
 
 urlpatterns = [
-    # KNOWLEDGE ZONE
+    # WIDGET
     path('', views.home, name="home"),
+
     path('zostan-korepetytorem/', views.become_tutor, name="become-tutor"),
     path('faq/', views.faq, name="faq"),
     path('regulamin/', views.statute, name="statute"),
@@ -15,6 +16,9 @@ urlpatterns = [
 
     path('wiadomość/', views.user_message, name='user-message'),
 
+
+
+    # KNOWLEDGE ZONE
     path('logowanie-strefa-wiedzy/', views.loginPage, name="login"),
     path('wylogowywanie-strefa-wiedzy/', views.logoutUser, name="logout"),
     path('rejestracja-strefa-wiedzy/', views.registerPage, name="register"),
@@ -61,6 +65,15 @@ urlpatterns = [
 
     path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
 
+    path('lesson/<str:pk>/', views.lesson, name="lesson"),
+    path('update-lesson/', views.updateLesson, name='updateLesson'),
+    path('update-lesson/<str:pk>/', views.updateLesson, name='updateLesson'),
+
+    path('delete-lesson/<str:pk>/', views.deleteLesson, name='delete-lesson'),
+    path('delete-lesson-message/<str:pk>/', views.deleteLessonMessage, name='delete-lesson-message'),
+
+    path('lesson-feedback/<int:pk>/', views.lessonFeedback, name='lesson-feedback'),
+    path('lesson-correction/<int:pk>/', views.lessonCorrection, name='lesson-correction'),
 
 
 
@@ -75,19 +88,12 @@ urlpatterns = [
 
     path('courses-students/', views.courses_studentsPage, name="courses_students"),
 
-    path('lesson_feedback/<int:pk>/', views.lesson_feedback, name='lesson_feedback'),
-    path('lesson/<str:pk>/', views.lesson, name="lesson"),
     path('access-denied/', views.access_denied, name='access_denied'),
     path('resignation/', views.resignation, name='resignation'),
 
     path('student-page/', views.studentPage, name="studentPage"),
     path('create-loader/', views.coursesLoader, name="coursesLoader"),
     path('no-lessons/', views.noLessons, name="noLessons"),
-
-    path('update-lesson/', views.updateLesson, name='updateLesson'),
-    path('update-lesson/<str:pk>/', views.updateLesson, name='updateLesson'),
-    path('delete-lesson/<str:pk>/', views.deleteLesson, name='deleteLesson'),
-    path('delete-lesson-message/<str:pk>/', views.deleteLessonMessage, name='deleteLessonMessage'),
 
 
     path('lobby/<str:pk>/', views.Lobby, name='lobby'),
@@ -96,7 +102,6 @@ urlpatterns = [
     path('create_member/', views.createMember),
     path('get_member/', views.getMember),
     path('delete_member/', views.deleteMember),
-    path('lesson_correction/<int:pk>/', views.lesson_correction, name='lessonCorrection'),
     path('manage_availability/', views.manage_availability, name='manage_availability'),
     path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
     path('success/', views.success_page, name='success_page'),

@@ -1,7 +1,11 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include navbar_template %}
 <main class="profile-page layout layout--2">
   <div class="container">
     <div class="room">
@@ -17,7 +21,7 @@
           </a>
 
           {% if lesson.host == request.user %}
-            <a href="{% url 'updateLesson' lesson.id %}">
+            <a href="{% url 'schoolweb:updateLesson' lesson.id %}">
               <svg
                 enable-background="new 0 0 24 24" height="32" viewBox="0 0 24 24" width="32"
                 xmlns="http://www.w3.org/2000/svg"  style="margin-left:10px;">
@@ -55,7 +59,7 @@
           <div class="room__hosted">
             <p>Utworzone przez</p>
             {% if lesson.host %}
-            <a href="{% url 'lesson-profile' lesson.host.id %}" class="room__author">
+            <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="room__author">
               <div class="avatar avatar--small">
                 <img src="{{lesson.host.avatar.url}}" />
               </div>
@@ -92,7 +96,7 @@
                 <div class="thread__top">
                   <div class="thread__author">
                     {% if message.user %}
-                      <a href="{% url 'lesson-profile' message.user.id %}" class="thread__authorInfo">
+                      <a href="{% url 'schoolweb:lesson-profile' message.user.id %}" class="thread__authorInfo">
                         <div class="avatar avatar--small">
                           <img src="{{message.user.avatar.url}}" />
                         </div>
@@ -110,7 +114,7 @@
                   </div>
 
                   {% if request.user == message.user %}
-                  <a href="{% url 'deleteLessonMessage' message.id %}">
+                  <a href="#">
                     <div class="thread__delete">
                       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <title>Usuń</title>
@@ -199,7 +203,7 @@
       <h3 class="participants__top">Członkowie <span>({{participants.count}} dołączyło)</span></h3>
       <div class="participants__list scroll">
        {% for user in participants %}
-        <a href="{% url 'lesson-profile' lesson.host.id %}" class="participant">
+        <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="participant">
           <div class="avatar avatar--medium">
             <img src="{{user.avatar.url}}" />
           </div>

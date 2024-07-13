@@ -1,137 +1,139 @@
 {% extends 'base-knowledge-zone.html' %}
 
 {% block navbar %}
-  {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
+{% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
 {% endblock navbar %}
 
 {% block content %}
 <main class="auth layout">
-  {% if page == 'login' %}
-  <div class="container">
-    <div class="layout__box">
-      <div class="layout__boxHeader">
-        <div class="layout__boxTitle">
-          <h3>Logowanie</h3>
-        </div>
-      </div>
-      <div class="layout__body">
-        <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
-        <form class="form" action="" method="POST">
-          {% csrf_token %}
-          <div class="form__group">
-            <label for="room_name">E-mail</label>
-            <input id="username" name="email" type="text" placeholder="np.tadeusz217@poczta.pl" />
-          </div>
-          <div class="form__group">
-            <label for="password">Hasło</label>
-            <div class="password-container">
-              <input id="password" name="password" type="password"
-                placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;" />
-              <span class="toggle-password" onclick="togglePasswordVisibility()" title="Pokaż/ukryj hasło">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M12 4.5C6.48 4.5 2 9 2 14s4.48 9.5 10 9.5 10-4.5 10-9.5S17.52 4.5 12 4.5zm0 16.5c-4.41
-                  0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12.5h2v5h-2zm0 6h2v2h-2z"/>
-                </svg>
-              </span>
+    {% if page == 'login' %}
+    <div class="container">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+                <div class="layout__boxTitle">
+                    <h3>Logowanie</h3>
+                </div>
             </div>
-          </div>
+            <div class="layout__body">
+                <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
+                <form class="form" action="" method="POST">
+                    {% csrf_token %}
+                    <div class="form__group">
+                        <label for="room_name">E-mail</label>
+                        <input id="username" name="email" type="text" placeholder="np.tadeusz217@poczta.pl"/>
+                    </div>
+                    <div class="form__group">
+                        <label for="password">Hasło</label>
+                        <div class="password-container">
+                            <input id="password" name="password" type="password" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"/>
+                            <span class="toggle-password" onclick="togglePasswordVisibility()"
+                                  title="Pokaż/ukryj hasło">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path d="M12 4.5C6.48 4.5 2 9 2 14s4.48 9.5 10 9.5 10-4.5 10-9.5S17.52 4.5 12 4.5zm0 16.5c-4.41
+                                    0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12.5h2v5h-2zm0 6h2v2h-2z"/>
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
 
-          {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-                <li>{{ message }}</li>
-              {% endfor %}
-          </ul>
-          {% endif %}
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
 
-          <button class="btn btn--main" type="submit">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" >
-              <title>lock</title>
-              <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447
-              1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8
-              8v2h-16v-2zM26 30h-20v-16h20v16z" ></path>
-              <path d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732
-              0.413 1.345 1 1.694z" ></path>
-            </svg>
-            Zaloguj
-          </button>
-        </form>
+                    <button class="btn btn--main" type="submit">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                             viewBox="0 0 32 32">
+                            <title>lock</title>
+                            <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447
+                            1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8
+                            8v2h-16v-2zM26 30h-20v-16h20v16z"></path>
+                            <path d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732
+                            0.413 1.345 1 1.694z"></path>
+                        </svg>
+                        Zaloguj
+                    </button>
+                </form>
 
-        <div class="auth__actions">
-          <div class="auth__action">
-            <p>Nie posiadasz konta?</p>
-            <a href="{% url 'schoolweb:register' %}" class="btn btn--link">Zarejestruj się</a>
-          </div>
+                <div class="auth__actions">
+                    <div class="auth__action">
+                        <p>Nie posiadasz konta?</p>
+                        <a href="{% url 'schoolweb:register' %}" class="btn btn--link">Zarejestruj się</a>
+                    </div>
 
-          <div class="auth__action">
-              <p>Zapomniałeś hasła?</p>
-              <a href="{% url 'schoolweb:reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
-          </div>
+                    <div class="auth__action">
+                        <p>Zapomniałeś hasła?</p>
+                        <a href="{% url 'schoolweb:reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  {% else %}
-  <div class="container" style="margin-top:0px;">
-    <div class="layout__box" style="margin-top:100px;">
-      <div class="layout__boxHeader">
-        <div class="layout__boxTitle">
-          <h3>Rejestracja</h3>
+    {% else %}
+    <div class="container">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+                <div class="layout__boxTitle">
+                    <h3>Rejestracja</h3>
+                </div>
+            </div>
+            <div class="layout__body">
+                <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
+                <form class="form" action="" method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form__group form__group">
+                        <label for="room_name">{{field.label}}</label>
+                        {{field}}
+                    </div>
+                    {% endfor %}
+
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <button class="btn btn--main" type="submit">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                             viewBox="0 0 32 32">
+                            <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553
+                            0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8
+                            8v2h-16v-2zM26 30h-20v-16h20v16z"></path>
+                            <path d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732
+                            0.413 1.345 1 1.694z"></path>
+                        </svg>
+                        Zarejestruj
+                    </button>
+                </form>
+
+                <div class="auth__action">
+                    <p>Posiadasz już konto?</p>
+                    <a href="{% url 'schoolweb:login' %}" class="btn btn--link">Zaloguj się</a>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="layout__body">
-        <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
-        <form class="form" action="" method="POST">
-          {% csrf_token %}
-          {% for field in form %}
-          <div class="form__group form__group">
-            <label for="room_name">{{field.label}}</label>
-            {{field}}
-          </div>
-          {% endfor %}
-
-          {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-              <li>{{ message }}</li>
-              {% endfor %}
-          </ul>
-          {% endif %}
-
-          <button class="btn btn--main" type="submit">
-            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" >
-              <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553
-              0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8
-              8v2h-16v-2zM26 30h-20v-16h20v16z" ></path>
-              <path d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732
-              0.413 1.345 1 1.694z" ></path>
-            </svg>
-            Zarejestruj
-          </button>
-        </form>
-
-        <div class="auth__action">
-          <p>Posiadasz już konto?</p>
-          <a href="{% url 'schoolweb:login' %}" class="btn btn--link">Zaloguj się</a>
-        </div>
-      </div>
     </div>
-  </div>
-  {% endif %}
+    {% endif %}
 </main>
 
 <script>
-  function togglePasswordVisibility() {
-    const passwordInput = document.getElementById("password");
-    const togglePasswordBtn = document.querySelector(".toggle-password");
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById("password");
+      const togglePasswordBtn = document.querySelector(".toggle-password");
 
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      togglePasswordBtn.classList.add("visible");
-    } else {
-      passwordInput.type = "password";
-      togglePasswordBtn.classList.remove("visible");
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePasswordBtn.classList.add("visible");
+      } else {
+        passwordInput.type = "password";
+        togglePasswordBtn.classList.remove("visible");
+      }
     }
-  }
 </script>
 {% endblock content %}

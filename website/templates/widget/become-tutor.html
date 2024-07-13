@@ -17,7 +17,7 @@ z każdego miejsca na świecie.">
         <a href="{% url 'schoolweb:lessons-home' %}">
             <h2 class="sub-hero-heading small">Zostań korepetytorem</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-2.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-2.png' %}" alt="Zostań korepetytorem">
             </div>
         </a>
     </div>
@@ -26,7 +26,7 @@ z każdego miejsca na świecie.">
         <a href="#zarobki">
             <h2 class="sub-hero-heading small">Zarobki i korzyści</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-2.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-2.png' %}" alt="Zarobki i korzyści">
             </div>
         </a>
     </div>
@@ -35,7 +35,7 @@ z każdego miejsca na świecie.">
         <a href="#dlaczego-schoolweb">
             <h2 class="sub-hero-heading small">Dlaczego SchoolWeb?</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dlaczego SchoolWeb?">
             </div>
         </a>
     </div>
@@ -44,7 +44,7 @@ z każdego miejsca na świecie.">
         <a href="#jak-zaczac">
             <h2 class="sub-hero-heading small">Jak zacząć?</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Jak zacząć?">
             </div>
         </a>
     </div>
@@ -53,7 +53,7 @@ z każdego miejsca na świecie.">
         <a href="#dlaczego-warto">
             <h2 class="sub-hero-heading small">Dlaczego warto?</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-6.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-6.png' %}" alt="Dlaczego warto?">
             </div>
         </a>
     </div>
@@ -62,7 +62,7 @@ z każdego miejsca na świecie.">
         <a href="#pytania">
             <h2 class="sub-hero-heading small">Masz pytania?</h2>
             <div class="image-container">
-                <img src="{% static 'img/become_tutor/tutor-7.png' %}" alt="Opis obrazka">
+                <img src="{% static 'img/widget/become_tutor/tutor-7.png' %}" alt="Masz pytania?">
             </div>
         </a>
     </div>
@@ -71,16 +71,16 @@ z każdego miejsca na świecie.">
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Dołącz do korepetytorów SchoolWeb">
+            <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dołącz do korepetytorów SchoolWeb">
         </div>
         <div class="sub-hero-label">
             <h1 class="sub-hero-heading">Dołącz do <span>korepetytorów Schoolweb</span></h1>
             <p class="sub-hero-text right-side">Czy marzysz o fascynującej przygodzie z nauką?
-            Cenisz sobie elastyczny czas pracy i chciałbyś być częścią innowacyjnej platformy edukacyjnej? SchoolWeb
-            to nie tylko miejsce nauki, to także przestrzeń, gdzie Twoje umiejętności mogą zabłysnąć,
-            a Twoja pasja do nauczania znaleźć pełne wyrazu.
+                Cenisz sobie elastyczny czas pracy i chciałbyś być częścią innowacyjnej platformy edukacyjnej? SchoolWeb
+                to nie tylko miejsce nauki, to także przestrzeń, gdzie Twoje umiejętności mogą zabłysnąć,
+                a Twoja pasja do nauczania znaleźć pełne wyrazu.
             </p>
-            <a href="#" class="hvr-buzz-out center-link">ZOSTAŃ KOREPETYTOREM</a>
+            <a href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out center-link">ZOSTAŃ KOREPETYTOREM</a>
         </div>
     </div>
 </section>
@@ -90,23 +90,23 @@ z każdego miejsca na świecie.">
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading"><span>Zarobki</span> i korzyści</h2>
             <p class="sub-hero-text left-side">Jako korepetytor na SchoolWeb masz możliwość
-            zdobywania atrakcyjnych zarobków, ceniąc jednocześnie elastyczność i innowacyjność naszej platformy
-            edukacyjnej. Dzięki stawce godzinowej za jedne zajęcia oraz elastycznemu grafikowi, Twój wysiłek
-            będzie odpowiednio doceniony. <br><br> Dołącz do nas już dziś i rozwijaj się zawodowo, inspirując
-            uczniów oraz czerpiąc korzyści z pozytywnej atmosfery naszej społeczności.
+                zdobywania atrakcyjnych zarobków, ceniąc jednocześnie elastyczność i innowacyjność naszej platformy
+                edukacyjnej. Dzięki stawce godzinowej za jedne zajęcia oraz elastycznemu grafikowi, Twój wysiłek
+                będzie odpowiednio doceniony. <br><br> Dołącz do nas już dziś i rozwijaj się zawodowo, inspirując
+                uczniów oraz czerpiąc korzyści z pozytywnej atmosfery naszej społeczności.
             </p>
             <h2>ILE MOGĘ ZAROBIĆ?</h2>
             <div class="calculator-container">
                 <label for="lessonsPerWeek">Liczba zajęć tygodniowo:</label>
-                <input type="number" id="lessonsPerWeek" min="0" placeholder="Wpisz liczbę zajęć" />
+                <input type="number" id="lessonsPerWeek" min="0" placeholder="Wpisz liczbę zajęć"/>
                 <button onclick="calculateEarnings()">Oblicz zarobki</button>
                 <p id="monthlyEarnings" class="result-text"></p>
-                <p id = "benefits">*Nauczając przedmiotów na poziomie rozszerzonym zarobki są
-                zdecydowanie wyższe.</p>
+                <p id="benefits">*Nauczając przedmiotów na poziomie rozszerzonym zarobki są
+                    zdecydowanie wyższe.</p>
             </div>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-2.png' %}" alt="Zarobki i korzyści">
+            <img src="{% static 'img/widget/become_tutor/tutor-2.png' %}" alt="Zarobki i korzyści">
         </div>
     </div>
 </section>
@@ -114,36 +114,42 @@ z każdego miejsca na świecie.">
 <section id="dlaczego-schoolweb" class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-6.png' %}" alt="Dlaczego powinienem wybrać SchoolWeb?">
+            <img src="{% static 'img/widget/become_tutor/tutor-6.png' %}" alt="Dlaczego powinienem wybrać SchoolWeb?">
         </div>
         <div class="sub-hero-label">
             <h1 class="sub-hero-heading">Dlaczego powinienem wybrać<span> SchoolWeb</span>?</h1>
             <ul class="custom-list right-side">
                 <li><span>💻 Łatwy Dostęp do Uczniów: </span>Na SchoolWeb nie musisz samodzielnie szukać
-                uczniów. Dzięki naszej platformie masz natychmiastowy dostęp do wielu uczniów, gotowych
-                do nauki.</li>
+                    uczniów. Dzięki naszej platformie masz natychmiastowy dostęp do wielu uczniów, gotowych
+                    do nauki.
+                </li>
                 <li><span>💼 Profesjonalne Połączenia: </span>Oferujemy łatwe i profesjonalne połączenie
-                z uczniami. Nie martw się o techniczne kwestie - my się tym zajmujemy, a Ty skup się
-                na nauczaniu.</li>
+                    z uczniami. Nie martw się o techniczne kwestie - my się tym zajmujemy, a Ty skup się
+                    na nauczaniu.
+                </li>
                 <li><span>📈 Zarządzanie Lekcjami w Kilku Kliknięciach: </span>Rozpoczęcie lekcji to
-                zaledwie kilka kliknięć. Dzięki intuicyjnemu interfejsowi możesz sprawnie zarządzać
-                swoim planem zajęć.</li>
+                    zaledwie kilka kliknięć. Dzięki intuicyjnemu interfejsowi możesz sprawnie zarządzać
+                    swoim planem zajęć.
+                </li>
                 <li><span>👩‍ Opieka i Wsparcie: </span>Nasi przedstawiciele są zawsze gotowi pomóc.
-                Dbamy o relacje, łącząc Cię z uczniami i wspierając w każdym etapie Twojej kariery
-                korepetytora.</li>
+                    Dbamy o relacje, łącząc Cię z uczniami i wspierając w każdym etapie Twojej kariery
+                    korepetytora.
+                </li>
                 <li><span>🌈 Platforma online vs. Zajęcia stacjonarne: </span>W świecie online
-                eliminujemy bariery geograficzne. Nauczanie online na SchoolWeb daje Ci dostęp do
-                uczniów z różnych miejsc, co zwiększa Twój zasięg.</li>
+                    eliminujemy bariery geograficzne. Nauczanie online na SchoolWeb daje Ci dostęp do
+                    uczniów z różnych miejsc, co zwiększa Twój zasięg.
+                </li>
                 <li><span>🔐 Bezpieczeństwo i Prywatność: </span>Gwarantujemy bezpieczeństwo Twoich
-                danych i prywatność. Dzięki naszej platformie możesz swobodnie dzielić się wiedzą,
-                wiedząc, że jesteś w bezpiecznym środowisku.</li>
+                    danych i prywatność. Dzięki naszej platformie możesz swobodnie dzielić się wiedzą,
+                    wiedząc, że jesteś w bezpiecznym środowisku.
+                </li>
             </ul>
-            <a id="howtostart" href="#" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
+            <a id="howtostart" href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
         </div>
     </div>
 </section>
 
-<section  id="jak-zaczac" class="hero sub-hero">
+<section id="jak-zaczac" class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-label-list">
             <h1 class="sub-hero-heading">Jak<span> zacząć</span> . . . ?</h1>
@@ -154,7 +160,8 @@ z każdego miejsca na świecie.">
                 </li>
                 <div id="info-1" class="additional-info fadeIn">
                     Ten krok to szybkie i proste wypełnienie formularza rejestracyjnego oraz potwierdzenie swoich danych
-                    osobowych. Poświęć zaledwie pięć minut, aby otworzyć drzwi do fascynującej podróży w świecie nauczania.
+                    osobowych. Poświęć zaledwie pięć minut, aby otworzyć drzwi do fascynującej podróży w świecie
+                    nauczania.
                 </div>
                 <li onclick="toggleInfo(2)">
                     <div class="title">Rozwiąż poprawnie przygotowany test</div>
@@ -176,12 +183,13 @@ z każdego miejsca na świecie.">
                     pomoże nam dostosować się do Twoich oczekiwań i stworzyć pozytywne pierwsze wrażenie związane
                     z Twoim uczestnictwem.
                 </div>
-                <li id = "worth" onclick="toggleInfo(4)">
+                <li id="worth" onclick="toggleInfo(4)">
                     <div class="title">Rozpocznij przygodę ze SchoolWeb</div>
                     <span id="toggle-icon-4" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-4" class="additional-info fadeIn">
-                    Jesteś teraz oficjalnym członkiem zespołu korepetytorów SchoolWeb! Czas poznać swoich uczniów, planować
+                    Jesteś teraz oficjalnym członkiem zespołu korepetytorów SchoolWeb! Czas poznać swoich uczniów,
+                    planować
                     inspirujące lekcje i dzielić się swoją pasją do nauki. Twoja przygoda z edukacją zaczyna się tutaj!
                 </div>
             </ol>
@@ -194,16 +202,26 @@ z każdego miejsca na świecie.">
         <div class="sub-hero-label">
             <h1 class="sub-hero-heading">Dlaczego warto zostać<span> korepetytorem</span>?</h1>
             <ul class="custom-list left-side">
-                <li><span>🚀 Innowacyjna Platforma Edukacyjna: </span>Dołącz do społeczności przesuwającej granice nauczania. Nasza platforma umożliwia dynamiczne lekcje online dostosowane do potrzeb uczniów.</li>
-                <li><span>💼 Wysokie Zarobki: </span>Twoja praca jest ceniona. Oferujemy atrakcyjne wynagrodzenie i stawkę godzinową, doceniając Twoje wysiłki.</li>
-                <li><span>🌟 Elastyczny Czas Pracy: </span>Opanuj sztukę równowagi między życiem prywatnym a zawodowym dzięki elastycznemu grafikowi.</li>
-                <li><span>👩‍ Świetna Atmosfera: </span>Dołącz do zgranego zespołu, gdzie każdy korepetytor to inspiracja dla uczniów, tworzymy pozytywną atmosferę sprzyjającą rozwojowi.</li>
-                <li><span>🌈 Rozwój Osobisty: </span>Stale się rozwijaj! Dostęp do nowoczesnych narzędzi edukacyjnych i wsparcie administracji pozwolą Twoim umiejętnościom stale ewoluować.</li>
+                <li><span>🚀 Innowacyjna Platforma Edukacyjna: </span>Dołącz do społeczności przesuwającej granice
+                    nauczania. Nasza platforma umożliwia dynamiczne lekcje online dostosowane do potrzeb uczniów.
+                </li>
+                <li><span>💼 Wysokie Zarobki: </span>Twoja praca jest ceniona. Oferujemy atrakcyjne wynagrodzenie i
+                    stawkę godzinową, doceniając Twoje wysiłki.
+                </li>
+                <li><span>🌟 Elastyczny Czas Pracy: </span>Opanuj sztukę równowagi między życiem prywatnym a zawodowym
+                    dzięki elastycznemu grafikowi.
+                </li>
+                <li><span>👩‍ Świetna Atmosfera: </span>Dołącz do zgranego zespołu, gdzie każdy korepetytor to inspiracja
+                    dla uczniów, tworzymy pozytywną atmosferę sprzyjającą rozwojowi.
+                </li>
+                <li><span>🌈 Rozwój Osobisty: </span>Stale się rozwijaj! Dostęp do nowoczesnych narzędzi edukacyjnych i
+                    wsparcie administracji pozwolą Twoim umiejętnościom stale ewoluować.
+                </li>
             </ul>
-            <a href="#" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
+            <a href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
+            <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
         </div>
     </div>
 </section>
@@ -211,7 +229,7 @@ z każdego miejsca na świecie.">
 <section id="pytania" class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
+            <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
         </div>
         <div class="sub-hero-label">
             <h1 class="sub-hero-heading">Masz<span> pytania?</span></h1>
@@ -219,25 +237,25 @@ z każdego miejsca na świecie.">
                 Jeśli masz jakieś pytania sprawdź pytania i odpowiedzi w naszym FAQ lub zadaj pytanie poprzez
                 formularz kontaktowy na naszej stronie głównej
             </p>
-            <a href="/#contact" class="button">ZADAJ PYTANIE TUTAJ</a>
-            <a href="/faq/#faq4" class="button">FAQ - KOREPETYTORZY</a>
+            <a href="/#kontakt" class="button">ZADAJ PYTANIE TUTAJ</a>
+            <a href="/faq/#dla-korepetytorow" class="button">FAQ - KOREPETYTORZY</a>
         </div>
     </div>
 </section>
 
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
-        <div class="sub-hero-label" >
+        <div class="sub-hero-label">
             <h1 class="sub-hero-heading">Wypróbuj korepetycje<span> już dziś</span>!</h1>
             <p class="sub-hero-text left-side">Nawiązujemy naszą współpracę z doświadczonymi korepetytorami,
-            gotowymi wesprzeć Twoje dziecko na każdym etapie nauki. Nasza oferta skupia się na
-            inspirującym procesie edukacyjnym, kształtując umiejętności i rozwijając samodyscyplinę.
-            Dołącz już teraz, abyśmy mogli razem odkrywać potencjał Twojego dziecka!
+                gotowymi wesprzeć Twoje dziecko na każdym etapie nauki. Nasza oferta skupia się na
+                inspirującym procesie edukacyjnym, kształtując umiejętności i rozwijając samodyscyplinę.
+                Dołącz już teraz, abyśmy mogli razem odkrywać potencjał Twojego dziecka!
             </p>
-            <a href="#" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
+            <a href="{% url 'schoolweb:newStudent' %}" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
+            <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
         </div>
     </div>
 </section>
@@ -245,7 +263,7 @@ z każdego miejsca na świecie.">
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
+            <img src="{% static 'img/widget/become_tutor/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
         </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading"><span>Sklep</span> z materiałami edukacyjnymi</h2>
@@ -256,7 +274,7 @@ z każdego miejsca na świecie.">
                 produktów, aby sprostać potrzebom każdego ucznia i nauczyciela. Odkryj nasz sklep, aby znaleźć
                 inspirujące i efektywne narzędzia do nauki i rozwijania swoich umiejętności.
             </p>
-            <a href="#" class="hvr-buzz-out">Kup materiały edukacyjne</a>
+            <a class="hvr-buzz-out">Kup materiały edukacyjne</a>
         </div>
     </div>
 </section>

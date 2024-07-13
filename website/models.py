@@ -13,9 +13,6 @@ class PlatformMessage(models.Model):
         return self.email
 
 
-
-
-
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True, null=True, )

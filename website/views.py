@@ -573,7 +573,7 @@ def createLesson(request):
                     student.lessons -= 1
                     student.save()
 
-                return redirect('teacherPage')
+                return redirect('tutoring-zone/teacherPage')
 
     return render(request, 'tutoring-zone/create-lesson.html', {'form': form, 'current_date': current_date})
 
@@ -589,11 +589,216 @@ def activity_lessonPage(request):
     return render(request, 'tutoring-zone/activity-lesson.html', {'lesson_messages': lesson_messages})
 
 
+@login_required(login_url='lessonsLogin')
+def lesson(request, pk):
+    lesson = get_object_or_404(Post, id=pk)
+    lesson_messages = lesson.coursemessage_set.order_by('-messageCreated')
+    participants = lesson.participants.all()
+
+    user = request.user
+    course = lesson.course
+
+    if user != course.teacher and user not in course.students.all():
+        return redirect('access_denied')
+
+    if request.method == 'POST':
+        message = CourseMessage.objects.create(
+            user=request.user,
+            room=lesson,
+            body=request.POST.get('body'),
+            image=request.FILES.get('image'),
+            file=request.FILES.get('file')
+        )
+        lesson.participants.add(request.user)
+
+        message.save()
+        return redirect('schoolweb:lesson', pk=lesson.id)
+
+    navbar_template = ''
+    back_link = ''
+
+    if user.groups.filter(name='Teachers').exists():
+        navbar_template = 'nav-teacher-view.html'
+        back_link = reverse('schoolweb:teacherPage')
+    elif user.groups.filter(name='Students').exists():
+        navbar_template = 'navbarStudent.html'
+        back_link = reverse('schoolweb:studentPage')
+
+    context = {
+        'lesson': lesson,
+        'lesson_messages': lesson_messages,
+        'participants': participants,
+        'navbar_template': navbar_template,
+        'back_link': back_link
+    }
+    return render(request, 'tutoring-zone/lesson.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def updateLesson(request, pk):
+    post = get_object_or_404(Post, id=pk)
+
+    if request.user != post.host:
+        return HttpResponse('Brak dostępu')
+
+    time_difference = post.event_datetime - timezone.now()
+    can_edit = time_difference.total_seconds() > 900
+
+    if request.method == 'POST':
+        form = PostFormEdit(request.POST, instance=post)
+        if form.is_valid() and can_edit:
+            overlapping_lessons = Post.objects.filter(
+                course__teacher=request.user,
+                event_datetime__gte=form.cleaned_data['event_datetime'] - timedelta(minutes=50),
+                event_datetime__lte=form.cleaned_data['event_datetime'] + timedelta(minutes=50)
+            ).exclude(id=pk)
+
+            if overlapping_lessons.exists():
+                form.add_error('event_datetime', "W wybranym terminie już istnieje inna lekcja.")
+            else:
+                form.save()
+                return redirect('schoolweb:teacherPage')
+    else:
+        form = PostFormEdit(instance=post)
+
+    context = {'form': form, 'can_edit': can_edit}
+    return render(request, 'tutoring-zone/update-lesson.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def deleteLesson(request, pk):
+    post = Post.objects.get(id=pk)
+
+    if request.method == 'POST':
+        post.delete()
+        return redirect('schoolweb:teacherPage')
+
+    user = request.user
+
+    if user.groups.filter(name='Teachers').exists():
+        navbar_template = 'nav-teacher-view.html'
+        back_link = reverse('schoolweb:teacherPage')
+
+    elif user.groups.filter(name='Students').exists():
+        navbar_template = 'navbarStudent.html'
+        back_link = reverse('schoolweb:studentPage')
+
+    context = {'obj': post, 'navbar_template': navbar_template, 'back_link': back_link}
+    return render(request, 'tutoring-zone/delete-lessons.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def deleteLessonMessage(request, pk):
+    message = CourseMessage.objects.get(id=pk)
+    if request.user != message.user:
+        return HttpResponse('Brak dostępu')
+    if request.method == 'POST':
+        message.delete()
+        return redirect('teacherPage')
+
+    user = request.user
+
+    if user.groups.filter(name='Teachers').exists():
+        navbar_template = 'nav-teacher-view.html'
+
+    elif user.groups.filter(name='Students').exists():
+        navbar_template = 'navbarStudent.html'
+
+    context = {'obj': message, 'navbar_template': navbar_template}
+    return render(request, 'tutoring-zone/delete-lessons.html', context)
+
+
+
+@login_required(login_url='lessonsLogin')
+def lessonFeedback(request, pk):
+    lesson = get_object_or_404(Post, id=pk)
+    user = request.user
+
+    if user != lesson.course.teacher:
+        return redirect('access_denied')
+
+    if lesson.feedback_submitted:
+        return redirect('schoolweb:teacherPage')
+
+    if request.method == 'POST':
+        form = LessonFeedbackForm(request.POST, instance=lesson, post_instance=lesson)
+        if form.is_valid():
+            lesson_feedback_instance = form.save(commit=False)
+            lesson_feedback_instance.lesson = lesson
+            lesson_feedback_instance.save()
+
+            lesson.attended_students.set(form.cleaned_data['attended_students'])
+            lesson.attended_teachers.set(form.cleaned_data['attended_teachers'])
+            lesson.save()
+
+            lesson.feedback_submitted = True
+            lesson.save()
+
+            if user.groups.filter(name='Teachers').exists():
+                if lesson.clicked_users.count() > 1:
+                    if "podstawa" or "podstawowa" or "podstawowy" in lesson.course.name.lower():
+                        user.lessons += 1
+                        user.all_lessons += 1
+                    elif "rozszerzenie" or "rozszerzona" or "rozszerzony" in lesson.course.name.lower():
+                        user.lessons_intermediate += 1
+                        user.all_lessons_intermediate += 1
+                    user.save()
+                elif lesson.clicked_users.count() == 1:
+                    user.break_lessons += 1
+                    user.all_break_lessons += 1
+                    user.save()
+                elif lesson.clicked_users.count() == 0:
+                    user.missed_lessons += 1
+                    user.all_missed_lessons += 1
+                    user.save()
+
+            return redirect('schoolweb:teacherPage')
+
+    else:
+        form = LessonFeedbackForm(instance=lesson, post_instance=lesson)
+
+    context = {
+        'lesson': lesson,
+        'form': form,
+    }
+
+    return render(request, 'tutoring-zone/lesson-feedback.html', context)
+
+
+@login_required(login_url='lessonsLogin')
+def lessonCorrection(request, pk):
+    lesson = get_object_or_404(Post, id=pk)
+    user = request.user
+
+    if user != lesson.course.teacher:
+        return redirect('access_denied')
+
+    form = LessonCorrectionForm(course=lesson.course)
+
+    if request.method == 'POST':
+        form = LessonCorrectionForm(request.POST, request.FILES, course=lesson.course)
+        if form.is_valid():
+            lesson_correction_instance = form.save(commit=False)
+            lesson_correction_instance.lesson = lesson
+            lesson_correction_instance.save()
+            form.save_m2m()
+
+            return redirect('schoolweb:teacherPage')
+
+    context = {'form': form, 'lesson': lesson}
+    return render(request, 'tutoring-zone/lesson-correction.html', context)
 
 
 
 
 
+
+
+
+
+
+def success_page(request):
+    return render(request, 'website/success_page.html')
 
 
 def getToken(request):
@@ -760,136 +965,8 @@ def studentPage(request):
     return render(request, 'website/studentPage.html', context)
 
 
-@login_required(login_url='lessonsLogin')
-def lesson(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
-    lesson_messages = lesson.coursemessage_set.order_by('-messageCreated')
-    participants = lesson.participants.all()
-
-    user = request.user
-    course = lesson.course
-
-    if user != course.teacher and user not in course.students.all():
-        return redirect('access_denied')
-
-    if request.method == 'POST':
-        message = CourseMessage.objects.create(
-            user=request.user,
-            room=lesson,
-            body=request.POST.get('body'),
-            image=request.FILES.get('image'),
-            file=request.FILES.get('file')
-        )
-        lesson.participants.add(request.user)
-
-        message.save()
-        return redirect('lesson', pk=lesson.id)
-
-    navbar_template = ''
-    back_link = ''
-
-    if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
-        back_link = reverse('teacherPage')
-    elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
-        back_link = reverse('studentPage')
-
-    context = {
-        'lesson': lesson,
-        'lesson_messages': lesson_messages,
-        'participants': participants,
-        'navbar_template': navbar_template,
-        'back_link': back_link
-    }
-    return render(request, 'website/lesson.html', context)
-
-
 def access_denied(request):
     return render(request, 'website/lesson_no_exists.html')
-
-
-@login_required(login_url='lessonsLogin')
-def lesson_feedback(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
-    user = request.user
-
-    if user != lesson.course.teacher:
-        return redirect('access_denied')
-
-    if lesson.feedback_submitted:
-        return redirect('teacherPage')
-
-    if request.method == 'POST':
-        form = LessonFeedbackForm(request.POST, instance=lesson, post_instance=lesson)
-        if form.is_valid():
-            lesson_feedback_instance = form.save(commit=False)
-            lesson_feedback_instance.lesson = lesson
-            lesson_feedback_instance.save()
-
-            lesson.attended_students.set(form.cleaned_data['attended_students'])
-            lesson.attended_teachers.set(form.cleaned_data['attended_teachers'])
-            lesson.save()
-
-            lesson.feedback_submitted = True
-            lesson.save()
-
-            if user.groups.filter(name='Teachers').exists():
-                if lesson.clicked_users.count() > 1:
-                    if "podstawa" or "podstawowa" or "podstawowy" in lesson.course.name.lower():
-                        user.lessons += 1
-                        user.all_lessons += 1
-                    elif "rozszerzenie" or "rozszerzona" or "rozszerzony" in lesson.course.name.lower():
-                        user.lessons_intermediate += 1
-                        user.all_lessons_intermediate += 1
-                    user.save()
-                elif lesson.clicked_users.count() == 1:
-                    user.break_lessons += 1
-                    user.all_break_lessons += 1
-                    user.save()
-                elif lesson.clicked_users.count() == 0:
-                    user.missed_lessons += 1
-                    user.all_missed_lessons += 1
-                    user.save()
-
-            return redirect('teacherPage')
-
-    else:
-        form = LessonFeedbackForm(instance=lesson, post_instance=lesson)
-
-    context = {
-        'lesson': lesson,
-        'form': form,
-    }
-
-    return render(request, 'website/lesson_feedback.html', context)
-
-@login_required(login_url='lessonsLogin')
-def lesson_correction(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
-    user = request.user
-
-    if user != lesson.course.teacher:
-        return redirect('access_denied')
-
-    form = LessonCorrectionForm(course=lesson.course)
-
-    if request.method == 'POST':
-        form = LessonCorrectionForm(request.POST, request.FILES, course=lesson.course)
-        if form.is_valid():
-            lesson_correction_instance = form.save(commit=False)
-            lesson_correction_instance.lesson = lesson
-            lesson_correction_instance.save()
-            form.save_m2m()
-
-            return redirect('teacherPage')
-
-    context = {'form': form, 'lesson': lesson}
-    return render(request, 'website/lesson_correction.html', context)
-
-
-def success_page(request):
-    return render(request, 'website/success_page.html')
 
 
 def resignation(request):
@@ -905,79 +982,6 @@ def resignation(request):
 
     return render(request, 'website/resignation.html', {'form': form})
 
-
-@login_required(login_url='lessonsLogin')
-def updateLesson(request, pk):
-    post = get_object_or_404(Post, id=pk)
-
-    if request.user != post.host:
-        return HttpResponse('Brak dostępu')
-
-    time_difference = post.event_datetime - timezone.now()
-    can_edit = time_difference.total_seconds() > 900
-
-    if request.method == 'POST':
-        form = PostFormEdit(request.POST, instance=post)
-        if form.is_valid() and can_edit:
-            overlapping_lessons = Post.objects.filter(
-                course__teacher=request.user,
-                event_datetime__gte=form.cleaned_data['event_datetime'] - timedelta(minutes=50),
-                event_datetime__lte=form.cleaned_data['event_datetime'] + timedelta(minutes=50)
-            ).exclude(id=pk)
-
-            if overlapping_lessons.exists():
-                form.add_error('event_datetime', "W wybranym terminie już istnieje inna lekcja.")
-            else:
-                form.save()
-                return redirect('teacherPage')
-    else:
-        form = PostFormEdit(instance=post)
-
-    context = {'form': form, 'can_edit': can_edit}
-    return render(request, 'website/editPost.html', context)
-
-
-@login_required(login_url='lessonsLogin')
-def deleteLesson(request, pk):
-    post = Post.objects.get(id=pk)
-
-    if request.method == 'POST':
-        post.delete()
-        return redirect('teacherPage')
-
-    user = request.user
-
-    if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
-        back_link = reverse('teacherPage')
-
-    elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
-        back_link = reverse('studentPage')
-
-    context = {'obj': post, 'navbar_template': navbar_template, 'back_link': back_link}
-    return render(request, 'website/deleteLessons.html', context)
-
-
-@login_required(login_url='lessonsLogin')
-def deleteLessonMessage(request, pk):
-    message = CourseMessage.objects.get(id=pk)
-    if request.user != message.user:
-        return HttpResponse('Brak dostępu')
-    if request.method == 'POST':
-        message.delete()
-        return redirect('teacherPage')
-
-    user = request.user
-
-    if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
-
-    elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
-
-    context = {'obj': message, 'navbar_template': navbar_template}
-    return render(request, 'website/deleteLessons.html', context)
 
 
 @login_required

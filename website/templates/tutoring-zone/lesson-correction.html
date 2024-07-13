@@ -1,6 +1,11 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarTeacher.html' %}
 <main class="create-room layout">
 <div class="container">
   <div class="layout__box">
@@ -10,10 +15,10 @@
       </div>
     </div>
     <div class="layout__body">
-      <form method="POST" action="">
+      <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
 
-         <div class="form-group">
+        <div class="form-group">
             <label for="{{ form.attended_teachers.id_for_label }}" class="larger-label">Nauczyciele którzy dołączyli:</label>
             {% for teacher in form.attended_teachers %}
                 <br>
@@ -33,7 +38,13 @@
           <label for="{{ form.feedback.id_for_label }}" class="larger-label">Dodatkowe informacje na temat lekcji:</label>
           {{ form.feedback }}
         </div>
-
+        <br>
+        <div class="form-group">
+          <label for="{{ form.lesson_image.id_for_label }}" class="larger-label">Zdjęcie lekcji:</label>
+          <div class="custom-file-upload">
+            <input type="file" name="{{ form.lesson_image.name }}" id="{{ form.lesson_image.id_for_label }}">
+          </div>
+        </div>
         <div class="form__action">
           <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
           <button class="btn btn--main" type="submit">Zatwierdź</button>
@@ -43,6 +54,7 @@
   </div>
 </div>
 </main>
+
 <style>
 input[type="checkbox"] {
     appearance: none;

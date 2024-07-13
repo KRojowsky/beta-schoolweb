@@ -3,7 +3,7 @@
 <div class="roomListRoom {% if lesson.event_datetime and lesson.event_datetime <= time_threshold %}expired-lesson{% endif %}">
     <div class="roomListRoom__header">
       {% if lesson.host %}
-      <a href="{% url 'lesson-profile' lesson.host.id %}" class="roomListRoom__author">
+      <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="roomListRoom__author">
         <div class="avatar avatar--small">
           <img src="{{ lesson.host.avatar.url }}" />
         </div>
@@ -20,7 +20,7 @@
       <div style="text-align: right;">
         {% if lesson.event_datetime %}
             {% if lesson.event_datetime > now %}
-                <a href="{% url 'lobby' lesson.id %}" target="_blank" class="joinButton">
+                <a href="#" target="_blank" class="joinButton">
                     <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
                 </a>
             {% elif lesson.event_datetime <= time_threshold %}
@@ -29,12 +29,12 @@
                             <span class="lock-icon"><i class="fa fa-lock"></i></span>
                         </div>
                     {% if not lesson.lessoncorrection_set.all %}
-                        <a href="{% url 'lessonCorrection' lesson.id %}" class="resetAmountButton" style="display: inline-block;">
+                        <a href="{% url 'schoolweb:lesson-correction' lesson.id %}" class="resetAmountButton" style="display: inline-block;">
                             <i class="fa fa-refresh"></i>
                         </a>
                     {% endif %}
                 {% else %}
-                    <a href="{% url 'lesson_feedback' lesson.id %}" class="feedback pulse-animation">
+                    <a href="{% url 'schoolweb:lesson-feedback' lesson.id %}" class="feedback pulse-animation">
                         <div style="display: flex; align-items: center;">
                             <i class="fa fa-edit" style="margin-right: 5px;"></i>
                             UZUPEŁNIJ
@@ -61,18 +61,18 @@
       <br>
       <div style="display: inline;">
         <h1 style="display: inline; margin-right: 2px;">Temat zajęć:</h1>
-        <a href="{% url 'lesson' lesson.id %}" class="lesson-link" title="Zobacz lekcję">{{lesson.title}}</a>
+        <a href="{% url 'schoolweb:lesson' lesson.id %}" class="lesson-link" title="Zobacz lekcję">{{lesson.title}}</a>
       </div>
     </div>
     <div>
         <h1 style="font-size: 1.6rem; color:#000000; display: inline; margin-right: 2px;">Uczestnicy:</h1>
         {% for student in lesson.course.students.all %}
-            <a style="font-size: 1.7rem; display: inline; margin-right: 2px;" href="{% url 'lesson-profile' student.id %}" class="participant-link">{{ student.first_name }} {{ student.last_name }},</a>
+            <a style="font-size: 1.7rem; display: inline; margin-right: 2px;" href="{% url 'schoolweb:lesson-profile' student.id %}" class="participant-link">{{ student.first_name }} {{ student.last_name }},</a>
         {% endfor %}
     </div>
 
     <div class="roomListRoom__meta">
-      <a href="{% url 'lesson' lesson.id %}" class="roomListRoom__joined">
+      <a href="{% url 'schoolweb:lesson' lesson.id %}" class="roomListRoom__joined">
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <path d="M30.539 20.766c-2.69-1.547-5.75-2.427-8.92-2.662 0.649 0.291 1.303 0.575 1.918 0.928 0.715
             0.412 1.288 1.005 1.71 1.694 1.507 0.419 2.956 1.003 4.298 1.774 0.281 0.162 0.456 0.487 0.456

@@ -8,17 +8,19 @@
     <h1 class="hero-heading">Twórz z nami <span>najlepszą platformę edukacyjną</span></h1>
     <div class="hero-container">
         <p class="hero-subtitle">
-            <span>✔</span> Prywatne lub grupowe zajęcia od  <u>39.99 zł</u>.
+            <span>✔</span> Prywatne lub grupowe zajęcia od <u>39.99 zł</u>.
             <br><span>✔</span> Zdolni oraz zaangażowani korepetytorzy.
             <br><span>✔</span> Darmowe materiały edukacyjne.
             <br><span>✔</span> Szybki kontakt z administracją platformy.
             <br><span>✔</span> Kontakt z korepetytorami po godzinach.
             <br><span>✔</span> Dostęp do Forum Edukacyjnego.
             <br><br><br>
-            <a href="#" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
+            <a href="#" title="Umów pierwsze zajęcia" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
+
         </p>
         <div class="hero-image">
-            <img src="{% static 'img/widget-main-view/main-view-1.png' %}" alt="Twórz z nami najlepszą platformę edukacyjną SchoolWeb">
+            <img src="{% static 'img/widget/main-view-1.png' %}"
+                 alt="Twórz z nami najlepszą platformę edukacyjną SchoolWeb">
         </div>
     </div>
 </section>
@@ -26,9 +28,9 @@
 
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
-            <div class="sub-hero-image">
-                <img src="{% static 'img/widget-main-view/logo.png' %}" alt="O platformie SchoolWeb">
-            </div>
+        <div class="sub-hero-image">
+            <img src="{% static 'img/widget/logo.png' %}" alt="O platformie SchoolWeb">
+        </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading">O platformie <span>Schoolweb</span></h2>
             <p class="sub-hero-text right-side">
@@ -36,7 +38,7 @@
                 <span>konkurencyjne cenowo lekcje</span>, lecz także szereg innych narzędzi. Nasza misja
                 polega na dostarczaniu najwyższej jakości nauczania, dlatego każdy nasz korepetytor jest
                 zaangażowany i posiada bogatą wiedzę oraz umiejętności. Platforma oferuje również rozbudowane
-                narzędzia, które pomagają uczniom w ich nauce. Posiadamy  zadawać pytania i uzyskiwać odpowiedzi
+                narzędzia, które pomagają uczniom w ich nauce. Posiadamy zadawać pytania i uzyskiwać odpowiedzi
                 od innych użytkowników. To miejsce, w którym wzajemnie pomagamy sobie, dzieląc się wiedzą i
                 doświadczeniem. Jesteśmy świadomi, że nauka nie kończy się o ustalonych godzinach zajęć. Dlatego
                 oferujemy <span>wsparcie uczniom poza zajęciami</span>. Dla nas liczy się sukces ucznia na
@@ -60,10 +62,10 @@
                 wybierani i przeszli przez <span>rozbudowany proces selekcji</span>, aby zapewnić najwyższą
                 jakość edukacji.
             </p>
-            <a href="#" class="hvr-buzz-out"  style="background: #bb00ff;">Zostań korepetytorem</a>
+            <a href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out">Zostań korepetytorem</a>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget-main-view/main-view-2.png' %}" alt="Nasi korepetytorzy">
+            <img src="{% static 'img/widget/main-view-2.png' %}" alt="Nasi korepetytorzy">
         </div>
     </div>
 </section>
@@ -71,7 +73,7 @@
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget-main-view/main-view-3.png' %}" alt="Zajęcia dla każdego">
+            <img src="{% static 'img/widget/main-view-3.png' %}" alt="Zajęcia dla każdego">
         </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading">Zajęcia<span> dla każdego</span></h2>
@@ -105,7 +107,7 @@
             </p>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget-main-view/main-view-4.png' %}" alt="Początki bywają łatwe">
+            <img src="{% static 'img/widget/main-view-4.png' %}" alt="Początki bywają łatwe">
         </div>
     </div>
 </section>
@@ -114,7 +116,7 @@
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget-main-view/main-view-2.png' %}" alt="Zajęcia dla każdego">
+            <img src="{% static 'img/widget/main-view-2.png' %}" alt="Zajęcia dla każdego">
         </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading"><span>Sklep</span> z materiałami edukacyjnymi</h2>
@@ -125,7 +127,7 @@
                 produktów, aby sprostać potrzebom każdego ucznia i nauczyciela. Odkryj nasz sklep, aby znaleźć
                 inspirujące i efektywne narzędzia do nauki i rozwijania swoich umiejętności.
             </p>
-            <a id="jak-zaczac" href="#" class="hvr-buzz-out"  style="background: #bb00ff;">Kup materiały edukacyjne</a>
+            <a id="jak-zaczac" class="hvr-buzz-out">Kup materiały edukacyjne</a>
         </div>
     </div>
 </section>
@@ -171,7 +173,7 @@
                 <li><i class="fa fa-money"></i>Cena zajęć: <b>59.99 zł</b>.</li>
                 <li><i class="fa fa-clock-o"></i>Czas trwania zajęć: <b>50 minut</b>.</li>
             </ul>
-            <a href="#" title = "Forum">Kup teraz</a>
+            <a href="#" title="Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
             <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
                 <tr>
@@ -184,19 +186,19 @@
                     <td>4</td>
                     <td>239.99 zł</td>
                     <td>-0 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>8</td>
                     <td>459.99 zł</td>
                     <td>-20 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>12</td>
                     <td>679.99 zł</td>
                     <td>-40 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
             </table>
         </div>
@@ -207,7 +209,7 @@
                 <li><i class="fa fa-money"></i>Cena zajęć: <b>69.99 zł</b>.</li>
                 <li><i class="fa fa-clock-o"></i>Czas trwania zajęć: <b>50 minut</b>.</li>
             </ul>
-            <a href="#" title = "Forum">Kup teraz</a>
+            <a href="#" title="Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
             <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
                 <tr>
@@ -220,19 +222,19 @@
                     <td>4</td>
                     <td>279.99 zł</td>
                     <td>-0 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>8</td>
                     <td>539.99 zł</td>
                     <td>-20 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>12</td>
                     <td>799.99 zł</td>
                     <td>-40 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
             </table>
         </div>
@@ -249,7 +251,7 @@
                 <li><i class="fa fa-money"></i>Cena zajęć: <b>60 zł</b>.</li>
                 <li><i class="fa fa-clock-o"></i>Czas trwania zajęć: <b>50 minut</b>.</li>
             </ul>
-            <a href="#" title = "Forum">Kup teraz</a>
+            <a href="#" title="Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
             <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
                 <tr>
@@ -262,19 +264,19 @@
                     <td>4</td>
                     <td>240 zł</td>
                     <td>-0 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>8</td>
                     <td>460 zł</td>
                     <td>-20 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>12</td>
                     <td>680 zł</td>
                     <td>-40 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
             </table>
         </div>
@@ -285,7 +287,7 @@
                 <li><i class="fa fa-money"></i>Cena zajęć: <b>70 zł</b>.</li>
                 <li><i class="fa fa-clock-o"></i>Czas trwania zajęć: <b>50 minut</b>.</li>
             </ul>
-            <a href="#" title = "Forum">Kup teraz</a>
+            <a href="#" title="Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
             <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
                 <tr>
@@ -298,19 +300,19 @@
                     <td>4</td>
                     <td>280 zł</td>
                     <td>-0 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>8</td>
                     <td>540 zł</td>
                     <td>-20 zł</td>
-                    <td><a href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
                 <tr>
                     <td>12</td>
                     <td>800 zł</td>
                     <td>-40 zł</td>
-                    <td><a id="opinie" href="#" title = "Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
+                    <td><a id="opinie" href="#" title="Forum"><i class="fa fa-chevron-circle-right"></i></a></td>
                 </tr>
             </table>
         </div>
@@ -324,11 +326,11 @@
         <div class="slider-wrapper">
             <button id="prev-slide" class="slide-button material-symbols-rounded">chevron_left</button>
             <div class="image-list">
-                <img src="{% static 'img/widget-main-view/opinion1.png' %}" class="image-item" alt="opinia-1">
-                <img src="{% static 'img/widget-main-view/opinion2.png' %}" class="image-item" alt="opinia-2">
-                <img src="{% static 'img/widget-main-view/opinion3.png' %}" class="image-item" alt="opinia-3">
-                <img src="{% static 'img/widget-main-view/opinion4.png' %}" class="image-item" alt="opinia-4">
-                <img src="{% static 'img/widget-main-view/opinion5.png' %}" class="image-item" alt="opinia-5">
+                <img src="{% static 'img/widget/opinion1.png' %}" class="image-item" alt="opinia-1">
+                <img src="{% static 'img/widget/opinion2.png' %}" class="image-item" alt="opinia-2">
+                <img src="{% static 'img/widget/opinion3.png' %}" class="image-item" alt="opinia-3">
+                <img src="{% static 'img/widget/opinion4.png' %}" class="image-item" alt="opinia-4">
+                <img src="{% static 'img/widget/opinion5.png' %}" class="image-item" alt="opinia-5">
             </div>
             <button id="next-slide" class="slide-button material-symbols-rounded">chevron_right</button>
         </div>
@@ -343,7 +345,8 @@
 
 <section class="contact">
     <h2 class="sub-hero-heading">Kontakt</h2>
-    <form id="contact-form" method="post" action="{% url 'schoolweb:user-message' %}" data-url="{% url 'schoolweb:user-message' %}">
+    <form id="contact-form" method="post" action="{% url 'schoolweb:user-message' %}"
+          data-url="{% url 'schoolweb:user-message' %}">
         {% csrf_token %}
         <input type="email" name="email" placeholder="E-mail" required>
         <input type="text" name="phone_number" placeholder="Numer telefonu" required>

@@ -17,6 +17,7 @@ a{
     text-decoration: none;
 }
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NAV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 nav{
@@ -62,16 +63,6 @@ nav{
     margin: 0 10px;
 }
 
-.nav-links .nav-option{
-    position: relative;
-    color: #333;
-    margin: 0 10px;
-}
-
-.nav-links li a svg{
-    margin: 0 3px -1px 0;
-}
-
 .nav-links .upper-btn{
     background: #E8ADFE;
     color: #000;
@@ -85,6 +76,16 @@ nav{
     background: #F4D4FF;
     color: #000;
     transition: .3s;
+}
+
+.nav-links .nav-option{
+    position: relative;
+    color: #333;
+    margin: 0 10px;
+}
+
+.nav-links li a svg{
+    margin: 0 3px -1px 0;
 }
 
 .additional-nav{
@@ -309,7 +310,6 @@ span{
     }
 
     .hero-container p{
-        font-size: 16px;
         line-height: 1.2;
     }
 
@@ -373,7 +373,7 @@ span{
     }
 }
 
-.hvr-buzz-out {
+.hvr-buzz-out{
     display: inline-block;
     vertical-align: middle;
     box-shadow: 0 0 1px rgba(0, 0, 0, 0);
@@ -381,7 +381,7 @@ span{
     animation: pulse 2s infinite;
 }
 
-.hvr-buzz-out:hover, .hvr-buzz-out:focus, .hvr-buzz-out:active {
+.hvr-buzz-out:hover, .hvr-buzz-out:focus, .hvr-buzz-out:active{
     -webkit-animation-name: hvr-buzz-out;
     animation-name: hvr-buzz-out;
     -webkit-animation-duration: 0.75s;
@@ -409,7 +409,7 @@ span{
     }
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SUB-HEROES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .sub-hero{
     margin: 0 auto;
@@ -806,7 +806,7 @@ th, td{
     bottom: -10px;
 }
 
-@media (max-width: 1023px){
+@media (max-width: 900px){
     .slider-wrapper .slide-button{
         display: none!important;
     }
@@ -826,7 +826,7 @@ th, td{
     }
 }
 
-@media (max-width: 867px){
+@media (max-width: 576px){
     .opinions{
         margin: 0;
         padding: 0;
@@ -1282,10 +1282,10 @@ button:hover{
     font-size: 17px;
 }
 
-@media (max-width: 867px){
+@media (max-width: 900px){
     .contact-container{
         margin: 150px 0;
-        padding: 10px 0 20px 0;
+        padding: 10px 0 10px 0;
     }
 }
 
@@ -1361,14 +1361,14 @@ button:hover{
     margin-bottom: -25px;
 }
 
-@media (max-width: 1250px) {
+@media (max-width: 1250px){
     .subjects-main-container{
         margin: 150px 0 120px 0;
         grid-template-columns: repeat(4, minmax(200px, 1fr));
     }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1000px){
     .subjects-main-container{
         margin: 120px 0 120px 0;
         grid-template-columns: repeat(2, minmax(200px, 1fr));
@@ -1395,7 +1395,7 @@ button:hover{
     }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 700px){
     .subjects-main-container{
         margin: 120px 0 120px 0;
         grid-template-columns: repeat(1, minmax(200px, 1fr));
