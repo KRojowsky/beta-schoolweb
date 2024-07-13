@@ -5,7 +5,7 @@ from django.core.validators import RegexValidator
 
 class PlatformMessage(models.Model):
     email = models.EmailField()
-    phone_number = models.CharField(max_length=20)
+    phone_number = models.CharField(max_length=20, validators=[RegexValidator(r'^\d{9}$', message='Numer telefonu musi składać się z 9 cyfr.')])
     message = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
 

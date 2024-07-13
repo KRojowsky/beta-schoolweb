@@ -340,7 +340,7 @@ a {
     }
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1060px) {
     .activities,
     .topics,
     .courseList{
@@ -362,6 +362,10 @@ a {
 
 .mobile-menu {
     margin-bottom: 25px;
+}
+
+.mobile-menu label{
+    box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.1);
 }
 
 .mobile-menuItems {
@@ -391,7 +395,6 @@ a {
     display: flex;
     align-items: center;
     padding: 2px;
-    margin-bottom: 5px;
     text-align: left;
     font-size: 14px;
 }
@@ -409,7 +412,6 @@ a {
 
 .topics .topics__list a:hover{
     background: #E3E3E3;
-    font-weight:900;
     border-radius: 5px;
 }
 
@@ -429,6 +431,8 @@ a {
     justify-content: space-between;
     color: #000;
     transition: all 0.3s ease-in-out;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #DBDBDB;
 }
 
 .topics__list li a.active,
@@ -454,7 +458,7 @@ a {
     background: #FFF;
     border-radius: 5px;
     padding: 20px;
-    box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .roomListRoom__header__container {
@@ -506,6 +510,11 @@ a {
     font-size: 12px;
     color: #696969;
     font-weight: 500;
+}
+
+.roomListRoom__actions svg {
+    width: 1.6rem;
+    height: 1.6rem;
 }
 
 .roomListRoom__topic {
@@ -639,7 +648,7 @@ a {
     padding: 1rem;
     border: 1px solid #A9A9A9;
     border-radius: 5px;
-    margin-bottom:2rem;
+    margin-bottom: 2rem;
     background: #F5F5F5;
 }
 
@@ -649,7 +658,7 @@ a {
 }
 
 .activities__boxHeader p span {
-    color: #a8a7a7;
+    color: #A8A7A7;
     font-size: 1.2rem;
     display: block;
 }

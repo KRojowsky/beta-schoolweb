@@ -20,7 +20,7 @@
                     <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
                     {{topic.name}}
                 </div>
-                <span>87</span>
+                <span>{{topic.room_set.all.count}}</span>
             </a>
         </li>
         {% endfor %}

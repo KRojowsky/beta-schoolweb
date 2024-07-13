@@ -14,7 +14,7 @@ urlpatterns = [
     path('kontakt/', views.contact, name='contact'),
     path('przedmioty/', views.subjects, name='subjects'),
 
-    path('wiadomość/', views.user_message, name='user-message'),
+    path('wiadomosc/', views.user_message, name='user-message'),
 
 
 
@@ -25,17 +25,17 @@ urlpatterns = [
 
     path('strefa-wiedzy/', views.knowledge_zone, name="knowledge_zone"),
 
-    path('room/<str:pk>/', views.room, name="room"),
-    path('create-room/', views.createRoom, name="create-room"),
-    path('update-room/<str:pk>/', views.updateRoom, name="update-room"),
-    path('delete-room/<str:pk>/', views.deleteRoom, name="delete-room"),
-    path('delete-message/<str:pk>/', views.deleteMessage, name="delete-message"),
+    path('post/<str:pk>/', views.room, name="room"),
+    path('utworz-post/', views.createRoom, name="create-room"),
+    path('edytuj-post/<str:pk>/', views.updateRoom, name="update-room"),
+    path('usun-post/<str:pk>/', views.deleteRoom, name="delete-room"),
+    path('usun-komentarz/<str:pk>/', views.deleteMessage, name="delete-message"),
 
-    path('profile/<str:pk>/', views.userProfile, name="user-profile"),
-    path('update-user/', views.updateUser, name="update-user"),
+    path('profil/<str:pk>/', views.userProfile, name="user-profile"),
+    path('edytuj-uzytkownika/', views.updateUser, name="update-user"),
 
-    path('topics/', views.topicsPage, name="topics"),
-    path('activity/', views.activityPage, name="activity"),
+    path('tematy/', views.topicsPage, name="topics"),
+    path('aktywnosc/', views.activityPage, name="activity"),
 
     path('reset_password/', auth_views.PasswordResetView.as_view(template_name="knowledge-zone/password_reset.html"), name='reset_password'),
     path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="knowledge-zone/password_reset_sent.html"), name='password_reset_done'),

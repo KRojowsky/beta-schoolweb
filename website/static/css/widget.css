@@ -114,6 +114,14 @@ nav{
     color: #BB00FF;
 }
 
+nav .mobile-menu{
+    display: none;
+}
+
+.hamburger-menu{
+    cursor: pointer;
+}
+
 .title-word{
     animation: color-animation 7s linear infinite;
 }
@@ -152,18 +160,11 @@ nav{
 }
 
 @media (max-width: 1150px){
-    .nav-links{
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-    }
-
-    .nav-brand-name{
+    .nav-links, .additional-nav, .nav-brand-name{
         display: none;
     }
 
-    .nav-links.show{
+    .mobile-menu.show{
         display: flex;
         align-items: center;
         flex-direction: column;
@@ -178,13 +179,44 @@ nav{
         margin: auto;
     }
 
-    .additional-nav{
-        display: none;
+    .mobile-menu ul{
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
     }
 
-    .hamburger-menu{
-        display: block;
+    .mobile-menu li{
+        margin: 0 0 35px 0;
+        font-weight: bold;
         cursor: pointer;
+    }
+
+    .mobile-menu a{
+        text-decoration: none;
+        color: #333;
+        font-size: 20px;
+        padding: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .mobile-menu a:hover {
+        color: #BB00FF;
+    }
+
+    .mobile-menu li:nth-child(1), .mobile-menu li:nth-child(2){
+        border: 2px solid #000;
+        border-radius: 7px;
+        padding: 5px;
+    }
+
+    .mobile-menu li:nth-child(1):hover, .mobile-menu li:nth-child(2):hover{
+        border: 2px solid #BB00FF;
+        transition: 0.2s;
     }
 
     .hamburger-menu.active .bar:nth-child(1){

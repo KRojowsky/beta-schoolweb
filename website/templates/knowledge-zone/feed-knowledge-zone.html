@@ -1,12 +1,12 @@
 {% for room in rooms %}
 {% load static %}
 <div class="roomListRoom">
-  <div class="roomListRoom__header__container">
-    {% if room.host %}
+    <div class="roomListRoom__header__container">
+        {% if room.host %}
         <div class="roomListRoom__header">
             <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="roomListRoom__author">
                 <div class="avatar avatar--small active">
-                    <img src="{{room.host.avatar.url}}" />
+                    <img src="{{room.host.avatar.url}}"/>
                 </div>
                 <div class="roomListRoom__details">
                     <span title="Zobacz profil">@{{room.host.username}}</span>
@@ -17,7 +17,7 @@
             </a>
             <p class="roomListRoom__topic">{{room.topic.name}}</p>
         </div>
-    {% else %}
+        {% else %}
         <div class="roomListRoom__author-container">
             <div class="roomListRoom__author">
                 <div class="avatar avatar--small active">
@@ -26,62 +26,62 @@
                 <span>Użytkownik usunięty</span>
             </div>
         </div>
-    {% endif %}
-  </div>
-  <div class="roomListRoom__content">
-    <a href="{% url 'schoolweb:room' room.id %}" class="lesson-link" title="Zobacz post">{{room.name}}</a>
-      <p>{{ room.description|truncatechars:150 }}</p>
-    <br>
-    {% if room.image %}
-      <a href="{{ room.image.url }}" class="popup-image" target="_blank">
-          <img src="{{ room.image.url }}" alt="Zdjęcie posta" title="Powiększ">
-      </a>
-    {% endif %}
-  </div>
+        {% endif %}
+    </div>
+    <div class="roomListRoom__content">
+        <a href="{% url 'schoolweb:room' room.id %}" class="lesson-link" title="Zobacz post">{{room.name}}</a>
+        <p>{{ room.description|truncatechars:150 }}</p>
+        <br>
+        {% if room.image %}
+        <a href="{{ room.image.url }}" class="popup-image" target="_blank">
+            <img src="{{ room.image.url }}" alt="Zdjęcie posta" title="Powiększ">
+        </a>
+        {% endif %}
+    </div>
 
-   <div class="participants-avatars">
-       {% for participant in room.participants.all %}
+    <div class="participants-avatars">
+        {% for participant in room.participants.all %}
             {% if forloop.counter <= 2 %}
             <div class="avatar avatar--participant">
-              <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
+                <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
             </div>
             {% endif %}
-       {% endfor %}
-       {% if room.participants.all.count > 2 %}
+        {% endfor %}
+        {% if room.participants.all.count > 2 %}
             <span class="more-participants">+{{ room.participants.all.count|add:-2 }} użytkowników odpowiedziało</span>
-       {% endif %}
-   </div>
+        {% endif %}
+    </div>
 
-   <div class="comment-counters-container">
-       <div class="comment-counter">
+    <div class="comment-counters-container">
+        <div class="comment-counter">
             <img src="{% static 'img/filled.png' %}" alt="Polubienia">
             <div class="comment-info">
                 {{ room.likes.all.count }}
             </div>
-       </div>
-       <div class="comment-counter">
+        </div>
+        <div class="comment-counter">
             <div class="comment-info">
                 {{ room.message_set.count }} odpowiedzi
             </div>
-       </div>
+        </div>
     </div>
 
-   <div class="container">
-      <div class="like-topic-container">
-          <a href="{% url 'schoolweb:room' room.id %}" class="envelope-link">
-              <i class="fa fa-info-circle" aria-hidden="true"></i> Szczegóły
-          </a>
-      </div>
-      <div class="like-topic-container">
-          <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
-              <i class="fa fa-envelope" aria-hidden="true"></i> Komentarze
-          </a>
-      </div>
-      <div class="like-topic-container">
-          <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
-              <i class="fa fa-info-circle" aria-hidden="true"></i> Zgłoś
-          </a>
-      </div>
-   </div>
+    <div class="container">
+        <div class="like-topic-container">
+            <a href="{% url 'schoolweb:room' room.id %}" class="envelope-link">
+                <i class="fa fa-info-circle" aria-hidden="true"></i> Szczegóły
+            </a>
+        </div>
+        <div class="like-topic-container">
+            <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
+                <i class="fa fa-envelope" aria-hidden="true"></i> Komentarze
+            </a>
+        </div>
+        <div class="like-topic-container">
+            <a href="{% url 'schoolweb:room' room.id %}#comms" class="envelope-link">
+                <i class="fa fa-info-circle" aria-hidden="true"></i> Zgłoś
+            </a>
+        </div>
+    </div>
 </div>
 {% endfor %}
