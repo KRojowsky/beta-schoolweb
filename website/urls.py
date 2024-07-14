@@ -31,6 +31,8 @@ urlpatterns = [
     path('usun-post/<str:pk>/', views.deleteRoom, name="delete-room"),
     path('usun-komentarz/<str:pk>/', views.deleteMessage, name="delete-message"),
 
+    path('post/<int:pk>/zgłos/', views.reportRoom, name='report-room'),
+
     path('profil/<str:pk>/', views.userProfile, name="user-profile"),
     path('edytuj-uzytkownika/', views.updateUser, name="update-user"),
 

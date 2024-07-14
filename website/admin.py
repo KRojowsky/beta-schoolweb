@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Room, Topic, Message, Course, Post, CourseMessage, User, PlatformMessage, NewStudent, \
-    RoomMember, NewTeacher, LessonCorrection, Resign, Availability
+    RoomMember, NewTeacher, LessonCorrection, Resign, Availability, Report
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
@@ -9,9 +9,6 @@ from django import forms
 
 class PlatformMessageAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone_number', 'message', 'created')
-
-
-
 
 
 class CustomUserAdmin(UserAdmin):
@@ -193,6 +190,12 @@ class RoomAdmin(admin.ModelAdmin):
     total_likes.short_description = 'Likes'
 
 
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['room', 'reporter', 'reason', 'created']
+    search_fields = ['room__name', 'reporter__username', 'reason']
+    list_filter = ['reason', 'created']
+
+
 admin.site.register(PlatformMessage, PlatformMessageAdmin)
 
 admin.site.register(Availability, AvailabilityAdmin)
@@ -205,6 +208,7 @@ admin.site.register(Topic)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Post, LessonInfo)
+admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
 admin.site.register(RoomMember)
 admin.site.register(Resign, ResignationAdmin)

@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ImageField
-from .models import Room, Post, User, NewStudent, NewTeacher, Course, LessonCorrection, Resign, Availability
+from .models import Room, Post, User, NewStudent, NewTeacher, Course, LessonCorrection, Resign, Availability, Report
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -95,6 +95,16 @@ class RoomForm(ModelForm):
         exclude = ['host', 'participants']
 
     image = ImageField(required=False)
+
+
+class ReportForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ['reason', 'description']
+        widgets = {
+            'reason': forms.Select(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+        }
 
 
 class UserForm(forms.ModelForm):

@@ -136,6 +136,23 @@ class Course(models.Model):
         return self.title
 
 
+class Report(models.Model):
+    REPORT_REASONS = [
+        ('SPAM', 'Spam'),
+        ('INAPPROPRIATE', 'Inappropriate Content'),
+        ('OTHER', 'Other'),
+    ]
+
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reports')
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    reason = models.CharField(max_length=20, choices=REPORT_REASONS)
+    description = models.TextField(null=True, blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Report by {self.reporter.username} on {self.room.name}'
+
+
 class RoomMember(models.Model):
     name = models.CharField(max_length=200, default="Default Name")
     uid = models.CharField(max_length=200)

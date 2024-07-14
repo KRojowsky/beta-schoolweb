@@ -3,9 +3,9 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember
+from .models import User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember, Report
 from .forms import RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm, \
-    NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm, ResignationForm
+    NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm, ResignationForm, ReportForm
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib.auth.models import Group
@@ -240,6 +240,22 @@ def updateRoom(request, pk):
     topics = Topic.objects.all()
     context = {'form': form, 'topics': topics}
     return render(request, 'knowledge-zone/room_form.html', context)
+
+
+@login_required(login_url='schoolweb:login')
+def reportRoom(request, pk):
+    room = get_object_or_404(Room, id=pk)
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.room = room
+            report.reporter = request.user
+            report.save()
+            return redirect('schoolweb:knowledge_zone')
+    else:
+        form = ReportForm()
+    return render(request, 'knowledge-zone/report-room.html', {'form': form, 'room': room})
 
 
 @login_required(login_url='schoolweb:login')

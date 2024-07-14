@@ -768,8 +768,9 @@ a {
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ROOM~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
+
 .layout--2 > .container > div:first-child {
-    flex-basis: 72%;
+    flex-basis: 73%;
 }
 
 .layout--2 > .container > div:last-child {
@@ -777,7 +778,7 @@ a {
 }
 
 .room{
-    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.3);
 }
 
 .room__top,
@@ -786,46 +787,158 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    padding: 10px 0 10px 10px;
     position: relative;
 }
 
 .room__top svg,
-.thread__top svg {
-    width: 1.6rem;
-    height: 1.6rem;
-    fill: #000;
+.thread__top svg,
+.room__topLeft svg{
+    width: 16px;
+    height: 16px;
     cursor: pointer;
 }
 
-.room__topLeft {
-    align-items: flex-end;
-    gap: 10px;
-    word-wrap: break-word;
-    white-space: normal;
-    max-width: 100%;
+.room__box {
+    padding: 0 20px;
 }
 
-.room__topLeft h3,
-.participants__top {
+.room__header {
+    width: 100%;
+    background: #FFF;
+    z-index: 999;
+    padding: 20px 0;
+}
+
+.room__info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room__info h3 {
+    font-size: 25px;
+    color: #BB00FF;
+}
+
+.room__info span{
+    color: #696969;
+    font-size: 14px;
+}
+
+.room__hosted p {
     text-transform: uppercase;
-    font-weight: 500;
-    color: #000;
+    color: #696969;
+    font-size: 12px;
+    margin-top: 10px;
 }
 
-.room__topLeft svg {
-    width: 15px;
-    height: 15px;
-    fill: #000;
-}
-
-.room__topRight {
+.room__author {
     display: flex;
-    column-gap: 1em;
+    gap: 1rem;
+    align-items: center;
+    margin: 5px 0 20px 0;
 }
 
-.room__topRight svg {
-    fill: #000;
+.room__author:hover {
+    text-decoration: underline;
+}
+
+.room__details {
+    overflow-wrap: break-word;
+    max-width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0 10px;
+    border-radius:5px;
+    border: 2px solid #DBDBDB;
+    font-size: 1.7rem;
+    background: #F5F5F5;
+}
+
+.room-image img{
+    max-width: 700px;
+    max-height: 500px;
+}
+
+.likes-room {
+    display: flex;
+    align-items: center;
+}
+
+.likes-info {
+    display: flex;
+    align-items: center;
+    margin-right: auto;
+}
+
+.likes-info img {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.likes-room-count{
+    color: #696969;
+}
+
+.modal-container {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    background: #FFF;
+    margin: 15% auto;
+    padding: 20px;
+    width: 70%;
+    overflow-y: auto;
+    border: 3px solid #000;
+    border-radius: 7px;
+}
+
+.close {
+    float: right;
+    font-size: 40px;
+    color: #696969;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.liked-user {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.modal-content a{
+    color: #BB00FF;
+    margin-left:10px;
+}
+
+.modal-content a:hover {
+    text-decoration: underline;
+}
+
+.room__topics {
+    padding: 0.5rem 1.5rem;
+    background: #F0F0F0;
+    color: #696969;
+    display: inline-block;
+    border-radius: 7px;
 }
 
 .room-info{
@@ -838,18 +951,44 @@ a {
     width: 50%;
     text-align: center;
     color: black;
+}
+
+.like-room-button span{
+    color: #000;
+}
+
+.room-info-detail-button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    transition: background-color 0.3s ease-in-out;
+    border-radius: 5px;
+}
+
+.room-info-detail-button:hover {
+    background-color: #222440;
+}
+
+
+
+
+
+
+
+
+
+.room-info-detail {
+    width: 50%;
+    text-align: center;
     font-size: 1.6rem;
 }
 
-.room__details {
-    overflow-wrap: break-word;
-    max-width: 100%;
-    max-height: 200px;
-    overflow-y: auto;
-    padding:7px;
-    border-radius:5px;
-    background: #F0F0F0;
-    font-size: 1.7rem;
+.participants__top {
+    text-transform: uppercase;
+    font-weight: 500;
+    color: #000;
 }
 
 .room,
@@ -880,14 +1019,6 @@ a {
     }
 }
 
-.room__header {
-    width: 100%;
-    background: #FFF;
-    z-index: 999;
-    top: 4.4rem;
-    padding-top: 2rem;
-    padding-bottom: 1rem;
-}
 
 @media screen and (max-width: 500px) {
     .room__header {
@@ -896,61 +1027,11 @@ a {
     }
 }
 
-.room__box {
-    padding-left: 2rem;
-    padding-right: 2rem;
-    padding-bottom: 0;
-}
-
-.room__info {
-    justify-content: space-between;
-    word-wrap: break-word;
-    white-space: normal;
-    max-width: 100%;
-}
-
-.room__info h3 {
-    font-size: 2.4rem;
-    font-weight: 500;
-    color: #BB00FF;
-}
-
 @media (max-width: 768px) {
     .room__info {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-.room__hosted p {
-    text-transform: uppercase;
-    color: #696969;
-    font-size: 1.2rem;
-    font-weight: 700;
-    line-height: 2;
-}
-
-.room__author {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-    transition: all 0.3s ease-in-out;
-}
-
-.room__author:hover {
-    text-decoration: underline;
-}
-
-.room__topics {
-    padding: 0.5rem 1.5rem;
-    background: #F0F0F0;
-    color: #000;
-    display: inline-block;
-    font-size: 1.4rem;
-    border-radius: 1.5rem;
-    margin: .5rem 0;
 }
 
 .room__conversation {
@@ -1151,7 +1232,6 @@ ul.messages li {
     padding: 0;
     color: red;
 }
-
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CREATE/UPDATE-ROOM~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 

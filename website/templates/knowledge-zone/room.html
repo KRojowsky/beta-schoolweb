@@ -6,6 +6,7 @@
 
 {% load static %}
 {% block content %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <main class="profile-page layout layout--2">
   <div class="container">
     <div class="room">
@@ -52,7 +53,6 @@
                 </svg>
               </a>
             {% endif %}
-          <h3>{{room.name}}</h3>
         </div>
       </div>
       <div class="room__box scroll">
@@ -65,8 +65,8 @@
             <p>Utworzony przez</p>
             {% if room.host %}
               <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="room__author">
-                <div class="avatar avatar--small">
-                  <img src="{% static 'img/avatar.svg' %}" />
+                <div class="avatar avatar--small active">
+                  <img src="{{room.host.avatar.url}}" />
                 </div>
                 <span title="Zobacz profil">@{{room.host.username}}</span>
               </a>
@@ -84,13 +84,13 @@
           </div>
           <br>
           {% if room.image %}
-            <a href="{{ room.image.url }}" class="popup-image" target="_blank" title="Powiększ">
-              <img src="{{ room.image.url }}" alt="Zdjęcie pokoju" style="max-width: 700px; max-height: 500px;">
+            <a href="{{ room.image.url }}" class="room-image" target="_blank" title="Powiększ">
+              <img src="{{ room.image.url }}" alt="Zdjęcie posta">
             </a>
           {% endif %}
           <br>
           <div class="likes-room">
-            <div class="likes-info" style="border-radius:7px; padding:5px 10px; cursor:pointer;" title="Polubienia" onclick="showRoomLikes({{ room.id }})">
+            <div class="likes-info" title="Polubienia" onclick="showRoomLikes({{ room.id }})">
                 <img src="{% static 'img/filled.png' %}">
                 <span class="likes-room-count" data-room-id="{{ room.id }}">{{ room.likes.count }}</span>
             </div>
@@ -107,20 +107,22 @@
         <hr>
         {% if request.user.is_authenticated %}
           <div class="room-info">
-              <div class="room-info-detail" style="color: white;">
+              <div class="room-info-detail">
                 <button class="like-room-button" data-room-id="{{ room.id }}" {% if request.user in room.likes.all %}data-liked="true"{% endif %}>
                     {% if request.user in room.likes.all %}
-                        <span style="color:#03ff13;">
+                        <span>
                             <i class="fa fa-thumbs-up"></i> Lubię to!
                         </span>
                     {% else %}
-                        <i class="fa fa-thumbs-up"></i> Lubię to!
+                        <span>
+                            <i class="fa fa-thumbs-up"></i> Lubię to!
+                        </span>
                     {% endif %}
                 </button>
               </div>
-              <div class="room-info-detail" style="color: white;">
+              <div class="room-info-detail">
                   <a href="#left-side" class="room-info-detail-button">
-                      <i class="fa fa-envelope" aria-hidden="true"></i> Komentarz
+                      <i class="fa fa-envelope"></i> Komentarz
                   </a>
               </div>
           </div>
@@ -280,8 +282,8 @@
       <div class="participants__list scroll">
         {% for user in participants %}
         <a href="{% url 'schoolweb:user-profile' user.id %}" class="participant">
-          <div class="avatar avatar--medium">
-            <img src="{% static 'img/avatar.svg' %}" />
+          <div class="avatar avatar--medium active">
+            <img src="{{user.avatar.url}}" />
           </div>
           <p>
             {{user.username}}
@@ -359,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         var userId = user.id > 0 ? user.id : 'unknown';
 
                         modalContent.append('<div class="liked-user">' +
-                            '<div class="avatar avatar--small">' +
+                            '<div class="avatar avatar--small active">' +
                             '<img src="' + (user.avatar || '') + '" />' +
                             '</div>' +
                             '<span><a href="/profile/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
@@ -516,64 +518,6 @@ document.addEventListener('DOMContentLoaded', function () {
     color: #03ff13;
 }
 
-.modal-container {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 75%;
-    color: #000000;
-    overflow-y: auto;
-    border: 7px solid #2d2d39;
-    border-radius:11px;
-    font-size:16px;
-}
-
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 30px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.liked-user {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #ccc;
-}
-
-.modal-content a{
-    text-decoration: none;
-    color: #71c6dd;
-    transition: color 0.3s ease;
-    font-weight:900;
-    margin-left:10px;
-}
-
-.modal-content a:hover {
-    text-decoration: underline;
-}
 
 .likes-container-mobile{
     display:none;
@@ -594,5 +538,4 @@ document.addEventListener('DOMContentLoaded', function () {
     overflow: hidden;
 }
 </style>
-<script src="{% static 'js/script.js' %}"></script>
 {% endblock content %}
