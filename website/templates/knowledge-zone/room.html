@@ -149,26 +149,31 @@
                     {% endif %}
                     {% if message.user %}
                       <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="thread__authorInfo">
-                        <div class="avatar avatar--small">
+                        <div class="avatar avatar--small active">
                           <img src="{{message.user.avatar.url}}" />
                         </div>
-                        <span title="Zobacz profil">@{{message.user.username}}</span>
+                        <div class="thread__authorName">
+                          <span title="Zobacz profil">@{{message.user.username}}</span>
+                          <span class="thread__date">{{message.created|timesince}} temu</span>
+                        </div>
                       </a>
                     {% else %}
                       <div class="thread__authorInfo">
                         <div class="avatar avatar--small">
                           <img src="{% static 'img/avatar.svg' %}" />
                         </div>
-                        <span>Użytkownik usunięty</span>
+                        <div class="thread__authorName">
+                          <span>Użytkownik usunięty</span>
+                          <span class="thread__date">{{message.created|timesince}} temu</span>
+                        </div>
                       </div>
                     {% endif %}
-                    <span class="thread__date">{{message.created|timesince}} temu</span>
                   </div>
                   <div class="likes-container">
                       {% if request.user.is_authenticated %}
                       <button class="like-button" data-message-id="{{ message.id }}" {% if request.user in message.likes.all %}data-liked="true"{% endif %}>
                           {% if request.user in message.likes.all %}
-                              <span style="color:#03ff13;">
+                              <span>
                                   <i class="fa fa-thumbs-up"></i> Lubię to!
                               </span>
                           {% else %}
@@ -190,8 +195,7 @@
                   <br>
                   {% if message.image %}
                     <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
-                      <img src="{{ message.image.url }}" alt="Message Image"
-                        style="max-width: 500px; max-height: 500px;" />
+                      <img src="{{ message.image.url }}" alt="Message Image" />
                     </a>
                   {% endif %}
                   {% if message.file %}
@@ -205,7 +209,7 @@
                     {% if request.user.is_authenticated %}
                         <button class="like-button" data-message-id="{{ message.id }}" {% if request.user in message.likes.all %}data-liked="true"{% endif %}>
                             {% if request.user in message.likes.all %}
-                                <span style="color:#03ff13;">
+                                <span>
                                     <i class="fa fa-thumbs-up"></i> Lubię to!
                                 </span>
                             {% else %}
@@ -327,8 +331,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
                     } else {
                         this.dataset.liked = 'true';
-                        this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#03ff13;"></i> Lubię to!';
-                        this.style.color = '#03ff13';
+                        this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#BB00FF"></i> Lubię to!';
+                        this.style.color = '#BB00FF';
                         likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
                     }
 
@@ -402,7 +406,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             var userId = user.id > 0 ? user.id : 'unknown';
 
                             modalContent.append('<div class="liked-user">' +
-                                '<div class="avatar avatar--small">' +
+                                '<div class="avatar avatar--small active">' +
                                 '<img src="' + (user.avatar || '') + '" />' +
                                 '</div>' +
                                 '<span><a href="/profile/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
@@ -457,8 +461,8 @@ document.addEventListener('DOMContentLoaded', function () {
               likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
             } else {
               this.dataset.liked = 'true';
-              this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#03ff13;"></i> Lubię to!';
-              this.style.color = '#03ff13';
+              this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#BB00FF;"></i> Lubię to!';
+              this.style.color = '#BB00FF';
               likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
             }
           } else {
@@ -471,71 +475,4 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 </script>
-
-<style>
-.likes-container {
-    display: flex;
-    align-items: center;
-}
-
-.like-button {
-    font-size: 15px;
-    cursor: pointer;
-    background-color: transparent;
-    color: #ffffff;
-    border:none;
-    margin-right:15px;
-}
-
-.like-button:hover {
-    background-color: transparent;
-    opacity: 0.6;
-    color: #03ff13;
-}
-
-.likes-count {
-    font-size: 15px;
-    border: 1px solid #ffffff;
-    border-radius: 7px;
-    width: 40px;
-    display: inline-block;
-    white-space: nowrap;
-    text-align:center;
-    cursor: pointer;
-}
-
-.like-room-button {
-    font-size: 15px;
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    color: #ffffff;
-    padding:12px;
-}
-
-.like-room-button:hover {
-    opacity: 0.6;
-    color: #03ff13;
-}
-
-
-.likes-container-mobile{
-    display:none;
-}
-
-@media only screen and (max-width: 768px) {
-    .likes-container{
-        display:none;
-    }
-    .likes-container-mobile{
-        display: flex;
-        margin-top:10px;
-    }
-}
-
-.file-name-wrapper {
-    width: 100%;
-    overflow: hidden;
-}
-</style>
 {% endblock content %}

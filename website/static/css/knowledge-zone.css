@@ -891,7 +891,7 @@ a {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .modal-content {
@@ -941,7 +941,7 @@ a {
     border-radius: 7px;
 }
 
-.room-info{
+.room-info {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -950,39 +950,210 @@ a {
 .room-info-detail {
     width: 50%;
     text-align: center;
-    color: black;
 }
 
 .like-room-button span{
-    color: #000;
+    color: #BB00FF;
 }
 
+.like-room-button {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    padding:14px;
+}
+
+.like-room-button,
 .room-info-detail-button {
-    display: block;
+    display: inline-block;
     width: 100%;
     text-align: center;
     text-decoration: none;
     color: inherit;
     transition: background-color 0.3s ease-in-out;
     border-radius: 5px;
+    padding: 10px 20px;
 }
 
+.like-room-button:hover,
 .room-info-detail-button:hover {
-    background-color: #222440;
+    background: #F0F0F0;
+    color: #000;
 }
 
+.likes-container-mobile{
+    display:none;
+}
 
+@media only screen and (max-width: 768px) {
+    .likes-container{
+        display:none;
+    }
+    .likes-container-mobile{
+        display: flex;
+        margin-top:10px;
+    }
+}
 
+.room__conversation {
+    margin: 10px 0 40px 0;
+}
 
+.threads {
+    border-radius: 7px;
+    overflow-y: auto;
+    height: 100%;
+    padding: 0 0 30px 0;
+}
 
+.thread__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 
+.thread__top svg {
+    fill: #696969;
+}
 
+.thread__author {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.4rem;
+}
 
+.thread__authorInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-.room-info-detail {
-    width: 50%;
-    text-align: center;
-    font-size: 1.6rem;
+.thread__date {
+    font-size: 12px;
+    color: #696969;
+}
+
+.thread__authorName {
+    display: flex;
+    flex-direction: column;
+}
+
+.like-button {
+    cursor: pointer;
+    border:none;
+    background: transparent;
+}
+
+.like-button:hover {
+    color: #BB00FF;
+}
+
+.likes-count {
+    font-size: 15px;
+    border-radius: 7px;
+    width: 40px;
+    display: inline-block;
+    white-space: nowrap;
+    text-align:center;
+    cursor: pointer;
+}
+
+.thread {
+    margin: 10px 0;
+    padding: 20px;
+    background: #F5F5F5;
+    border-radius: 20px;
+}
+
+.thread__details {
+    font-size: 15px;
+    margin-top: 15px;
+    word-wrap: break-word;
+}
+
+.thread__details img{
+    max-width: 400px;
+    max-height: 400px;
+}
+
+.room__message {
+    padding: 20px;
+    position: absolute;
+    z-index: 111;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+}
+
+.input-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-side {
+    flex: 1;
+    scroll-behavior: smooth;
+}
+
+.right-side {
+    resize: none;
+    background: #696969;
+    border: none;
+    outline: none;
+    height: 45px;
+    padding-top: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+    border-radius: 0 10px 10px 0;
+}
+
+#message-input {
+    background: #E3E3E3;
+    color: #000;
+    border: none;
+    outline: none;
+    height: 45px;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    position: relative;
+    border-radius: 10px 0 0 10px;
+}
+
+#message-input::placeholder {
+    color: #696969;
+}
+
+.transparent-button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    padding: 0 0 0 20px;
+}
+
+.file-upload-button{
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+.room,
+.participants {
+    margin-top: 90px;
+    margin-bottom: 10px;
+    background: #FFF;
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
 }
 
 .participants__top {
@@ -991,14 +1162,40 @@ a {
     color: #000;
 }
 
-.room,
-.participants {
-    margin-top: 90px;
-    margin-bottom: 10px;
-    background: #FFF;
-    border-radius: 0.7rem;
-    overflow: hidden;
-    position: relative;
+.participants__top span {
+    color: #BB00FF;
+    font-size: 14px;
+    text-transform: none;
+}
+
+.participants__top {
+    justify-content: flex-start;
+    gap: 0.5rem;
+}
+
+.participants__list {
+    padding: 2rem;
+    height: 84vh;
+    overflow-y: scroll;
+    padding-bottom: 0;
+}
+
+.participant {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.participant p {
+    color: #000;
+    line-height: 1.2;
+}
+
+.participant span {
+    display: block;
+    color: #BB00FF;
+    font-weight: 14px;
 }
 
 @media screen and (max-width: 900px) {
@@ -1032,186 +1229,6 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
-}
-
-.room__conversation {
-    margin-top: 1rem;
-    margin-bottom: 4rem;
-    height: 64%;
-}
-
-.threads h3 {
-    text-transform: uppercase;
-    font-weight: 500;
-    color: #000;
-}
-
-.threads {
-    background: #F0F0F0;
-    border-radius: 0.7rem;
-    overflow-y: auto;
-    height: 100%;
-    margin-top: 1vh;
-    padding: 0 2rem 2rem 2rem;
-}
-
-.thread {
-    border-left: 2px solid #696969;
-    padding-left: 1rem;
-    margin: 2rem 0;
-    padding: 2rem;
-}
-
-.thread__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.thread__top svg {
-    fill: #000;
-}
-
-.thread__author {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    font-size: 1.4rem;
-}
-
-.thread__authorInfo {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.thread__details {
-    font-size: 1.5rem;
-    margin-top: 2.5rem;
-    word-wrap: break-word;
-}
-
-.thread__delete {
-    display: flex;
-    flex-direction: column;
-}
-
-.room__message {
-    padding: 2rem;
-    position: absolute;
-    z-index: 111;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: transparent;
-}
-
-.input-container {
-    display: flex;
-    justify-content: space-between;
-}
-
-.left-side {
-    flex: 1;
-    scroll-behavior: smooth;
-}
-
-.right-side {
-    resize: none;
-    background-color: #DBDBDB;
-    color: #000;
-    border: none;
-    outline: none;
-    height: 4.5rem;
-    padding-top: .4rem;
-    padding-right: .8rem;
-    padding-left: .6rem;
-    font-size: 1.4rem;
-    font-weight: 500;
-    border-bottom-right-radius: 7px;
-}
-
-#message-input {
-    resize: none;
-    background-color: #DBDBDB;
-    color: #000;
-    border: none;
-    outline: none;
-    height: 4.5rem;
-    width: 100%;
-    padding: 1.2rem;
-    font-size: 1.7rem;
-    font-weight: 500;
-    position: relative;
-    border-bottom-left-radius: 7px;
-}
-
-#message-input::placeholder {
-    color: #696969;
-}
-
-.room__message > form > input::placeholder {
-    color: #000;
-}
-
-.transparent-button {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-    padding-left:7px;
-}
-
-.file-upload-button{
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: white;
-}
-
-.participants{
-    box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.3);
-}
-
-.participants__top span {
-    color: #BB00FF;
-    font-size: 1.3rem;
-    text-transform: none;
-}
-
-.participants__top {
-    justify-content: flex-start;
-    gap: 0.5rem;
-}
-
-.participants__list {
-    padding: 2rem;
-    height: 84vh;
-    overflow-y: scroll;
-    padding-bottom: 0;
-}
-
-.participant {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.participant p {
-    color: var(--color-light-gray);
-    line-height: 1.2;
-}
-
-.participant span {
-    display: block;
-    font-weight: 500;
-    color: var(--color-main);
-    font-weight: 1.4rem;
 }
 
 .errorlist{
