@@ -400,6 +400,16 @@ def lessonsLogin(request):
     return render(request, 'tutoring-zone/login_register_lessons.html', context)
 
 
+def change_user_group(user, new_group_name):
+    try:
+        new_group = Group.objects.get(name=new_group_name)
+        user.groups.set([new_group])
+        user.save()
+        return True
+    except Group.DoesNotExist:
+        return False
+
+
 def lessonsRegister(request):
     form = MyUserCreationForm()
 
@@ -510,7 +520,8 @@ def teacherPage(request):
         'all_courses': all_courses,
         'now': now,
         'time_threshold': time_threshold,
-        'a': a
+        'a': a,
+        'teacher': teacher,  # Dodaj nauczyciela do kontekstu
     }
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
@@ -878,16 +889,6 @@ def check_user_group(username):
             return False, []
     except User.DoesNotExist:
         return False, []
-
-
-def change_user_group(user, new_group_name):
-    try:
-        new_group = Group.objects.get(name=new_group_name)
-        user.groups.set([new_group])
-        user.save()
-        return True
-    except Group.DoesNotExist:
-        return False
 
 
 def like_room(request, pk):

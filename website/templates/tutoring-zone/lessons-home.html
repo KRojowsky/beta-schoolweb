@@ -16,9 +16,7 @@
                 która otwiera przed Tobą drzwi do głębszej i bardziej wszechstronnej
                 nauki.<br><br> Dzięki zaawansowanym materiałom edukacyjnym oraz interaktywnym
                 zasobom SchoolWeb staje się niezastąpionym narzędziem w Twojej drodze
-                do osiągnięcia sukcesów edukacyjnych.<br><br> Ta platforma nie tylko umożliwia
-                zdobywanie wiedzy, ale także rozwija umiejętności organizacyjne oraz
-                samodyscyplinę – umiejętności niezwykle wartościowe w życiu.<br><br>
+                do osiągnięcia sukcesów edukacyjnych.<br><br>
                 Dołączając do SchoolWeb, dołączasz do społeczności ambitnych uczniów,
                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
                 Niech ta platforma stanie się Twoim partnerem w osiąganiu majwyższych
@@ -27,8 +25,8 @@
             <p class="mobile-text">Dołączając do SchoolWeb, dołączasz do społeczności uczniów,
                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
             </p>
-            <div class="button-container">
-                <a href="{% url 'schoolweb:newStudent' %}" class="button">❱ Dołącz ❰</a>
+            <div class="btn btn--link">
+                <a href="{% url 'schoolweb:newStudent' %}" class="button-join">❱ Dołącz ❰</a>
             </div>
         </div>
 
@@ -40,23 +38,21 @@
                 Odkryj swobodę w swoim planie dnia i zarabiaj jako korepetytor w naszej rewolucyjnej platformie
                 edukacyjnej.<br><br> Dostosuj korepetycje do swojego harmonogramu i preferowanego miejsca.
                 Wszystko, czego potrzebujesz, to zaledwie 50 minut na lekcję, stabilne połączenie internetowe,
-                spokojne otoczenie i pasję do dzielenia się wiedzą!<br><br> Nasza platforma skrupulatnie dobiera
-                uczniów i korepetytorów, by zapewnić satysfakcję z nauki dla wszystkich. Dodatkowo, stale rozwijamy
-                naszą ofertę, wprowadzając nowe i fascynujące tematy.<br><br> Przyłącz się do naszej najnowszej
+                spokojne otoczenie i pasję do dzielenia się wiedzą!<br><br> Przyłącz się do naszej najnowszej
                 platformy edukacyjnej SchoolWeb i doświadcz radości płynącej z poszerzania horyzontów edukacyjnych,
                 podziel się wiedzą i wspieraj innych w ich naukowej podróży!
             </p>
             <p class="mobile-text">Doświadcz radości płynącej z poszerzania horyzontów edukacyjnych, podziel się
                 wiedzą i wspieraj innych w ich naukowej podróży!</p>
-            <div class="button-container">
-                <a href="{% url 'schoolweb:newTeacher' %}" class="button">❱ Dołącz ❰</a>
+            <div class="btn btn--link">
+                <a href="{% url 'schoolweb:newTeacher' %}" class="button-join">❱ Dołącz ❰</a>
             </div>
         </div>
     </div>
 
     <div class="home-info">
-        <h2>Jeśli posiadasz już konto w <span>strefie korepetycji</span>
-            wystarczy się <a href="{% url 'schoolweb:lessonsLogin' %}">zalogować</a></h2>
+        <h3>Jeśli posiadasz już konto w <span>strefie korepetycji</span>
+            wystarczy się <a href="{% url 'schoolweb:lessonsLogin' %}">zalogować</a></h3>
     </div>
 </div>
 {% endblock content %}

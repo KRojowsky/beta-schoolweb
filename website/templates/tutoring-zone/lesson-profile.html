@@ -83,7 +83,7 @@
                   <p>{{ course.get_lessons_with_feedback_count }} lekcji</p>
               </div>
               {% if is_teacher %}
-              <a href="{% url 'teacherPage' %}?q={{course.name}}">
+              <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">
                 <h3 class="lesson-title">{{ course.name }}</h3>
               </a>
               {% else %}
@@ -113,7 +113,7 @@
       </div>
     </div>
 
-    {% include 'website/activity_component_lessons.html' %}
+    {% include 'tutoring-zone/activity-component-lessons.html' %}
   </div>
 </main>
 

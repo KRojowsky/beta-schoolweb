@@ -537,8 +537,6 @@ a {
 
 .roomListRoom__content a {
     font-size: 2rem;
-    font-weight: 500;
-    margin-bottom: 15px;
     font-weight: 900;
     color: #BB00FF;
     transition: 0.3s;
@@ -1482,7 +1480,8 @@ ul.messages li {
 
 
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LESSONS-HOME~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .background-pattern {
     display: flex;
@@ -1491,23 +1490,25 @@ ul.messages li {
     align-items: center;
     height: 100vh;
     text-align: center;
-    padding: 0 20px;
+    padding: 0 10px;
 }
+
 
 .registration-container {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: stretch;
     flex-wrap: wrap;
 }
 
 .teacher_register, .student_register {
     flex: 1;
     padding: 20px;
-    margin: 10px;
+    margin: 20px;
     border-radius: 12px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     text-align: center;
     background: #FFF;
@@ -1527,16 +1528,191 @@ ul.messages li {
     border-radius: 10px;
     color: #333;
     text-align:left;
+    padding: 0 0 20px 0;
 }
 
 .mobile-text {
     display: none;
 }
 
-.home-info {
-    margin-top: 20px;
+.button-join {
+    color: #000;
 }
 
-h2 span {
-    color: #ffcc00;
+.home-info {
+    margin-top: 20px;
+    text-transform: uppercase;
+    color: #333;
+}
+
+.home-info h3 span {
+    color: #FF0000;
+}
+
+
+@media (max-width: 900px) {
+    .background-pattern {
+        padding: 0 5px;
+    }
+    .registration-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .student_register .normal-text,.teacher_register .normal-text {
+        display: none;
+    }
+
+    .student_register .mobile-text, .teacher_register .mobile-text {
+        display: block;
+    }
+
+    .registration-container h2{
+        font-size:22px;
+    }
+
+    .student_register p, .teacher_register p{
+        font-size:15px;
+    }
+    .mobile-text{
+        padding: 0 0 20px 0;
+    }
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TEACHER-DASHBOARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.no-courses-info {
+    background-color: #fff;
+    color: #000;
+    text-align: center;
+    padding: 20px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    width: 100%;
+    margin: 20px auto;
+    margin-top: 50px;
+}
+
+.welcome-title {
+    font-size: 40px;
+    font-weight: bold;
+    text-align: center;
+    color: #BB00FF;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.no-courses-info {
+    text-align: center;
+}
+
+.no-courses-info p {
+    margin-top: 50px;
+    margin-bottom: 60px;
+    font-weight: 900;
+    text-align: left;
+    font-size: 17px;
+}
+
+.info-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.info-list li {
+    text-align: left;
+    margin: 35px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.info-list li img {
+    max-width: 19%;
+    max-height: auto;
+    margin-right: 10px;
+    border-radius: 7px;
+}
+
+@media (max-width: 768px) {
+    .welcome-title {
+        font-size: 30px;
+    }
+
+    .info-list li img {
+        max-width: 75%;
+        margin-right: 0;
+    }
+
+    .info-list li span {
+        margin-top: 10px;
+    }
+
+    .no-courses-info p {
+        font-size: 15px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+
+    .info-list li {
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+}
+
+.expired-lesson {
+    background: #D3D3D3;
+}
+
+.expired-lesson:hover {
+    background: #C0C0C0;
+}
+
+.joinButton, .inactiveButton, .resetAmountButton, .feedback{
+    font-weight:900;
+    border: 1px solid #000;
+    padding:3px 10px;
+    border-radius: 7px;
+    background: #E8ADFE;
+    font-size: 16px;
+    color: #000;
+}
+
+.inactiveButton{
+    background: #FF0000;
+    display: inline-block;
+    color: #000;
+}
+
+.resetAmountButton{
+    background: #FFF;
+    color: #000;
+}
+
+.feedback {
+    background: #D3D3D3;
+    color: #000;
+}
+
+.pulse-animation {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+        background: #E8ADFE;
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.roomListRoom__content .lesson-content a{
+    font-weight: 500;
+    font-size: 17px;
 }

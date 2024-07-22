@@ -6,8 +6,8 @@
   {% for message in lesson_messages %}
     <div class="activities__box">
       <div class="activities__boxHeader roomListRoom__header">
-        <a href="{% url 'schoolweb:lesson' message.room.id %}" class="roomListRoom__author">
-          <div class="avatar avatar--small">
+        <a href="{% url 'schoolweb:lesson-profile' message.user.id %}" class="roomListRoom__author">
+          <div class="avatar avatar--small active">
             <img src="{{ message.user.avatar.url }}" />
           </div>
           <p>

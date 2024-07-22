@@ -41,13 +41,13 @@
 
     <div class="participants-avatars">
         {% for participant in room.participants.all %}
-            {% if forloop.counter <= 2 %}
+            {% if forloop.counter <= 3 %}
             <div class="avatar avatar--participant">
                 <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
             </div>
             {% endif %}
         {% endfor %}
-        {% if room.participants.all.count > 2 %}
+        {% if room.participants.all.count > 3 %}
             <span class="more-participants">+{{ room.participants.all.count|add:-2 }} użytkowników odpowiedziało</span>
         {% endif %}
     </div>
