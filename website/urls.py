@@ -55,7 +55,11 @@ urlpatterns = [
     path('nowy-korepetytor/', views.newTeacher, name='newTeacher'),
     path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
 
+    path('create-loader/', views.coursesLoader, name="coursesLoader"),
+    path('no-lessons/', views.noLessons, name="noLessons"),
+
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
+    path('strefa-korepetycji-korepetytor-uczen/', views.studentPage, name="studentPage"),
 
     path('lesson-profile/<str:pk>/', views.lessonProfile, name="lesson-profile"),
     path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
@@ -77,6 +81,12 @@ urlpatterns = [
     path('lesson-feedback/<int:pk>/', views.lessonFeedback, name='lesson-feedback'),
     path('lesson-correction/<int:pk>/', views.lessonCorrection, name='lesson-correction'),
 
+    path('resignation/', views.resignation, name='resignation'),
+
+    path('success/', views.successPage, name='success-page'),
+
+
+
 
 
 
@@ -91,12 +101,6 @@ urlpatterns = [
     path('courses-students/', views.courses_studentsPage, name="courses_students"),
 
     path('access-denied/', views.access_denied, name='access_denied'),
-    path('resignation/', views.resignation, name='resignation'),
-
-    path('student-page/', views.studentPage, name="studentPage"),
-    path('create-loader/', views.coursesLoader, name="coursesLoader"),
-    path('no-lessons/', views.noLessons, name="noLessons"),
-
 
     path('lobby/<str:pk>/', views.Lobby, name='lobby'),
     path('converse/', views.converse, name='converse'),
@@ -106,5 +110,4 @@ urlpatterns = [
     path('delete_member/', views.deleteMember),
     path('manage_availability/', views.manage_availability, name='manage_availability'),
     path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
-    path('success/', views.success_page, name='success_page'),
 ]

@@ -1,14 +1,18 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-student-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarStudent.html' %}
 <main class="layout layout--3">
   <div class="container">
-    {% include 'website/courses_component_students.html' %}
+    {% include 'tutoring-zone/courses-component-students.html' %}
 
     <div class="roomList">
       <div class="mobile-menu">
-        <form action="{% url 'studentPage' %}" method="GET" class="header__search">
+        <form action="{% url 'schoolweb:studentPage' %}" method="GET" class="header__search">
           <label>
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Szukaj</title>
@@ -20,8 +24,8 @@
           </label>
         </form>
         <div class="mobile-menuItems">
-          <a class="btn btn--main btn--pill" href="{% url 'courses_students' %}">Twoje kursy</a>
-          <a class="btn btn--main btn--pill" href="{% url 'activity-lesson' %}">Ostatnie aktywności</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses_students' %}">Twoje kursy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-lesson' %}">Ostatnie aktywności</a>
         </div>
       </div>
       <div class="roomList__header">
@@ -73,10 +77,10 @@
         </div>
        {% endif %}
 
-      {% include 'website/feed_component_students.html' %}
+      {% include 'tutoring-zone/feed-component-students.html' %}
     </div>
 
-    {% include 'website/activity_component_lessons.html' %}
+    {% include 'tutoring-zone/activity-component-lessons.html' %}
   </div>
 </main>
 {% endblock %}

@@ -1,7 +1,11 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarLoader.html' %}
 <br>
 <div class="create-account scroll" style="height:600px; text-align:left; font-size:16px;">
 
@@ -9,7 +13,7 @@
             <h2 style="color:#71c6dd;">TWORZENIE TWOJEGO KONTA JEST W TRAKCIE</h2>
         </div>
          <p>
-             <img src="{% static 'img/logo.png' %}"/>
+             <img src="{% static 'img/widget/logo.png' %}"/>
              Obecnie trwa proces tworzenia Twojego konta i jest ono w fazie rozpatrywania przez administrację.
              Nasz zespół dokładnie przegląda dostarczone informacje w celu upewnienia się, że spełniają one nasze
              wymagania. Skontaktujemy się z Tobą najszybciej, jak to możliwe, aby poinformować Cię o statusie konta

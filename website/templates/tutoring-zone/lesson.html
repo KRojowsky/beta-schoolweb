@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+  {% include navbar_template %}
 {% endblock navbar %}
 
 {% block content %}
@@ -45,8 +45,6 @@
               </svg>
             </a>
           {% endif %}
-
-          <h3>{{lesson.title}}</h3>
         </div>
 
       </div>
@@ -60,7 +58,7 @@
             <p>Utworzone przez</p>
             {% if lesson.host %}
             <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="room__author">
-              <div class="avatar avatar--small">
+              <div class="avatar avatar--small active">
                 <img src="{{lesson.host.avatar.url}}" />
               </div>
               <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
@@ -97,7 +95,7 @@
                   <div class="thread__author">
                     {% if message.user %}
                       <a href="{% url 'schoolweb:lesson-profile' message.user.id %}" class="thread__authorInfo">
-                        <div class="avatar avatar--small">
+                        <div class="avatar avatar--small active">
                           <img src="{{message.user.avatar.url}}" />
                         </div>
                         <span title="Zobacz profil">{{message.user.first_name}}</span>
@@ -114,7 +112,7 @@
                   </div>
 
                   {% if request.user == message.user %}
-                  <a href="#">
+                  <a href="{% url 'schoolweb:delete-lesson-message' message.id %}">
                     <div class="thread__delete">
                       <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                         <title>Usuń</title>
@@ -204,7 +202,7 @@
       <div class="participants__list scroll">
        {% for user in participants %}
         <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="participant">
-          <div class="avatar avatar--medium">
+          <div class="avatar avatar--medium active">
             <img src="{{user.avatar.url}}" />
           </div>
           <p>

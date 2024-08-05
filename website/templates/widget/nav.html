@@ -20,12 +20,12 @@
     </div>
     <div class="additional-nav">
         <ul class="nav-links">
-            <li><a href="http://127.0.0.1:8000/#jak-zaczac" class="nav-option">Jak zacząć?</a></li>
-            <li><a href="http://127.0.0.1:8000/#ceny" class="nav-option">Ceny</a></li>
-            <li><a href="http://127.0.0.1:8000/#opinie" class="nav-option">Opinie</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#jak-zaczac" class="nav-option">Jak zacząć?</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#ceny" class="nav-option">Ceny</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#opinie" class="nav-option">Opinie</a></li>
             <li><a href="{% url 'schoolweb:become-tutor' %}" class="nav-option">Zostań korepetytorem</a></li>
             <li><a class="nav-option" onclick="openModal()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"  role="img" aria-label="Otwórz sklep SchoolWeb">
                     <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5
                     8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5M3.102 4l1.313
                     7h8.17l1.313-7zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4m7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4m-7 1a1 1 0 1
@@ -34,7 +34,7 @@
                 SchoolWeb Store</a>
             </li>
             <li><a href="{% url 'schoolweb:subjects' %}" class="nav-option">Przedmioty</a></li>
-            <li><a href="http://127.0.0.1:8000/#kontakt" class="nav-option">Kontakt</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#kontakt" class="nav-option">Kontakt</a></li>
         </ul>
     </div>
     <!-- Mobile Menu -->
@@ -42,13 +42,13 @@
         <ul>
             <li><a href="{% url 'schoolweb:lessons-home' %}" title="Korepetycje">STREFA KOREPETYCJI</a></li>
             <li><a href="{% url 'schoolweb:knowledge_zone' %}" title="Forum">STREFA WIEDZY</a></li>
-            <li><a href="http://127.0.0.1:8000/#jak-zaczac">Jak zacząć?</a></li>
-            <li><a href="http://127.0.0.1:8000/#ceny">Ceny</a></li>
-            <li><a href="http://127.0.0.1:8000/#opinie">Opinie</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#jak-zaczac">Jak zacząć?</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#ceny">Ceny</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#opinie">Opinie</a></li>
             <li><a href="{% url 'schoolweb:become-tutor' %}">Zostań korepetytorem</a></li>
             <li><a onclick="openModal()">SchoolWeb Store</a></li>
             <li><a href="{% url 'schoolweb:subjects' %}">Przedmioty</a></li>
-            <li><a href="http://127.0.0.1:8000/#kontakt">Kontakt</a></li>
+            <li><a href="{% url 'schoolweb:home' %}#kontakt">Kontakt</a></li>
         </ul>
     </div>
 </nav>

@@ -1,7 +1,11 @@
-{% extends 'baseLessons.html' %}
+{% extends 'base-tutoring-zone.html' %}
 {% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarLoader.html' %}
 <br>
 <div class="create-account scroll" style="height:750px; text-align:left; font-size:16px;">
 

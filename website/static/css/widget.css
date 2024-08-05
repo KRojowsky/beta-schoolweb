@@ -11,6 +11,7 @@ html{
 
 body{
     background: #FFF;
+    color: #000;
 }
 
 a{
@@ -18,7 +19,8 @@ a{
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NAV~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~NAV.HTML~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 nav{
     background: #FFF;
@@ -82,6 +84,7 @@ nav{
     position: relative;
     color: #333;
     margin: 0 10px;
+    cursor: pointer;
 }
 
 .nav-links li a svg{
@@ -103,7 +106,7 @@ nav{
     height: 1px;
     background: #BB00FF;
     transform: scaleX(0);
-    transition: transform 0.2s ease-out;
+    transition: transform 0.3s ease-out;
 }
 
 .nav-links li a:hover::before{
@@ -136,9 +139,6 @@ nav .mobile-menu{
     --color-1: #000;
     --color-2: #FFF;
     --color-3: #BB00FF;
-}
-
-.title-word-2{
     margin-left: -12px;
 }
 
@@ -174,15 +174,11 @@ nav .mobile-menu{
         left: 0;
         right: 0;
         background: #FCF7FC;
-        padding: 0;
         box-sizing: border-box;
-        margin: auto;
     }
 
     .mobile-menu ul{
         list-style: none;
-        padding: 0;
-        margin: 0;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -197,7 +193,6 @@ nav .mobile-menu{
     }
 
     .mobile-menu a{
-        text-decoration: none;
         color: #333;
         font-size: 20px;
         padding: 10px;
@@ -216,7 +211,7 @@ nav .mobile-menu{
 
     .mobile-menu li:nth-child(1):hover, .mobile-menu li:nth-child(2):hover{
         border: 2px solid #BB00FF;
-        transition: 0.2s;
+        transition: 0.3s;
     }
 
     .hamburger-menu.active .bar:nth-child(1){
@@ -239,7 +234,7 @@ nav .mobile-menu{
         transition: transform 0.3s ease, opacity 0.3s ease;
     }
 }
-
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN-VIEW.HTML~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HEROES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .hero{
@@ -301,7 +296,6 @@ span{
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: .7px;
-    text-decoration: none;
     box-shadow: 0px 25px 15px -10px rgba(70, 70, 90, 1);
 }
 
@@ -670,7 +664,6 @@ th, td{
 }
 
 .pricing-plan > a{
-    text-decoration: none;
     background: #BB00FF;
     padding: 7px 25px;
     border-radius: 18px;
@@ -967,9 +960,7 @@ footer{
 
 .footer-column ul li a{
     color: #333;
-    text-decoration: none;
     display: inline-block;
-    transition: transform 0.2s;
 }
 
 .footer-column ul li:hover{
@@ -995,11 +986,6 @@ footer{
 
 .footer-column .fa:hover{
     background: #333;
-    text-decoration: none;
-}
-
-.footer-column .fa, .footer-column .fa-instagram{
-    text-decoration: none;
 }
 
 footer p{

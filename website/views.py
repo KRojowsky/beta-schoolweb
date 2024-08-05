@@ -541,12 +541,12 @@ def lessonProfile(request, pk):
     is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
 
     if logged_in_user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
+        navbar_template = 'tutoring-zone/nav-teacher-view.html'
         courses_component = 'tutoring-zone/courses-component-teachers.html'
         courses = Course.objects.filter(teacher=logged_in_user)
         accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
     elif logged_in_user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
+        navbar_template = 'tutoring-zone/nav-student-view.html'
         courses_component = 'tutoring-zone/courses-component-students.html'
         courses = Course.objects.filter(students=logged_in_user)
         accessible_users = (
@@ -565,7 +565,7 @@ def lessonProfile(request, pk):
     )
 
     if not is_accessible_profile:
-        return render(request, 'tutoring-zone/lesson_no_exists.html')
+        return render(request, 'tutoring-zone/lesson-no-exists.html')
 
     context = {
         'user': user,
@@ -595,7 +595,7 @@ def updateUserLessons(request):
             form.save()
             return redirect('lesson-profile', pk=user.id)
 
-    navbar_template = 'nav-teacher-view.html'
+    navbar_template = 'tutoring-zone/nav-teacher-view.html'
     error_messages = [error for field, errors in form.errors.items() for error in errors]
     for error in error_messages:
         messages.error(request, error)
@@ -682,10 +682,10 @@ def lesson(request, pk):
     back_link = ''
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
+        navbar_template = 'tutoring-zone/nav-teacher-view.html'
         back_link = reverse('schoolweb:teacherPage')
     elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
+        navbar_template = 'tutoring-zone/nav-student-view.html'
         back_link = reverse('schoolweb:studentPage')
 
     context = {
@@ -740,11 +740,11 @@ def deleteLesson(request, pk):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
+        navbar_template = 'tutoring-zone/nav-teacher-view.html'
         back_link = reverse('schoolweb:teacherPage')
 
     elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
+        navbar_template = 'tutoring-zone/nav-student-view.html'
         back_link = reverse('schoolweb:studentPage')
 
     context = {'obj': post, 'navbar_template': navbar_template, 'back_link': back_link}
@@ -763,10 +763,10 @@ def deleteLessonMessage(request, pk):
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'nav-teacher-view.html'
+        navbar_template = 'tutoring-zone/nav-teacher-view.html'
 
     elif user.groups.filter(name='Students').exists():
-        navbar_template = 'navbarStudent.html'
+        navbar_template = 'tutoring-zone/nav-student-view.html'
 
     context = {'obj': message, 'navbar_template': navbar_template}
     return render(request, 'tutoring-zone/delete-lessons.html', context)
@@ -861,8 +861,8 @@ def lessonCorrection(request, pk):
 
 
 
-def success_page(request):
-    return render(request, 'website/success_page.html')
+def successPage(request):
+    return render(request, 'tutoring-zone/success-page.html')
 
 
 def getToken(request):
@@ -958,7 +958,7 @@ def courses_studentsPage(request):
 
 
 def coursesLoader(request):
-    return render(request, 'website/userCreator.html')
+    return render(request, 'tutoring-zone/user-creator.html')
 
 
 def migrateCreator(request):
@@ -966,7 +966,7 @@ def migrateCreator(request):
 
 
 def noLessons(request):
-    return render(request, 'website/noLessons.html')
+    return render(request, 'tutoring-zone/no-lessons.html')
 
 
 @user_passes_test(lambda user: user.groups.filter(name='Students').exists(), login_url='lessonsLogin')
@@ -1005,11 +1005,11 @@ def studentPage(request):
         'now': now,
         'time_threshold': time_threshold
     }
-    return render(request, 'website/studentPage.html', context)
+    return render(request, 'tutoring-zone/student-view.html', context)
 
 
 def access_denied(request):
-    return render(request, 'website/lesson_no_exists.html')
+    return render(request, 'website/lesson-no-exists.html')
 
 
 def resignation(request):
@@ -1019,11 +1019,11 @@ def resignation(request):
             resignation = form.save(commit=False)
             resignation.user = request.user
             resignation.save()
-            return redirect('success_page')
+            return redirect('schoolweb:success-page')
     else:
         form = ResignationForm()
 
-    return render(request, 'website/resignation.html', {'form': form})
+    return render(request, 'tutoring-zone/resignation.html', {'form': form})
 
 
 

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+  {% include navbar_template %}
 {% endblock navbar %}
 
 {% block content %}
@@ -87,11 +87,11 @@
                 <h3 class="lesson-title">{{ course.name }}</h3>
               </a>
               {% else %}
-              <a href="{% url 'studentPage' %}?q={{course.name}}">
+              <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}">
                 <h3 class="lesson-title">{{ course.name }}</h3>
               </a>
               {% endif %}
-              <p style="color:#000000">Uczniowie:</p>
+              <p>Uczniowie:</p>
               <ul>
                 {% for student in course.students.all %}
                   <li>{{ student.first_name }} {{ student.last_name }} [ {{ student.lessons }} ]</li>
@@ -106,7 +106,7 @@
       {% if request.user == user and is_teacher%}
         <div class="profile__about">
           <h3>Więcej opcji:</h3>
-          <a href="#" class="btn resignation" style="margin-top:15px;">Rezygnacja</a>
+          <a href="{% url 'schoolweb:resignation' %}" class="btn resignation">Rezygnacja</a>
         </div>
       {% endif %}
 
