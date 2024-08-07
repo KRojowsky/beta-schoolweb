@@ -229,11 +229,60 @@ nav .mobile-menu{
     .bar{
         width: 25px;
         height: 3px;
-        background: #000000;
+        background: #000;
         margin-bottom: 5px;
         transition: transform 0.3s ease, opacity 0.3s ease;
     }
 }
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SHOP-INFO~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.modal-content{
+    background: #FFF;
+    max-width: 600px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.modal-content p{
+    font-size: 32px;
+    text-align: center;
+    margin: 50px 0;
+}
+
+.close{
+    color: #AAA;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus{
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN-VIEW.HTML~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~HEROES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
@@ -243,8 +292,7 @@ nav .mobile-menu{
 
 .hero, .pricing, .opinions, .contact, footer{
     width: 100%;
-    padding-left: 10%;
-    padding-right: 10%;
+    padding: 0 10%;
 }
 
 .hero-main{
@@ -547,14 +595,13 @@ span{
     align-items: center;
     background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(245,217,253,1) 0%, rgba(228,155,250,1) 100%, rgba(255,255,255,1) 100%);
     border-radius: 22px;
-    letter-spacing: 0px;
 }
 
 .hero-list li:before{
     content: counter(list-item);
     counter-increment: list-item;
-    background: #bb00ff;
-    color: #ffffff;
+    background: #BB00FF;
+    color: #FFF;
     border-radius: 50%;
     width: 50px;
     text-align: center;
@@ -579,20 +626,8 @@ span{
     }
 
     .hero-list li:before{
-        content: counter(list-item);
-        counter-increment: list-item;
-        background: #bb00ff;
-        color: #ffffff;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        text-align: center;
         display: flex;
-        align-items: center;
         justify-content: center;
-        font-weight: bold;
-        font-size: 30px;
-        margin-right: 10px;
         position: absolute;
         left: 0;
         top: 0;
@@ -629,12 +664,18 @@ span{
 	padding: 20px;
 }
 
+.table{
+    border-collapse: collapse;
+    margin: auto;
+    margin-bottom: 25px;
+}
+
 th, td{
     padding: 4px 5px;
 }
 
 .pricing-plan h4{
-    font-size: 1.5rem;
+    font-size: 20px;
 }
 
 .pricing-plan h5{
@@ -655,7 +696,7 @@ th, td{
 
 .pricing-plan .fa-chevron-circle-right{
     font-size: 32px;
-    color: #bb00ff;
+    color: #BB00FF;
 }
 
 .pricing-plan .fa-chevron-circle-right:hover{
@@ -670,7 +711,7 @@ th, td{
     font-weight: 900;
     border: none;
     font-size: 15px;
-    color: #fff;
+    color: #FFF;
 }
 
 .pricing-plan > a:hover{
@@ -734,11 +775,11 @@ th, td{
     top: 50%;
     height: 45px;
     width: 45px;
-    color: #fff;
+    color: #FFF;
     border:none;
     outline: none;
     background: #000;
-    font-size: 2rem;
+    font-size: 35px;
     cursor: pointer;
     border-radius: 50%;
     transform: translateY(-50%);
@@ -854,11 +895,11 @@ th, td{
 @media (max-width: 576px){
     .opinions{
         margin: 0;
-        padding: 0;
+        padding: 0 10px;
     }
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONTACT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONTACT-FORM~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 #contact-form{
     position: relative;
@@ -889,7 +930,7 @@ form button{
     width: 100%;
     margin-bottom: 15px;
     font-size: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #CCC;
     border-radius: 7px;
     font-family: Montserrat;
     padding: 10px;
@@ -900,13 +941,13 @@ form textarea{
 }
 
 form button{
-    background: #ffffff;
-    color: #000000;
+    background: #FFF;
+    color: #000;
     cursor: pointer;
     border: none;
     margin: 0 auto;
     max-width: 200px;
-    border: 2px solid #000000;
+    border: 2px solid #000;
     font-size: 16px;
     letter-spacing: .5px;
     font-weight: 900;
@@ -1086,7 +1127,7 @@ footer h5{
 .custom-list span{
     font-size: 17px;
     font-weight: 900;
-    color: #bb00ff;
+    color: #BB00FF;
 }
 
 .toggle-icon{
@@ -1104,9 +1145,9 @@ footer h5{
     display: none;
     text-align: left;
     transition: max-height 0.3s ease-in-out;
-    margin:25px;
-    font-size:16px;
-    line-height:1.5;
+    margin: 25px;
+    font-size: 16px;
+    line-height: 1.5;
 }
 
 .sub-hero-label .button {
@@ -1187,7 +1228,7 @@ footer h5{
 label{
     display: block;
     margin-bottom: 18px;
-    color: #000000;
+    color: #000;
     font-size: 17px;
     font-weight: 900;
 }
@@ -1201,7 +1242,7 @@ input{
 
 button{
     padding: 9px 12px;
-    background-color: #FFF;
+    background: #FFF;
     color: #000;
     border: 2px solid #000;
     border-radius: 5px;
@@ -1290,8 +1331,9 @@ button:hover{
     padding: 0 0 0 20px;
 }
 
-.contact-widget h4{
-    margin: 30px 0 10px 0;
+.contact-widget h2{
+    margin: 35px 0 10px 0;
+    font-size: 18px;
 }
 
 .contact-widget p{
@@ -1300,62 +1342,22 @@ button:hover{
     font-size: 17px;
 }
 
+.contact-widget a{
+    color: #BB00FF;
+}
+
 @media (max-width: 900px){
     .contact-container{
         margin: 150px 0;
-        padding: 10px 0 10px 0;
+        padding: 10px 0;
+    }
+
+    .contact-widget h2, .contact-widget p{
+        font-size: 15px;
     }
 }
 
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SHOP-INFO~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.modal{
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background: rgba(0, 0, 0, 0.6);
-}
-
-.modal-content{
-    background: #FFF;
-    max-width: 600px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 10px;
-    border-radius: 10px;
-    width: 100%;
-}
-
-.modal-content p{
-    font-size: 32px;
-    text-align: center;
-    margin: 50px 0;
-}
-
-.close{
-    color: #AAA;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus{
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BECOME-TUTOR~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~SUBJECTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .subjects-main-container{
     display: grid;
@@ -1369,7 +1371,7 @@ button:hover{
 }
 
 .subject-image-container{
-    padding:10px;
+    padding: 10px;
 }
 
 .subject-image-container img{

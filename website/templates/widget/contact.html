@@ -5,22 +5,49 @@
 <meta name="description" content="Skontaktuj się z platformą edukacyjną SchoolWeb w razie pytań lub problemów.">
 {% endblock description %}
 
-{% block title %}SchoolWeb | Kontakt {% endblock title %}
+{% block title %}SchoolWeb | Kontakt i Wsparcie{% endblock title %}
 
 {% block content %}
 <div class="hero sub-hero">
     <div class="contact-container">
         <h1>Kontakt</h1>
         <div class="contact-widget">
-            <h4>PYTANIA OGÓLNE</h4>
-            <p>helpdesk.schoolweb@gmail.com</p>
-            <h4>APLIKUJ NA STANOWISKO KOREPETYTORA</h4>
-            <p>rekrutacja.schoolweb@gmail.com</p>
-            <h4>NUMER KONTAKTOWY</h4>
-            <p>+48 572 930 585</p>
-            <h4>ADRES KORYSPONDENCYJNY</h4>
+            <h2>PYTANIA OGÓLNE</h2>
+            <p><a href="mailto:helpdesk.schoolweb@gmail.com">helpdesk.schoolweb@gmail.com</a></p>
+
+            <h2>APLIKUJ NA STANOWISKO KOREPETYTORA</h2>
+            <p><a href="mailto:rekrutacja.schoolweb@gmail.com">rekrutacja.schoolweb@gmail.com</a></p>
+
+            <h2>NUMER KONTAKTOWY</h2>
+            <p><a href="tel:+48572930585">+48 572 930 585</a></p>
+
+            <h2>ADRES KORESPONDENCYJNY</h2>
             <p>Wielicka 44, 30-552 Kraków</p>
         </div>
     </div>
 </div>
+
+<!-- Schema.org JSON-LD Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "SchoolWeb",
+  "url": "https://schoolweb.pl",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "email": "helpdesk.schoolweb@gmail.com",
+    "telephone": "+48 572 930 585",
+    "contactType": "Customer Support"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Wielicka 44",
+    "addressLocality": "Kraków",
+    "postalCode": "30-552",
+    "addressCountry": "PL"
+  }
+}
+</script>
+
 {% endblock content %}

@@ -17,7 +17,6 @@ urlpatterns = [
     path('wiadomosc/', views.user_message, name='user-message'),
 
 
-
     # KNOWLEDGE ZONE
     path('logowanie-strefa-wiedzy/', views.loginPage, name="login"),
     path('wylogowywanie-strefa-wiedzy/', views.logoutUser, name="logout"),

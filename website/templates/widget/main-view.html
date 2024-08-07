@@ -15,7 +15,7 @@
             <br><span>✔</span> Kontakt z korepetytorami po godzinach.
             <br><span>✔</span> Dostęp do Forum Edukacyjnego.
             <br><br><br>
-            <a href="#" title="Umów pierwsze zajęcia" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
+            <a href="{% url 'schoolweb:newStudent' %}" title="Umów pierwsze zajęcia" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
 
         </p>
         <div class="hero-image">
@@ -36,12 +36,12 @@
                 <span>konkurencyjne cenowo lekcje</span>, lecz także szereg innych narzędzi. Nasza misja
                 polega na dostarczaniu najwyższej jakości nauczania, dlatego każdy nasz korepetytor jest
                 zaangażowany i posiada bogatą wiedzę oraz umiejętności. Platforma oferuje również rozbudowane
-                narzędzia, które pomagają uczniom w ich nauce. Posiadamy  zadawać pytania i uzyskiwać odpowiedzi
-                od innych użytkowników. To miejsce, w którym wzajemnie pomagamy sobie, dzieląc się wiedzą i
-                doświadczeniem. Jesteśmy świadomi, że nauka nie kończy się o ustalonych godzinach zajęć. Dlatego
-                oferujemy <span>wsparcie uczniom poza zajęciami</span>. Dla nas liczy się sukces ucznia na
-                każdym etapie nauki. <span>Wybierając SchoolWeb masz pewność, że otrzymujesz najlepsze lekcje,
-                doświadczonych korepetytorów i niezastąpione wsparcie edukacyjne</span>.
+                narzędzia, które pomagają uczniom w ich nauce. Posiadamy <span>nowoczesne forum</span>, na którym możesz
+                zadawać pytania i uzyskiwać odpowiedzi od innych użytkowników. To miejsce, w którym wzajemnie
+                pomagamy sobie, dzieląc się wiedzą i doświadczeniem. Jesteśmy świadomi, że nauka nie kończy się o
+                ustalonych godzinach zajęć. Dlatego oferujemy <span>wsparcie dla uczniów poza zajęciami</span>. Dla nas
+                liczy się sukces ucznia na każdym etapie nauki. <span>Wybierając SchoolWeb masz pewność, że
+                otrzymujesz najlepsze lekcje, doświadczonych korepetytorów i niezastąpione wsparcie edukacyjne</span>.
             </p>
         </div>
     </div>
@@ -125,7 +125,7 @@
                 produktów, aby sprostać potrzebom każdego ucznia i nauczyciela. Odkryj nasz sklep, aby znaleźć
                 inspirujące i efektywne narzędzia do nauki i rozwijania swoich umiejętności.
             </p>
-            <a id="jak-zaczac" class="hvr-buzz-out">Kup materiały edukacyjne</a>
+            <a id="jak-zaczac" class="hvr-buzz-out" onclick="openModal()">Kup materiały edukacyjne</a>
         </div>
     </div>
 </section>
@@ -173,7 +173,7 @@
             </ul>
             <a href="#" title = "Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
-            <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
+            <table class="table" border="1">
                 <tr>
                     <th>Ilość zajęć</th>
                     <th>Cena</th>
@@ -209,7 +209,7 @@
             </ul>
             <a href="#" title = "Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
-            <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
+            <table class="table" border="1">
                 <tr>
                     <th>Ilość zajęć</th>
                     <th>Cena</th>
@@ -251,7 +251,7 @@
             </ul>
             <a href="#" title = "Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
-            <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
+            <table class="table" border="1">
                 <tr>
                     <th>Ilość zajęć</th>
                     <th>Cena</th>
@@ -287,7 +287,7 @@
             </ul>
             <a href="#" title = "Forum">Kup teraz</a>
             <h5>Pakiety miesięczne</h5>
-            <table border="1" style="border-collapse: collapse; margin:auto; margin-bottom:25px;">
+            <table class="table" border="1">
                 <tr>
                     <th>Ilość zajęć</th>
                     <th>Cena</th>
