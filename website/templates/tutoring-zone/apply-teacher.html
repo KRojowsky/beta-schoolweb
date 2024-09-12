@@ -1,9 +1,9 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+{% include 'tutoring-zone/nav-no-search.html' %}
 {% endblock navbar %}
-
+{% debug %}
 {% block content %}
 <main class="auth layout">
   <div class="container">
@@ -17,7 +17,7 @@
         <h2 class="auth__tagline">Dołącz do SchoolWeb jako korepetytor<br>
           <i><span>Jeśli posiadasz konto w "Strefie Wiedzy" pomiń poniższą rejestrację i zaloguj się tymi samymi danymi,
             aby dokończyć proces dołączania.</span></i>
-        </h2>
+        </h2>v
 
         <form class="form" action="" method="POST">
           {% csrf_token %}

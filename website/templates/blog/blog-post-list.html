@@ -1,0 +1,62 @@
+{% extends "base-blog.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="blog-posts">
+            {% for post in blog_posts %}
+                <a href="{% url 'schoolweb:blog_post_detail' slug=post.slug id=post.id %}" class="blog-post-link">
+                    <div class="blog-post" style="background-image: url('{{ post.image.url }}');">
+                        <div class="post-meta">
+                            <div class="meta-left">
+                                <span class="category-label">{{ post.category.name }}</span>
+                                {% if post.is_new %}
+                                    <span class="info-label new-label">Nowość</span>
+                                {% endif %}
+                                {% if post.is_trending %}
+                                    <span class="info-label trending-label">Na czasie</span>
+                                {% endif %}
+                            </div>
+                            <div class="meta-right">
+                                <span class="date-label">{{ post.created_at|date:"d M Y" }}</span>
+                                <div class="details-info">
+                                    <i class="fa fa-eye"></i>
+                                    <span>{{ post.views }}</span>
+                                </div>
+                                <div class="details-info">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="details-count">{{ post.likes }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meta-down">
+                            <h2>{{ post.title }}</h2>
+                            <div class="author">
+                                <span>Autor: {{ post.author }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% empty %}
+                <p>Brak postów w tej kategorii.</p>
+            {% endfor %}
+        </div>
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if blog_posts.has_previous %}
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.year %}year={{ request.GET.year }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}{% if request.GET.day %}day={{ request.GET.day }}&{% endif %}page=1">&laquo; Pierwsza</a>
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.year %}year={{ request.GET.year }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}{% if request.GET.day %}day={{ request.GET.day }}&{% endif %}page={{ blog_posts.previous_page_number }}">Poprzednia</a>
+                {% endif %}
+
+                <span class="current">
+                    Strona {{ blog_posts.number }} z {{ blog_posts.paginator.num_pages }}.
+                </span>
+
+                {% if blog_posts.has_next %}
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.year %}year={{ request.GET.year }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}{% if request.GET.day %}day={{ request.GET.day }}&{% endif %}page={{ blog_posts.next_page_number }}">Następna</a>
+                    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}{% if request.GET.year %}year={{ request.GET.year }}&{% endif %}{% if request.GET.month %}month={{ request.GET.month }}&{% endif %}{% if request.GET.day %}day={{ request.GET.day }}&{% endif %}page={{ blog_posts.paginator.num_pages }}">Ostatnia &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+{% endblock content %}

@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class PlatformMessage(models.Model):
     email = models.EmailField()
     phone_number = models.CharField(max_length=20, validators=[RegexValidator(r'^\d{9}$', message='Numer telefonu musi składać się z 9 cyfr.')])
@@ -13,11 +15,13 @@ class PlatformMessage(models.Model):
         return self.email
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True, null=True, )
     bio = models.TextField(null=True, default="Brak opisu")
-    avatar = models.ImageField(null=True, default="avatar.svg")
+    avatar = models.ImageField(upload_to='profile-pictures/', null=True, blank=True, default='profile-pictures/avatar.svg')
 
     lessons = models.IntegerField(default=0)
     lessons_intermediate = models.IntegerField(default=0)
@@ -65,7 +69,8 @@ class User(AbstractUser):
 
 
 class Topic(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, unique=True)
+    svg_icon = models.FileField(upload_to='icons/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -79,7 +84,7 @@ class Room(models.Model):
     participants = models.ManyToManyField(User, related_name='participants', blank=True)
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='room_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='room-images/', null=True, blank=True)
     likes = models.ManyToManyField(User, related_name='liked_rooms', blank=True)
 
     class Meta:
@@ -100,9 +105,9 @@ class Message(models.Model):
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='message_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='message-images/', blank=True, null=True)
     likes = models.ManyToManyField(User, related_name='liked_messages', blank=True)
-    file = models.FileField(upload_to='message_files/', blank=True, null=True)
+    file = models.FileField(upload_to='message-files/', blank=True, null=True)
 
     class Meta:
         ordering = ['-updated', '-created']
@@ -118,13 +123,20 @@ class Message(models.Model):
         self.save()
 
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 class Course(models.Model):
+    COURSE_TYPE_CHOICES = (
+        ('basic', 'Podstawowy'),
+        ('intermediate', 'Rozszerzony'),
+    )
+
     name = models.CharField(max_length=200)
     student = models.CharField(max_length=200, default="")
-    title = models.CharField(max_length=200, default="")
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
     students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)
     courseCreated = models.DateTimeField(auto_now_add=True)
+    course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES, default='basic')
 
     def get_lessons_with_feedback_count(self):
         return self.post_set.filter(feedback__isnull=False).count()
@@ -133,14 +145,19 @@ class Course(models.Model):
         ordering = ['-courseCreated']
 
     def __str__(self):
-        return self.title
+        return self.student
 
 
 class Report(models.Model):
     REPORT_REASONS = [
         ('SPAM', 'Spam'),
-        ('INAPPROPRIATE', 'Inappropriate Content'),
-        ('OTHER', 'Other'),
+        ('INAPPROPRIATE', 'Nieodpowiednia treść'),
+        ('HARASSMENT', 'Nękanie'),
+        ('FALSE_INFO', 'Fałszywe informacje'),
+        ('HATE_SPEECH', 'Mowa nienawiści'),
+        ('VIOLENCE', 'Przemoc'),
+        ('COPYRIGHT', 'Naruszenie praw autorskich'),
+        ('OTHER', 'Inne'),
     ]
 
     room = models.ForeignKey(Room, on_delete=models.CASCADE, related_name='reports')
@@ -170,7 +187,7 @@ class Post(models.Model):
     participants = models.ManyToManyField(User, related_name='postParticipants', blank=True)
     postUpdated = models.DateTimeField(auto_now=True)
     postCreated = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='room_images/', null=True, blank=True)
+    image = models.ImageField(upload_to='room-images/', null=True, blank=True)
     event_datetime = models.DateTimeField(null=True, blank=True)
     feedback = models.TextField(null=True, blank=True)
     points = models.IntegerField(null=True, blank=True)
@@ -203,8 +220,8 @@ class CourseMessage(models.Model):
     body = models.TextField()
     messageUpdated = models.DateTimeField(auto_now=True)
     messageCreated = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='message_images/', blank=True, null=True)
-    file = models.FileField(upload_to='message_files/', blank=True, null=True)
+    image = models.ImageField(upload_to='message-images/', blank=True, null=True)
+    file = models.FileField(upload_to='message-files/', blank=True, null=True)
 
     class Meta:
         ordering = ['-messageUpdated', '-messageCreated']
@@ -335,3 +352,61 @@ class Availability(models.Model):
 
     def __str__(self):
         return f"{self.user} - {self.day}"
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+class BlogCategory(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    image = models.ImageField(upload_to='category_images/', blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class BlogPost(models.Model):
+    title = models.CharField(max_length=200)
+    slug = models.SlugField(default="", null=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    category = models.ForeignKey(BlogCategory, on_delete=models.CASCADE, related_name='blog_posts')
+    is_new = models.BooleanField(default=False, verbose_name='Nowość')
+    is_trending = models.BooleanField(default=False, verbose_name='Na czasie')
+    views = models.PositiveIntegerField(default=0)
+    likes = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title
+
+    def increment_views(self):
+        self.views += 1
+        self.save(update_fields=['views'])
+
+    def get_similar_posts(self):
+        return BlogPost.objects.filter(category=self.category).exclude(id=self.id)
+
+    def number_of_likes(self):
+        return self.likes
+
+
+class ContentBlock(models.Model):
+    TEXT = 'text'
+    IMAGE = 'image'
+
+    BLOCK_TYPE_CHOICES = [
+        (TEXT, 'Text'),
+        (IMAGE, 'Image'),
+    ]
+
+    blog_post = models.ForeignKey(BlogPost, on_delete=models.CASCADE, related_name='content_blocks')
+    block_type = models.CharField(max_length=10, choices=BLOCK_TYPE_CHOICES)
+    order = models.PositiveIntegerField()
+    text = models.TextField(blank=True, null=True)
+    image = models.ImageField(upload_to='blog_content_images/', blank=True, null=True)
+
+    class Meta:
+        ordering = ['order']
+
+    def __str__(self):
+        return f"Block {self.id} ({self.get_block_type_display()}) for {self.blog_post.title}"

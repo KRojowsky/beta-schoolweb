@@ -4,6 +4,7 @@
 {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
 {% endblock navbar %}
 
+{% load static %}
 {% block content %}
 <main class="auth layout">
     {% if page == 'login' %}
@@ -66,7 +67,7 @@
 
                     <div class="auth__action">
                         <p>Zapomniałeś hasła?</p>
-                        <a href="{% url 'schoolweb:reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
+                        <a href="{% url 'reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
                     </div>
                 </div>
             </div>
@@ -120,20 +121,6 @@
         </div>
     </div>
     {% endif %}
+    <script src="{% static 'js/password-visibility.js' %}"></script>
 </main>
-
-<script>
-    function togglePasswordVisibility() {
-      const passwordInput = document.getElementById("password");
-      const togglePasswordBtn = document.querySelector(".toggle-password");
-
-      if (passwordInput.type === "password") {
-        passwordInput.type = "text";
-        togglePasswordBtn.classList.add("visible");
-      } else {
-        passwordInput.type = "password";
-        togglePasswordBtn.classList.remove("visible");
-      }
-    }
-</script>
 {% endblock content %}

@@ -1,10 +1,12 @@
 from django.contrib import admin
-from .models import Room, Topic, Message, Course, Post, CourseMessage, User, PlatformMessage, NewStudent, \
-    RoomMember, NewTeacher, LessonCorrection, Resign, Availability, Report
+from .models import Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, NewStudent, \
+    RoomMember, NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
 from django import forms
+from website.models import User
+from django.contrib.auth.models import Group
 
 
 class PlatformMessageAdmin(admin.ModelAdmin):
@@ -12,9 +14,12 @@ class PlatformMessageAdmin(admin.ModelAdmin):
 
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups', 'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons', 'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
+    list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups',
+                    'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons',
+                    'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
     list_display_links = ('email',)
-    list_editable = ('phone_number', 'add_info', 'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons', 'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
+    list_editable = ('phone_number', 'add_info', 'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons',
+                     'all_break_lessons', 'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
 
     def display_groups(self, obj):
         return ", ".join([group.name for group in obj.groups.all()])
@@ -28,7 +33,8 @@ class LessonInfo(admin.ModelAdmin):
 
     clicked_users_count.short_description = 'Clicked Users Count'
 
-    list_display = ['title', 'host', 'postUpdated', 'postCreated', 'event_datetime', 'clicked_users_count', 'feedback', 'points', 'schoolweb_rating', 'get_attended_students', 'get_attended_teachers']
+    list_display = ['title', 'host', 'postUpdated', 'postCreated', 'event_datetime', 'clicked_users_count',
+                    'feedback', 'points', 'schoolweb_rating', 'get_attended_students', 'get_attended_teachers']
     list_filter = ['host', 'course', 'postCreated', 'postUpdated', 'event_datetime']
     search_fields = ['host', 'title', 'course__name', 'feedback']
     ordering = ['-postCreated', '-postUpdated']
@@ -167,9 +173,27 @@ class CourseMessageAdmin(admin.ModelAdmin):
     room_name.short_description = 'Room'
 
 
+class CourseAdminForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Filter teachers (Users in the "Teachers" group)
+        teachers_group = Group.objects.get(name="Teachers")
+        self.fields['teacher'].queryset = User.objects.filter(groups=teachers_group)
+
+        # Filter students (Users in the "Students" group)
+        students_group = Group.objects.get(name="Students")
+        self.fields['students'].queryset = User.objects.filter(groups=students_group)
+
+
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('name', 'student', 'title', 'get_students_list', 'teacher')
-    list_filter = ('teacher', 'name', 'student', 'title',)
+    form = CourseAdminForm
+    list_display = ('name', 'student', 'course_type', 'get_students_list', 'teacher')
+    list_filter = ('teacher', 'name', 'student', 'course_type')
 
     def get_students_list(self, obj):
         return ", ".join([student.username for student in obj.students.all()])
@@ -196,8 +220,30 @@ class ReportAdmin(admin.ModelAdmin):
     list_filter = ['reason', 'created']
 
 
-admin.site.register(PlatformMessage, PlatformMessageAdmin)
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+class ContentBlockInline(admin.TabularInline):
+    model = ContentBlock
+    extra = 1
+
+
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at', 'category', 'is_new', 'is_trending', 'views', 'likes', 'slug')
+    list_filter = ('created_at', 'category', 'is_new', 'is_trending')
+    search_fields = ('title', )
+    fields = ('title', 'author', 'category', 'image', 'slug', 'is_new', 'is_trending', 'views', 'likes')
+    inlines = [ContentBlockInline]
+    prepopulated_fields = {"slug": ("title",)}
+
+
+class BlogCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image')
+    search_fields = ('name',)
+
+
+admin.site.register(BlogPost, BlogPostAdmin)
+admin.site.register(BlogCategory, BlogCategoryAdmin)
+admin.site.register(PlatformMessage, PlatformMessageAdmin)
 admin.site.register(Availability, AvailabilityAdmin)
 admin.site.register(LessonCorrection, LessonCorrectionAdmin)
 admin.site.register(User, CustomUserAdmin)

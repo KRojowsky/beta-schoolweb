@@ -88,7 +88,7 @@ nav{
 }
 
 .nav-links li a svg{
-    margin: 0 3px -1px 0;
+    margin: 0 0 -2px 0;
 }
 
 .additional-nav{
@@ -159,7 +159,7 @@ nav .mobile-menu{
     }
 }
 
-@media (max-width: 1150px){
+@media (max-width: 1192px){
     .nav-links, .additional-nav, .nav-brand-name{
         display: none;
     }
@@ -187,7 +187,7 @@ nav .mobile-menu{
     }
 
     .mobile-menu li{
-        margin: 0 0 35px 0;
+        margin: 0 0 30px 0;
         font-weight: bold;
         cursor: pointer;
     }
@@ -371,8 +371,9 @@ span{
 }
 
 @media (max-width: 900px){
-    .hero{
-        margin: 80px 0;
+    .hero-main {
+        margin-top: 0;
+        padding-top: 15px;
     }
 
     .hero-heading{
@@ -1378,7 +1379,6 @@ button:hover{
     max-width: 70%;
     max-height: 70%;
     object-fit: contain;
-    margin-bottom: -25px;
 }
 
 @media (max-width: 1250px){
@@ -1388,26 +1388,10 @@ button:hover{
     }
 }
 
-@media (max-width: 1000px){
+@media (max-width: 950px){
     .subjects-main-container{
-        margin: 120px 0 120px 0;
+        margin: 120px 0;
         grid-template-columns: repeat(2, minmax(200px, 1fr));
-    }
-
-    .subject-image-container{
-        padding: 5px;
-    }
-
-    .subject-small{
-        padding: 0;
-        margin:0;
-    }
-
-    .subject-image-container img{
-        max-width: 40%;
-        max-height: 40%;
-        object-fit: contain;
-        margin-bottom: -20px;
     }
 
     .subject-small{

@@ -1,0 +1,85 @@
+{% load static %}
+<nav class="main-nav">
+    <div class="nav-left">
+        <a href="{% url 'schoolweb:home' %}" class="logo-button">
+            <img src="{% static 'img/widget/logo.png' %}" alt="Logo" class="logo-img">
+        </a>
+        <div class="nav-buttons">
+            <button class="button" id="category-menu-btn">Kategorie</button>
+            <button class="button" id="filter-menu-btn">Filtruj</button>
+        </div>
+        <button class="button" id="theme-toggle-btn"><i class="fa-solid fa-sun"></i></button>
+    </div>
+
+    <div class="search-form">
+        <form method="GET">
+            <input type="text" name="q" placeholder="Szukaj na blogu" value="{{ request.GET.q }}">
+            <button class="button" type="submit">Szukaj</button>
+        </form>
+    </div>
+
+    <div id="category-menu" class="menu">
+        <h2>Kategorie</h2>
+        <ul>
+            <li>
+                <a href="{% url 'schoolweb:blog_post_list' %}" class="{% if not request.GET.category %}active{% endif %}">
+                    <img src="{% static 'img/blog/category.png' %}" alt="Wszystkie zdjęcie" class="menu-image">
+                    Wszystkie
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'schoolweb:blog_post_list' %}?new=true" class="{% if request.GET.new == 'true' %}active{% endif %}">
+                    <img src="{% static 'img/blog/category.png' %}" alt="Nowość zdjęcie" class="menu-image">
+                    Nowość
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'schoolweb:blog_post_list' %}?trending=true" class="{% if request.GET.trending == 'true' %}active{% endif %}">
+                    <img src="{% static 'img/blog/category.png' %}" alt="Na czasie zdjęcie" class="menu-image">
+                    Na czasie
+                </a>
+            </li>
+            {% for category in categories %}
+                <li>
+                    <a href="{% url 'schoolweb:blog_post_list' %}?category={{ category.id }}" class="category-link {% if request.GET.category == category.id|stringformat:"s" %}active{% endif %}">
+                        {% if category.image %}
+                            <img src="{{ category.image.url }}" alt="{{ category.name }} image" class="category-image">
+                        {% endif %}
+                        {{ category.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <div id="filter-menu" class="menu hidden">
+        <h2>Filtruj po dacie</h2>
+        <form method="GET">
+            <label for="year">Rok:</label>
+            <select name="year" id="year">
+                <option value="">-- Wybierz rok --</option>
+                {% for year in years %}
+                    <option value="{{ year.year }}" {% if request.GET.year == year.year|stringformat:"s" %}selected{% endif %}>{{ year.year }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="month">Miesiąc:</label>
+            <select name="month" id="month">
+                <option value="">-- Wybierz miesiąc --</option>
+                {% for month in months %}
+                    <option value="{{ month.month }}" {% if request.GET.month == month.month|stringformat:"s" %}selected{% endif %}>{{ month|date:"F" }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="day">Dzień:</label>
+            <select name="day" id="day">
+                <option value="">-- Wybierz dzień --</option>
+                {% for day in days %}
+                    <option value="{{ day.day }}" {% if request.GET.day == day.day|stringformat:"s" %}selected{% endif %}>{{ day.day }}</option>
+                {% endfor %}
+            </select>
+
+            <button class="button" type="submit">Filtruj</button>
+        </form>
+    </div>
+</nav>

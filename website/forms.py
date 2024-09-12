@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ImageField
-from .models import Room, Post, User, NewStudent, NewTeacher, Course, LessonCorrection, Resign, Availability, Report
+from .models import Room, Post, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability, Report
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -38,6 +38,7 @@ class NewTeacherForm(forms.ModelForm):
 
 
 class ApplyTeacherForm(UserCreationForm):
+    usable_password = None
     username = forms.CharField(
         max_length=30,
         validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
@@ -71,6 +72,7 @@ class NewStudentForm(forms.ModelForm):
 
 
 class ApplyStudentForm(UserCreationForm):
+    usable_password = None
     username = forms.CharField(
         max_length=30,
         validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
@@ -165,6 +167,12 @@ class PostFormEdit(forms.ModelForm):
             raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
 
         return event_datetime
+
+
+class RoomMessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['body', 'image', 'file']
 
 
 class LessonFeedbackForm(forms.ModelForm):

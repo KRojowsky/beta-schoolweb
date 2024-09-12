@@ -58,7 +58,7 @@
       <div class="room__box scroll">
         <div class="room__header scroll">
           <div class="room__info">
-            <h3>{{room.name}}</h3>
+            <h1>{{room.name}}</h1>
             <span>{{room.created|timesince}} temu</span>
           </div>
           <div class="room__hosted">
@@ -73,7 +73,7 @@
             {% else %}
               <div class="room__author">
                 <div class="avatar avatar--small">
-                  <img src="{% static 'img/avatar.svg' %}" />
+                  <img src="{% static 'img/profile-pictures/avatar.svg' %}" />
                 </div>
                 <span>Użytkownik usunięty</span>
               </div>
@@ -82,13 +82,11 @@
           <div class="room__details scroll">
             {{room.description}}
           </div>
-          <br>
           {% if room.image %}
             <a href="{{ room.image.url }}" class="room-image" target="_blank" title="Powiększ">
               <img src="{{ room.image.url }}" alt="Zdjęcie posta">
             </a>
           {% endif %}
-          <br>
           <div class="likes-room">
             <div class="likes-info" title="Polubienia" onclick="showRoomLikes({{ room.id }})">
                 <img src="{% static 'img/filled.png' %}">
@@ -104,29 +102,25 @@
             <span class="room__topics">{{ room.topic }}</span>
           </div>
         </div>
-        <hr>
         {% if request.user.is_authenticated %}
-          <div class="room-info">
-              <div class="room-info-detail">
-                <button class="like-room-button" data-room-id="{{ room.id }}" {% if request.user in room.likes.all %}data-liked="true"{% endif %}>
-                    {% if request.user in room.likes.all %}
-                        <span>
-                            <i class="fa fa-thumbs-up"></i> Lubię to!
-                        </span>
-                    {% else %}
-                        <span>
-                            <i class="fa fa-thumbs-up"></i> Lubię to!
-                        </span>
-                    {% endif %}
-                </button>
-              </div>
-              <div class="room-info-detail">
-                  <a href="#left-side" class="room-info-detail-button">
-                      <i class="fa fa-envelope"></i> Komentarz
-                  </a>
-              </div>
-          </div>
+        <div class="room-info">
+            <button class="room-info-button like-room-button" data-room-id="{{ room.id }}" {% if request.user in room.likes.all %}data-liked="true"{% endif %}>
+                {% if request.user in room.likes.all %}
+                    <span>
+                        <i class="fa fa-thumbs-up"></i>Lubię to!
+                    </span>
+                {% else %}
+                    <span>
+                        <i class="fa fa-thumbs-up"></i>Lubię to!
+                    </span>
+                {% endif %}
+            </button>
+            <a href="#left-side" class="room-info-button">
+                <i class="fa fa-envelope"></i> Komentarz
+            </a>
+        </div>
         {% endif %}
+
 
         <div id="comms" class="room__conversation">
           <div class="threads scroll">
@@ -136,16 +130,29 @@
                 <div class="thread__top">
                   <div class="thread__author">
                     {% if request.user == message.user %}
-                    <a href="{% url 'schoolweb:delete-message' message.id %}">
                       <div class="thread__delete">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                          <title>Usuń</title>
-                          <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981
-                          9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z">
-                          </path>
-                        </svg>
+                        <a href="{% url 'schoolweb:delete-message' message.id %}">
+                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                            <title>Usuń</title>
+                            <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981
+                            9.98 1.333 1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"></path>
+                          </svg>
+                        </a>
+
+                         <a href="{% url 'schoolweb:edit-message' message.id %}">
+                          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
+                            <title>Edytuj</title>
+                            <path d="M19.404,6.65l-5.998-5.996c-0.292-0.292-0.765-0.292-1.056,0l-2.22,2.22l-8.311,8.313l-0.003,
+                            0.001v0.003l-0.161,0.161c-0.114,0.112-0.187,0.258-0.21,0.417l-1.059,7.051c-0.035,0.233,0.044,0.47,0.21,
+                            0.639c0.143,0.14,0.333,0.219,0.528,0.219c0.038,0,0.073-0.003,0.111-0.009l7.054-1.055c0.158-0.025,
+                            0.306-0.098,0.417-0.211l8.478-8.476l2.22-2.22C19.695,7.414,19.695,6.941,19.404,6.65z
+                            M8.341,16.656l-0.989-0.99l7.258-7.258l0.989,0.99L8.341,16.656z M2.332,15.919l0.411-2.748l4.143,
+                            4.143l-2.748,0.41L2.332,15.919z M13.554,7.351L6.296,14.61l-0.849-0.848l7.259-7.258l0.423,0.424L13.554,
+                            7.351zM10.658,4.457l0.992,0.99l-7.259,7.258L3.4,11.715L10.658,4.457z M16.656,
+                            8.342l-1.517-1.517V6.823h-0.003l-0.951-0.951l-2.471-2.471l1.164-1.164l4.942,4.94L16.656,8.342z" ></path>
+                          </svg>
+                        </a>
                       </div>
-                    </a>
                     {% endif %}
                     {% if message.user %}
                       <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="thread__authorInfo">
@@ -153,14 +160,14 @@
                           <img src="{{message.user.avatar.url}}" />
                         </div>
                         <div class="thread__authorName">
-                          <span title="Zobacz profil">@{{message.user.username}}</span>
+                          <span class="username" title="Zobacz profil">@{{message.user.username}}</span>
                           <span class="thread__date">{{message.created|timesince}} temu</span>
                         </div>
                       </a>
                     {% else %}
                       <div class="thread__authorInfo">
                         <div class="avatar avatar--small">
-                          <img src="{% static 'img/avatar.svg' %}" />
+                          <img src="{% static 'img/profile-pictures/avatar.svg' %}" />
                         </div>
                         <div class="thread__authorName">
                           <span>Użytkownik usunięty</span>
@@ -168,20 +175,6 @@
                         </div>
                       </div>
                     {% endif %}
-                  </div>
-                  <div class="likes-container">
-                      {% if request.user.is_authenticated %}
-                      <button class="like-button" data-message-id="{{ message.id }}" {% if request.user in message.likes.all %}data-liked="true"{% endif %}>
-                          {% if request.user in message.likes.all %}
-                              <span>
-                                  <i class="fa fa-thumbs-up"></i> Lubię to!
-                              </span>
-                          {% else %}
-                              <i class="fa fa-thumbs-up"></i> Lubię to!
-                          {% endif %}
-                      </button>
-                      {% endif %}
-                      <span class="likes-count" data-message-id="{{ message.id }}" title="Polubienia">{{ message.likes.count }}</span>
                   </div>
                     <div class="modal-container">
                         <div class="modal-content">
@@ -192,7 +185,6 @@
                 </div>
                 <div class="thread__details">
                   {{message.body}}
-                  <br>
                   {% if message.image %}
                     <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
                       <img src="{{ message.image.url }}" alt="Message Image" />
@@ -205,13 +197,11 @@
                   {% endif %}
                 </div>
 
-                <div class="likes-container-mobile">
+                <div class="likes-container">
                     {% if request.user.is_authenticated %}
                         <button class="like-button" data-message-id="{{ message.id }}" {% if request.user in message.likes.all %}data-liked="true"{% endif %}>
                             {% if request.user in message.likes.all %}
-                                <span>
-                                    <i class="fa fa-thumbs-up"></i> Lubię to!
-                                </span>
+                                <i class="fa fa-thumbs-up"></i> Lubię to!
                             {% else %}
                                 <i class="fa fa-thumbs-up"></i> Lubię to!
                             {% endif %}
@@ -221,14 +211,11 @@
                         {{ message.likes.count }}
                     </span>
                 </div>
-
               </div>
               {% endfor %}
             {% else %}
               <div class="thread">
-                  <div class="thread__details">
                     <i>Brak komentarzy do tego posta.</i>
-                  </div>
               </div>
             {% endif %}
           </div>
@@ -239,45 +226,34 @@
             <form action="" method="POST" onsubmit="return validateForm()" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="input-container">
-                    <div id="left-side" class="left-side scroll-target">
-                        <input name="body" id="message-input" placeholder="Napisz wiadomość . . ." />
+                    <div class="avatar-container">
+                        <img src="{{ request.user.avatar.url }}" alt="User Avatar" class="user-avatar">
                     </div>
-                    <div class="right-side">
-                        <label for="image" class="file-upload-button">
-                            <i class="fa fa-camera upload-icon" title="Dodaj zdjęcie"></i>
-                        </label>
-                        <input type="file" id="image" name="image" accept="image/*" multiple style="display: none;" onchange="displaySelectedFileName()" />
+                    <div class="input-box">
+                        <div id="left-side" class="left-side scroll-target">
+                            <input name="body" id="message-input" placeholder="Napisz komentarz" />
+                        </div>
+                        <div class="bottom-controls">
+                            <div class="file-upload-controls">
+                                <label for="image" class="file-upload-button">
+                                    <i class="fa fa-camera upload-icon" title="Dodaj zdjęcie"></i>
+                                </label>
+                                <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="displaySelectedFileName()" />
 
-                        <label for="file" class="file-upload-button">
-                            <i class="fa fa-file upload-icon" title="Dodaj plik"></i>
-                        </label>
-                        <input type="file" id="file" name="file" accept=".pdf, .docx, .xlsx" multiple style="display: none;" onchange="displaySelectedFileName()" />
-
-                        <span id="selected-file-name"></span>
-                        <button class="transparent-button" title="Wyślij"><i class="fa">&#xf1d9;</i></button>
+                                <label for="file" class="file-upload-button">
+                                    <i class="fa fa-file upload-icon" title="Dodaj plik"></i>
+                                </label>
+                                <input type="file" id="file" name="file" accept=".pdf, .docx, .xlsx" style="display: none;" onchange="displaySelectedFileName()" />
+                            </div>
+                            <div class="send-button-container">
+                                <span id="selected-file-name"></span>
+                                <button class="transparent-button" title="Wyślij"><i class="fa">&#xf1d9;</i></button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </form>
         </div>
-        <script>
-          function displaySelectedFileName() {
-              const fileInput = document.getElementById('image');
-              const fileInput2 = document.getElementById('file');
-              const selectedFileName = document.getElementById('selected-file-name');
-
-              if (fileInput.files.length > 0 || fileInput2.files.length > 0) {
-                  const fullFileName = fileInput.files.length > 0 ? fileInput.files[0].name : fileInput2.files[0].name;
-                  const fileExtension = fullFileName.split('.').pop();
-
-                  const maxLength = 5;
-                  let displayedFileName = fullFileName.length > maxLength ? fullFileName.slice(0, maxLength) + '...' : fullFileName;
-
-                  selectedFileName.textContent = displayedFileName + '.' + fileExtension;
-              } else {
-                  selectedFileName.textContent = '';
-              }
-          }
-        </script>
         {% endif %}
     </div>
 
@@ -291,14 +267,14 @@
           </div>
           <p>
             {{user.username}}
-            <span title="Zobacz profil">@{{user.username}}</span>
+            <span class="username" title="Zobacz profil">@{{user.username}}</span>
           </p>
         </a>
         {% endfor %}
       </div>
     </div>
   </div>
-  </div>
+  <script src="{% static 'js/room.js' %}"></script>
 </main>
 
 <script>

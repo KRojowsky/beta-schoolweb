@@ -9,7 +9,7 @@
                     <img src="{{room.host.avatar.url}}"/>
                 </div>
                 <div class="roomListRoom__details">
-                    <span title="Zobacz profil">@{{room.host.username}}</span>
+                    <span title="Zobacz profil" class="username">@{{room.host.username}}</span>
                     <div class="roomListRoom__actions">
                         <span>{{room.created|timesince}} temu</span>
                     </div>
@@ -21,7 +21,7 @@
         <div class="roomListRoom__author-container">
             <div class="roomListRoom__author">
                 <div class="avatar avatar--small active">
-                    <img src="{% static 'img/avatar.svg' %}" alt="Zdjęcie posta"/>
+                    <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Zdjęcie posta"/>
                 </div>
                 <span>Użytkownik usunięty</span>
             </div>
@@ -41,13 +41,13 @@
 
     <div class="participants-avatars">
         {% for participant in room.participants.all %}
-            {% if forloop.counter <= 3 %}
+            {% if forloop.counter <= 2 %}
             <div class="avatar avatar--participant">
                 <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
             </div>
             {% endif %}
         {% endfor %}
-        {% if room.participants.all.count > 3 %}
+        {% if room.participants.all.count > 2 %}
             <span class="more-participants">+{{ room.participants.all.count|add:-2 }} użytkowników odpowiedziało</span>
         {% endif %}
     </div>
@@ -79,7 +79,7 @@
         </div>
         <div class="like-topic-container">
             <a href="{% url 'schoolweb:report-room' room.id %}" class="envelope-link">
-                <i class="fa fa-info-circle" aria-hidden="true"></i> Zgłoś
+                <i class="fa fa-flag" aria-hidden="true"></i> Zgłoś
             </a>
         </div>
     </div>

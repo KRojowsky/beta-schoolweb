@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='room',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='room_images/'),
+            field=models.ImageField(blank=True, null=True, upload_to='room-images/'),
         ),
         migrations.DeleteModel(
             name='RoomImage',

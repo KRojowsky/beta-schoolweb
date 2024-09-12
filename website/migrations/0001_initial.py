@@ -102,7 +102,7 @@ class Migration(migrations.Migration):
                 ('body', models.TextField()),
                 ('updated', models.DateTimeField(auto_now=True)),
                 ('created', models.DateTimeField(auto_now_add=True)),
-                ('image', models.ImageField(blank=True, null=True, upload_to='message_images/')),
+                ('image', models.ImageField(blank=True, null=True, upload_to='message-images/')),
                 ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='website.room')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

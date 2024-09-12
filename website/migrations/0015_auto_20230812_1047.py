@@ -15,12 +15,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='coursemessage',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='message_images/'),
+            field=models.ImageField(blank=True, null=True, upload_to='message-images/'),
         ),
         migrations.AddField(
             model_name='post',
             name='image',
-            field=models.ImageField(blank=True, null=True, upload_to='room_images/'),
+            field=models.ImageField(blank=True, null=True, upload_to='room-images/'),
         ),
         migrations.AlterField(
             model_name='room',

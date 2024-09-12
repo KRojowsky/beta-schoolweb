@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='coursemessage',
             name='file',
-            field=models.FileField(blank=True, null=True, upload_to='message_files/'),
+            field=models.FileField(blank=True, null=True, upload_to='message-files/'),
         ),
     ]

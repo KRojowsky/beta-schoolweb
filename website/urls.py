@@ -24,25 +24,21 @@ urlpatterns = [
 
     path('strefa-wiedzy/', views.knowledge_zone, name="knowledge_zone"),
 
+    path('post/<int:pk>/zgłos/', views.reportRoom, name='report-room'),
+
     path('post/<str:pk>/', views.room, name="room"),
     path('utworz-post/', views.createRoom, name="create-room"),
     path('edytuj-post/<str:pk>/', views.updateRoom, name="update-room"),
     path('usun-post/<str:pk>/', views.deleteRoom, name="delete-room"),
     path('usun-komentarz/<str:pk>/', views.deleteMessage, name="delete-message"),
+    path('edytuj-komentarz/<int:pk>/', views.editRoomMessage, name='edit-message'),
 
-    path('post/<int:pk>/zgłos/', views.reportRoom, name='report-room'),
 
     path('profil/<str:pk>/', views.userProfile, name="user-profile"),
     path('edytuj-uzytkownika/', views.updateUser, name="update-user"),
 
     path('tematy/', views.topicsPage, name="topics"),
     path('aktywnosc/', views.activityPage, name="activity"),
-
-    path('reset_password/', auth_views.PasswordResetView.as_view(template_name="knowledge-zone/password_reset.html"), name='reset_password'),
-    path('reset_password_sent/', auth_views.PasswordResetDoneView.as_view(template_name="knowledge-zone/password_reset_sent.html"), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name="knowledge-zone/password_reset_form.html"), name='password_reset_confirm'),
-    path('reset_password_complete/', auth_views.PasswordResetCompleteView.as_view(template_name="knowledge-zone/password_reset_done.html"), name='password_reset_complete'),
-
 
     # TUTORING ZONE
     path('zaczynaj/', views.lessonsHome, name="lessons-home"),
@@ -55,7 +51,6 @@ urlpatterns = [
     path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
 
     path('create-loader/', views.coursesLoader, name="coursesLoader"),
-    path('no-lessons/', views.noLessons, name="noLessons"),
 
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
     path('strefa-korepetycji-korepetytor-uczen/', views.studentPage, name="studentPage"),
@@ -107,6 +102,11 @@ urlpatterns = [
     path('create_member/', views.createMember),
     path('get_member/', views.getMember),
     path('delete_member/', views.deleteMember),
-    path('manage_availability/', views.manage_availability, name='manage_availability'),
+    path('dostępność/', views.manage_availability, name='manage_availability'),
     path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
+
+    # BLOG
+    path('blog/', views.blog_post_list, name='blog_post_list'),
+    path('post/<slug:slug>/<int:id>/', views.blog_post_detail, name='blog_post_detail'),
+    path('post/<int:pk>/like/', views.like_post, name='like_post'),
 ]

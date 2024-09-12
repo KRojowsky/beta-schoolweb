@@ -2,70 +2,23 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+  {% include 'tutoring-zone/nav-login-no-search.html' %}
 {% endblock navbar %}
 
 {% block content %}
-<br>
-<div class="create-account scroll" style="height:600px; text-align:left; font-size:16px;">
-
-        <div class="create-account_logo">
-            <h2 style="color:#71c6dd;">TWORZENIE TWOJEGO KONTA JEST W TRAKCIE</h2>
+<div class="create-account-container">
+    <div class="create-account scroll">
+        <div class="create-account-logo">
+            <h1>TWORZENIE TWOJEGO KONTA JEST W TRAKCIE</h1>
         </div>
-         <p>
-             <img src="{% static 'img/widget/logo.png' %}"/>
-             Obecnie trwa proces tworzenia Twojego konta i jest ono w fazie rozpatrywania przez administrację.
-             Nasz zespół dokładnie przegląda dostarczone informacje w celu upewnienia się, że spełniają one nasze
-             wymagania. Skontaktujemy się z Tobą najszybciej, jak to możliwe, aby poinformować Cię o statusie konta
-             oraz dalszych krokach. <br><br>Tworzenie konta jest procesem, który wymaga starannej weryfikacji i
-             zatwierdzenia przez naszą administrację. Nasz zespół pracuje nad tym, aby upewnić się, że wszelkie
-             dane i informacje dostarczone podczas rejestracji są poprawne i zgodne z naszymi wytycznymi. Rozumiemy,
-             że czekanie może być czasem frustrujące, ale chcemy zapewnić Cię, że staramy się jak najszybciej
-             przetworzyć Twoją prośbę. <br><br>Dziękujemy za wybranie naszej platformy. Twoje zainteresowanie i
-             cierpliwość są dla nas bardzo ważne. Jeśli masz jeszcze jakieś pytania lub wątpliwości, prosimy o kontakt
-             za pomocą formularza na stronie SchoolWeb, telefonicznie lub mailowo. <br><br>Dziękujemy za cierpliwość
-             i zrozumienie,<br>Zespół SchoolWeb
+        <p>
+            <img src="{% static 'img/widget/logo.png' %}"/>
+            Obecnie Twoje konto jest w trakcie rozpatrywania przez administrację. Nasz zespół dokładnie przegląda
+            dostarczone informacje, aby upewnić się, że są one zgodne z naszymi wymaganiami. Skontaktujemy się z Tobą
+            jak najszybciej, aby poinformować o dalszych krokach.<br><br>Dziękujemy za cierpliwość oraz za wybranie
+            naszej platformy. Jeśli masz pytania, skontaktuj się z nami przez formularz na stronie SchoolWeb,
+            telefonicznie lub mailowo.<br><br><br><b>Z pozdrowieniami,<br>Zespół SchoolWeb</b>
         </p>
+    </div>
 </div>
-
-<style>
-.create-account {
-    margin-top:220px;
-}
-
-.create-account p {
-    display: flex;
-    align-items: center;
-    text-align:justify;
-    margin:35px;
-}
-.create-account img {
-  height: 27rem;
-  width: 27rem;
-  margin-right:10px;
-}
-
-@media (max-width: 1250px) {
-  .create-account img{
-    display:none;
-  }
-  .create-account p {
-    margin-top:15px;
-  }
-  .create-account {
-    margin-top:200px;
-  }
-}
-
-@media (max-width: 676px) {
-  .create-account {
-    margin-top:100px;
-    border-radius:7px;
-  }
-
-  .create-account p {
-    margin-top:15px;
-  }
-}
-</style>
 {% endblock content %}

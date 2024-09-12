@@ -11,7 +11,7 @@
   <div class="layout__box">
     <div class="layout__boxHeader">
       <div class="layout__boxTitle">
-        <h1>Podsumowanie zajęć: {{ lesson.title }}</h1>
+        <h3>Podsumowanie zajęć: {{ lesson.title }}</h3>
       </div>
     </div>
     <div class="layout__body">
@@ -46,7 +46,7 @@
           </div>
         </div>
         <div class="form__action">
-          <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
+          <a class="btn btn--main" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
           <button class="btn btn--main" type="submit">Zatwierdź</button>
         </div>
       </form>

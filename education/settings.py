@@ -108,20 +108,18 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-STATIC_URL = '/static/'
-MEDIA_URL = '/img/'
+STATIC_URL = 'website/static/'
+MEDIA_URL = 'website/img/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    BASE_DIR / 'website/static'
 ]
 
-MEDIA_ROOT = BASE_DIR / 'static/img'
+MEDIA_ROOT = BASE_DIR / 'website/static/img'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'helpdesk.schoolweb@gmail.com'
-EMAIL_HOST_PASSWORD = 'nzzu vmyl zjun ihbv'
+EMAIL_HOST_PASSWORD = 'qwam bwew qyjh vdcs'

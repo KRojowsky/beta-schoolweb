@@ -17,7 +17,11 @@
         <li>
             <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">
                 <div>
-                    <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
+                    {% if topic.svg_icon %}
+                        <img src="{{ topic.svg_icon.url }}" alt="{{ topic.name }} icon" />
+                    {% else %}
+                        <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
+                    {% endif %}
                     {{topic.name}}
                 </div>
                 <span>{{topic.room_set.all.count}}</span>

@@ -11,7 +11,7 @@
                 <div class="avatar avatar--small active">
                     <img src="{{ message.user.avatar.url }}" alt="Autor komentarza"/>
                 </div>
-                <p title="Zobacz profil">
+                <p title="Zobacz profil" class="username">
                     @{{ message.user.username }}
                     <span>{{ message.created|timesince }} temu</span>
                 </p>
@@ -19,7 +19,7 @@
             {% if request.user == message.user %}
             <div class="roomListRoom__actions">
                 <a href="{% url 'schoolweb:delete-message' message.id %}">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 32 32">
                         <title>Usuń</title>
                         <path d="M27.314 6.019l-1.333-1.333-9.98 9.981-9.981-9.981-1.333 1.333 9.981 9.981-9.981 9.98 1.333
                         1.333 9.981-9.98 9.98 9.98 1.333-1.333-9.98-9.98 9.98-9.981z"></path>
@@ -30,13 +30,11 @@
             {% elif not message.user %}
             <a class="roomListRoom__author">
                 <div class="avatar avatar--small">
-                    <img src="{% static 'img/avatar.svg' %}" class="user-avatar"/>
+                    <img src="{% static 'img/profile-pictures/avatar.svg' %}"/>
                 </div>
                 <div class="user-info">
-                    <p>
                     <p class="deleted-user">Usunięty użytkownik</p>
                     <span class="deleted-data">{{ message.created|timesince }} temu</span>
-                    </p>
                 </div>
             </a>
             {% endif %}
@@ -49,7 +47,7 @@
                 </p>
                 {% if message.body %}
                 <div class="activities__boxRoomContent lesson-link">
-                    {{message.body}}
+                    {{message.body|truncatechars:60}}
                 </div>
                 {% endif %}
                 {% else %}

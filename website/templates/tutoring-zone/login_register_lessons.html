@@ -1,9 +1,10 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+{% include 'tutoring-zone/nav-no-search.html' %}
 {% endblock navbar %}
 
+{% load static %}
 {% block content %}
 <main class="auth layout">
   <div class="container">
@@ -63,26 +64,12 @@
 
           <div class="auth__action">
             <p>Zapomniałeś hasła?</p>
-            <a href="#" class="btn btn.create-account--link">Zresetuj hasło</a>
+            <a href="#" class="btn btn--link">Zresetuj hasło</a>
         </div>
         </div>
       </div>
     </div>
   </div>
+  <script src="{% static 'js/password-visibility.js' %}"></script>
 </main>
-
-<script>
-  function togglePasswordVisibility() {
-    const passwordInput = document.getElementById("password");
-    const togglePasswordBtn = document.querySelector(".toggle-password");
-
-    if (passwordInput.type === "password") {
-      passwordInput.type = "text";
-      togglePasswordBtn.classList.add("visible");
-    } else {
-      passwordInput.type = "password";
-      togglePasswordBtn.classList.remove("visible");
-    }
-  }
-</script>
 {% endblock content %}

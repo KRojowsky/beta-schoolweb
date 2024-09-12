@@ -4,7 +4,7 @@
     <div class="roomListRoom__header">
       {% if lesson.host %}
       <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="roomListRoom__author">
-        <div class="avatar avatar--small">
+        <div class="avatar avatar--small active">
           <img src="{{ lesson.host.avatar.url }}" />
         </div>
         <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
@@ -59,9 +59,11 @@
                 <img src="{{ student.avatar.url }}" alt="{{ student.username }}">
             </div>
         {% endfor %}
-        <div class="avatar avatar--participant">
-            <img src="{{ teacher.avatar.url }}" alt="{{ teacher.username }}">
-        </div>
+        {% if lesson.course.teacher %}
+            <div class="avatar avatar--participant">
+                <img src="{{ lesson.course.teacher.avatar.url }}" alt="{{ lesson.course.teacher.username }}">
+            </div>
+        {% endif %}
     </div>
 
      <div class="comment-counters-container">

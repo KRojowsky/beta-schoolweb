@@ -3,9 +3,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember, Report
-from .forms import RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm, \
-    NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm, ResignationForm, ReportForm
+from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember, Report,
+                     BlogPost, BlogCategory)
+from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
+                    NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
+                    ResignationForm, ReportForm, RoomMessageForm)
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib.auth.models import Group
@@ -24,13 +26,23 @@ import json
 from datetime import timedelta
 from .forms import AvailabilityForm
 from .models import Availability
+from django.core.paginator import Paginator
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 def home(request):
-    return render(request, 'widget/main-view.html')
+    user_in_migrates = False
+
+    if request.user.is_authenticated:
+        user_in_migrates = request.user.groups.filter(name='Migrates').exists()
+
+    context = {
+        'user_in_migrates': user_in_migrates,
+    }
+
+    return render(request, 'widget/main-view.html', context)
 
 
 def become_tutor(request):
@@ -63,7 +75,7 @@ def user_message(request):
 
         PlatformMessage.objects.create(email=email, phone_number=phone_number, message=message)
 
-    return render(request, 'widget.html')
+    return render(request, 'base-widget.html')
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
@@ -148,6 +160,11 @@ def check_user_exists_in_group(username):
 
 
 def knowledge_zone(request):
+    user_in_migrates = False
+
+    if request.user.is_authenticated:
+        user_in_migrates = request.user.groups.filter(name='Migrates').exists()
+
     q = request.GET.get('q', '')
     rooms = Room.objects.filter(
         Q(topic__name__icontains=q) |
@@ -164,7 +181,9 @@ def knowledge_zone(request):
         'topics': topics,
         'room_count': room_count,
         'room_messages': room_messages,
+        'user_in_migrates': user_in_migrates,  # Przekazanie informacji do szablonu
     }
+
     return render(request, 'knowledge-zone/knowledge-zone.html', context)
 
 
@@ -174,7 +193,7 @@ def room(request, pk):
     except Room.DoesNotExist:
         return redirect('schoolweb:knowledge_zone')
 
-    room_messages = room.message_set.all().order_by('-created')
+    room_messages = room.message_set.all().order_by('created')
     participants = room.participants.all()
 
     if request.method == 'POST':
@@ -286,6 +305,24 @@ def deleteMessage(request, pk):
     return render(request, 'knowledge-zone/delete.html', {'obj': message})
 
 
+@login_required(login_url='login')
+def editRoomMessage(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+
+    if request.user != message.user:
+        return redirect('room', pk=message.room.pk)
+
+    if request.method == 'POST':
+        form = RoomMessageForm(request.POST, request.FILES, instance=message)
+        if form.is_valid():
+            form.save()
+            return redirect('schoolweb:room', pk=message.room.pk)
+    else:
+        form = RoomMessageForm(instance=message)
+
+    return render(request, 'knowledge-zone/edit-message.html', {'form': form, 'message': message})
+
+
 def userProfile(request, pk):
     user = get_object_or_404(User, id=pk)
     rooms = user.room_set.all()
@@ -342,95 +379,11 @@ def lessonsHome(request):
 
     if user.groups.filter(name='Teachers').exists():
         return redirect('schoolweb:teacherPage')
-    elif user.groups.filter(name='Students').exists():
+
+    if user.groups.filter(name='Students').exists():
         return redirect('schoolweb:studentPage')
 
     return render(request, 'tutoring-zone/lessons-home.html')
-
-
-def lessonsLogin(request):
-    page = 'lessonsLogin'
-
-    if request.user.groups.filter(name='NewStudents').exists() or request.user.groups.filter(
-            name='NewTeachers').exists():
-        return redirect('schoolweb:coursesLoader')
-
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(email=email)
-        except:
-            messages.error(request, 'Użytkownik nie istnieje')
-
-        user = authenticate(request, username=email, password=password)
-
-        if user is not None and (user.groups.filter(name='Students').exists() or
-                                 user.groups.filter(name='Teachers').exists() or
-                                 user.groups.filter(name='NONE').exists() or
-                                 user.groups.filter(name='Writers').exists() or
-                                 user.groups.filter(name='Migrates').exists() or
-                                 user.groups.filter(name='NewStudents').exists() or
-                                 user.groups.filter(name='NewTeachers').exists()):
-            if user.groups.filter(name='Teachers').exists():
-                login(request, user)
-                return redirect('schoolweb:teacherPage')
-            elif user.groups.filter(name='Students').exists():
-                if user.lessons > 0 or user.lessons_intermediate > 0:
-                    login(request, user)
-                    return redirect('schoolweb:studentPage')
-                else:
-                    return redirect('schoolweb:noLessons')
-            elif user.groups.filter(name='NONE').exists():
-                return redirect('schoolweb:coursesLoader')
-            elif user.groups.filter(name='Migrates').exists():
-                return redirect('schoolweb:coursesLoader')
-            elif user.groups.filter(name='Writers').exists():
-                change_user_group(user, 'Migrates')
-                return redirect('schoolweb:coursesLoader')
-            elif user.groups.filter(name='NewStudents').exists():
-                return redirect('schoolweb:coursesLoader')
-            elif user.groups.filter(name='NewTeachers').exists():
-                return redirect('schoolweb:coursesLoader')
-        else:
-            messages.error(request, 'Błędny Email lub Hasło')
-
-    context = {'page': page}
-    return render(request, 'tutoring-zone/login_register_lessons.html', context)
-
-
-def change_user_group(user, new_group_name):
-    try:
-        new_group = Group.objects.get(name=new_group_name)
-        user.groups.set([new_group])
-        user.save()
-        return True
-    except Group.DoesNotExist:
-        return False
-
-
-def lessonsRegister(request):
-    form = MyUserCreationForm()
-
-    if request.method == 'POST':
-        form = MyUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            user.groups.add(Group.objects.get(name='NONE'))
-            return redirect('lessonsLogin')
-        else:
-            messages.error(request, 'Wystąpił błąd podczas próby rejestracji.')
-
-    context = {'form': form}
-    return render(request, 'website/login_register_lessons.html', context)
-
-
-def lessonsLogout(request):
-    logout(request)
-    return redirect('schoolweb:lessons-home')
 
 
 def newStudent(request):
@@ -485,6 +438,87 @@ def applyTeacher(request):
     return render(request, 'tutoring-zone/apply-teacher.html', {'form': form})
 
 
+def coursesLoader(request):
+    return render(request, 'tutoring-zone/user-creator.html')
+
+
+def noLessons(request):
+    return render(request, 'tutoring-zone/no-lessons.html')
+
+
+def lessonsLogin(request):
+    page = 'lessonsLogin'
+
+    if request.user.groups.filter(name__in=['NewStudents', 'NewTeachers']).exists():
+        return redirect('schoolweb:coursesLoader')
+
+    if request.method == 'POST':
+        email = request.POST.get('email').lower()
+        password = request.POST.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, 'Użytkownik nie istnieje')
+            return redirect('schoolweb:lessonsLogin')
+
+        user = authenticate(request, username=email, password=password)
+
+        if user is not None:
+            user_groups = set(user.groups.values_list('name', flat=True))
+
+            if 'Teachers' in user_groups:
+                login(request, user)
+                return redirect('schoolweb:teacherPage')
+            elif 'Students' in user_groups:
+                login(request, user)
+                return redirect('schoolweb:studentPage')
+            elif 'Writers' in user_groups:
+                change_user_group(user, 'Migrates')
+                login(request, user)
+                return redirect('schoolweb:coursesLoader')
+            elif user_groups & {'NONE', 'Migrates', 'NewStudents', 'NewTeachers'}:
+                login(request, user)
+                return redirect('schoolweb:coursesLoader')
+        else:
+            messages.error(request, 'Błędny Email lub Hasło')
+
+    context = {'page': page}
+    return render(request, 'tutoring-zone/login_register_lessons.html', context)
+
+
+def change_user_group(user, new_group_name):
+    try:
+        new_group = Group.objects.get(name=new_group_name)
+        user.groups.set([new_group])
+        user.save()
+        return True
+    except Group.DoesNotExist:
+        return False
+
+
+def lessonsRegister(request):
+    form = MyUserCreationForm()
+
+    if request.method == 'POST':
+        form = MyUserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            user.groups.add(Group.objects.get(name='NONE'))
+            return redirect('lessonsLogin')
+        else:
+            messages.error(request, 'Wystąpił błąd podczas próby rejestracji.')
+
+    context = {'form': form}
+    return render(request, 'website/login_register_lessons.html', context)
+
+
+def lessonsLogout(request):
+    logout(request)
+    return redirect('schoolweb:lessons-home')
+
 
 @user_passes_test(lambda user: user.groups.filter(name='Teachers').exists(), login_url='lessonsLogin')
 @login_required(login_url='lessonsLogin')
@@ -521,7 +555,7 @@ def teacherPage(request):
         'now': now,
         'time_threshold': time_threshold,
         'a': a,
-        'teacher': teacher,  # Dodaj nauczyciela do kontekstu
+        'teacher': teacher,
     }
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
@@ -633,11 +667,16 @@ def createLesson(request):
                 post.save()
 
                 students_in_course = post.course.students.all()
-                for student in students_in_course:
-                    student.lessons -= 1
-                    student.save()
+                if post.course.course_type == 'basic':
+                    for student in students_in_course:
+                        student.lessons -= 1
+                        student.save()
+                elif post.course.course_type == 'intermediate':
+                    for student in students_in_course:
+                        student.lessons_intermediate -= 1
+                        student.save()
 
-                return redirect('tutoring-zone/teacherPage')
+                return redirect('schoolweb:teacherPage')
 
     return render(request, 'tutoring-zone/create-lesson.html', {'form': form, 'current_date': current_date})
 
@@ -758,7 +797,7 @@ def deleteLessonMessage(request, pk):
         return HttpResponse('Brak dostępu')
     if request.method == 'POST':
         message.delete()
-        return redirect('teacherPage')
+        return redirect('schoolweb:teacherPage')
 
     user = request.user
 
@@ -770,7 +809,6 @@ def deleteLessonMessage(request, pk):
 
     context = {'obj': message, 'navbar_template': navbar_template}
     return render(request, 'tutoring-zone/delete-lessons.html', context)
-
 
 
 @login_required(login_url='lessonsLogin')
@@ -800,10 +838,10 @@ def lessonFeedback(request, pk):
 
             if user.groups.filter(name='Teachers').exists():
                 if lesson.clicked_users.count() > 1:
-                    if "podstawa" or "podstawowa" or "podstawowy" in lesson.course.name.lower():
+                    if lesson.course.course_type == 'basic':
                         user.lessons += 1
                         user.all_lessons += 1
-                    elif "rozszerzenie" or "rozszerzona" or "rozszerzony" in lesson.course.name.lower():
+                    elif lesson.course.course_type == 'intermediate':
                         user.lessons_intermediate += 1
                         user.all_lessons_intermediate += 1
                     user.save()
@@ -957,18 +995,6 @@ def courses_studentsPage(request):
     return render(request, 'website/courses-students.html', {'courses': courses})
 
 
-def coursesLoader(request):
-    return render(request, 'tutoring-zone/user-creator.html')
-
-
-def migrateCreator(request):
-    return render(request, 'website/migrateCreator.html')
-
-
-def noLessons(request):
-    return render(request, 'tutoring-zone/no-lessons.html')
-
-
 @user_passes_test(lambda user: user.groups.filter(name='Students').exists(), login_url='lessonsLogin')
 @login_required(login_url='lessonsLogin')
 def studentPage(request):
@@ -1003,7 +1029,8 @@ def studentPage(request):
         'lesson_messages': lesson_messages,
         'all_courses': all_courses,
         'now': now,
-        'time_threshold': time_threshold
+        'time_threshold': time_threshold,
+        'teachers': teachers,
     }
     return render(request, 'tutoring-zone/student-view.html', context)
 
@@ -1047,13 +1074,13 @@ def manage_availability(request):
             availability.user = user
             availability.save()
 
-            return redirect('manage_availability')
+            return redirect('schoolweb:manage_availability')
     else:
         form = AvailabilityForm()
 
     user_availability = Availability.objects.filter(user=user)
 
-    return render(request, 'website/manage_availability.html', {'form': form, 'user_availability': user_availability})
+    return render(request, 'tutoring-zone/manage-availability.html', {'form': form, 'user_availability': user_availability})
 
 
 def get_availability(request, selected_date):
@@ -1143,3 +1170,107 @@ def deleteMember(request):
 @receiver(pre_delete, sender=User)
 def user_pre_delete(sender, instance, **kwargs):
     Room.objects.filter(host=instance).update(host=None)
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
+def get_blog_context():
+    categories = BlogCategory.objects.all()
+    years = BlogPost.objects.dates('created_at', 'year').distinct()
+    months = BlogPost.objects.dates('created_at', 'month').distinct()
+    days = BlogPost.objects.dates('created_at', 'day').distinct()
+
+    return {
+        'categories': categories,
+        'years': years,
+        'months': months,
+        'days': days,
+    }
+
+
+def blog_post_list(request):
+    category_id = request.GET.get('category')
+    query = request.GET.get('q')
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    day = request.GET.get('day')
+    new = request.GET.get('new')
+    trending = request.GET.get('trending')
+
+    blog_posts = BlogPost.objects.all()
+
+    if category_id:
+        category = get_object_or_404(BlogCategory, id=category_id)
+        blog_posts = blog_posts.filter(category=category)
+
+    if query:
+        blog_posts = blog_posts.filter(Q(title__icontains=query))
+
+    if year:
+        blog_posts = blog_posts.filter(created_at__year=year)
+
+    if month:
+        blog_posts = blog_posts.filter(created_at__month=month)
+
+    if day:
+        blog_posts = blog_posts.filter(created_at__day=day)
+
+    if new:
+        blog_posts = blog_posts.filter(is_new=True)
+
+    if trending:
+        blog_posts = blog_posts.filter(is_trending=True)
+
+    blog_posts = blog_posts.order_by('-created_at')
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(blog_posts, 12)
+    blog_posts = paginator.get_page(page)
+
+    context = get_blog_context()
+    context.update({
+        'blog_posts': blog_posts,
+    })
+
+    return render(request, 'blog/blog-post-list.html', context)
+
+
+def blog_post_detail(request, slug, id):
+    post = get_object_or_404(BlogPost, slug=slug, id=id)
+    post.increment_views()
+    content_blocks = post.content_blocks.all()
+    similar_posts = post.get_similar_posts().order_by('-created_at')[:4]
+
+    liked_posts = request.COOKIES.get('liked_posts', '')
+    liked = str(post.id) in liked_posts.split(',')
+
+    context = get_blog_context()
+    context.update({
+        'post': post,
+        'content_blocks': content_blocks,
+        'similar_posts': similar_posts,
+        'liked': liked,
+    })
+
+    return render(request, 'blog/blog-post-detail.html', context)
+
+
+def like_post(request, pk):
+    post = get_object_or_404(BlogPost, pk=pk)
+    liked_posts = request.COOKIES.get('liked_posts', '')
+    liked_posts_list = liked_posts.split(',')
+
+    if str(pk) in liked_posts_list:
+        liked_posts_list.remove(str(pk))
+        post.likes -= 1
+        liked = False
+    else:
+        liked_posts_list.append(str(pk))
+        post.likes += 1
+        liked = True
+
+    post.save()
+    response = JsonResponse({'likes': post.likes, 'liked': liked})
+    response.set_cookie('liked_posts', ','.join(liked_posts_list))
+    return response

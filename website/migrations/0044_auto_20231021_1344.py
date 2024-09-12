@@ -19,13 +19,13 @@ class Migration(migrations.Migration):
             name='RoomImage',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to='room_images/')),
+                ('image', models.ImageField(upload_to='room-images/')),
                 ('room', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='website.room')),
             ],
         ),
         migrations.AddField(
             model_name='room',
             name='image',
-            field=models.ManyToManyField(blank=True, related_name='room_images', to='website.RoomImage'),
+            field=models.ManyToManyField(blank=True, related_name='room-images', to='website.RoomImage'),
         ),
     ]

@@ -1,0 +1,91 @@
+{% extends "base-blog.html" %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+{% block title %}{{ post.title }}{% endblock title %}
+
+{% block content %}
+<div class="container">
+    <header class="header">
+        <h1>{{ post.title }}</h1>
+    </header>
+    <section class="post-meta">
+        <p><strong>Autor:</strong> {{ post.author.username }}</p>
+        <p><strong>Data:</strong> {{ post.created_at|date:"d M Y" }}</p>
+        <div class="details-info">
+            <i class="fa fa-eye"></i>
+            <span>{{ post.views }}</span>
+        </div>
+        <div class="details-info">
+            <i class="fas fa-heart"></i>
+            <span>{{ post.likes }}</span>
+        </div>
+    </section>
+
+    <article class="blog-content">
+        {% for block in content_blocks %}
+            {% if block.block_type == 'text' %}
+                <div class="text-block">
+                    <p>{{ block.text }}</p>
+                </div>
+            {% elif block.block_type == 'image' %}
+                <div class="image-block">
+                    <img src="{{ block.image.url }}" alt="Obrazek: {{ block.text|default:'Bez opisu' }}" />
+                </div>
+            {% endif %}
+        {% empty %}
+            <p>Brak treści dla tego wpisu.</p>
+        {% endfor %}
+    </article>
+
+    <section class="like-section">
+        <button id="like-button" class="like-button {% if liked %}liked{% endif %}">
+            <i class="fas fa-thumbs-up"></i> <span id="like-button-text">{% if liked %}Lubię to!{% else %}Lubię to!{% endif %}</span>
+        </button>
+        <div class="like-info">
+            <i class="fas fa-heart"></i>
+            <p id="like-count">{{ post.likes }}</p>
+        </div>
+    </section>
+
+    <section class="share-buttons">
+        <h3>Udostępnij ten post:</h3>
+        <div class="buttons-container">
+            <a href="https://twitter.com/intent/tweet?text={{ post.title }}&url={{ request.build_absolute_uri }}" target="_blank" class="share-button">
+                <i class="fab fa-twitter"></i>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="share-button">
+                <i class="fab fa-facebook"></i>
+            </a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url={{ request.build_absolute_uri }}&title={{ post.title }}" target="_blank" class="share-button">
+                <i class="fab fa-linkedin"></i>
+            </a>
+        </div>
+    </section>
+
+    {% if similar_posts %}
+    <section class="similar-posts">
+        <h2>Podobne posty</h2>
+        <div class="posts-container">
+            {% for similar_post in similar_posts %}
+            <div class="post-item">
+                <a href="{% url 'schoolweb:blog_post_detail' slug=similar_post.slug id=similar_post.id %}" class="post-link">
+                    <div class="post-image" style="background-image: url('{{ similar_post.image.url }}');"></div>
+                    <div class="post-content">
+                        <h3>{{ similar_post.title }}</h3>
+                        <p class="post-date">{{ similar_post.created_at|date:"d M Y" }}</p>
+                    </div>
+                </a>
+            </div>
+            {% empty %}
+            <p>Brak podobnych postów.</p>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+</div>
+
+<script>
+    const likePostUrl = "{% url 'schoolweb:like_post' post.id %}";
+    const csrfToken = "{{ csrf_token }}";
+</script>
+
+{% endblock content %}

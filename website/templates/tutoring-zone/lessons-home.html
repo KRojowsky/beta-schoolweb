@@ -1,11 +1,11 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/navbar-empty-tutoring-zone.html' %}
+    {% include 'tutoring-zone/nav-no-search.html' %}
 {% endblock navbar %}
 
 {% block content %}
-<div class="background-pattern">
+<div class="home-container">
     <div class="registration-container">
         <div class="student_register">
             <div class="student_logo">
@@ -25,9 +25,7 @@
             <p class="mobile-text">Dołączając do SchoolWeb, dołączasz do społeczności uczniów,
                 gotowych wkroczyć w świat głębszej nauki i osobistego rozwoju.
             </p>
-            <div class="btn btn--link">
-                <a href="{% url 'schoolweb:newStudent' %}" class="button-join">❱ Dołącz ❰</a>
-            </div>
+            <a href="{% url 'schoolweb:newStudent' %}" class="btn btn--link">Dołącz</a>
         </div>
 
         <div class="teacher_register">
@@ -44,14 +42,11 @@
             </p>
             <p class="mobile-text">Doświadcz radości płynącej z poszerzania horyzontów edukacyjnych, podziel się
                 wiedzą i wspieraj innych w ich naukowej podróży!</p>
-            <div class="btn btn--link">
-                <a href="{% url 'schoolweb:newTeacher' %}" class="button-join">❱ Dołącz ❰</a>
-            </div>
+            <a href="{% url 'schoolweb:newTeacher' %}" class="btn btn--link">Dołącz</a>
         </div>
     </div>
-
     <div class="home-info">
-        <h3>Jeśli posiadasz już konto w <span>strefie korepetycji</span>
+        <h3>Jeśli posiadasz już konto w na <span>Strefie Wiedzy</span>
             wystarczy się <a href="{% url 'schoolweb:lessonsLogin' %}">zalogować</a></h3>
     </div>
 </div>
