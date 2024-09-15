@@ -26,6 +26,20 @@ class CustomUserAdmin(UserAdmin):
 
     display_groups.short_description = 'Groups'
 
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+        ('Lessons info', {'fields': ('lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons',
+                                     'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')}),
+    )
+
+    def display_groups(self, obj):
+        return ", ".join([group.name for group in obj.groups.all()])
+
+    display_groups.short_description = 'Groups'
+
 
 class LessonInfo(admin.ModelAdmin):
     def clicked_users_count(self, obj):

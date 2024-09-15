@@ -23,19 +23,19 @@
         <ul>
             <li>
                 <a href="{% url 'schoolweb:blog_post_list' %}" class="{% if not request.GET.category %}active{% endif %}">
-                    <img src="{% static 'img/blog/category.png' %}" alt="Wszystkie zdjęcie" class="menu-image">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Wszystkie zdjęcie" class="menu-image">
                     Wszystkie
                 </a>
             </li>
             <li>
                 <a href="{% url 'schoolweb:blog_post_list' %}?new=true" class="{% if request.GET.new == 'true' %}active{% endif %}">
-                    <img src="{% static 'img/blog/category.png' %}" alt="Nowość zdjęcie" class="menu-image">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Nowość zdjęcie" class="menu-image">
                     Nowość
                 </a>
             </li>
             <li>
                 <a href="{% url 'schoolweb:blog_post_list' %}?trending=true" class="{% if request.GET.trending == 'true' %}active{% endif %}">
-                    <img src="{% static 'img/blog/category.png' %}" alt="Na czasie zdjęcie" class="menu-image">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Na czasie zdjęcie" class="menu-image">
                     Na czasie
                 </a>
             </li>
