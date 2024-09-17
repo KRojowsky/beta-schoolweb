@@ -358,7 +358,7 @@ class Availability(models.Model):
 
 class BlogCategory(models.Model):
     name = models.CharField(max_length=200, unique=True)
-    image = models.ImageField(upload_to='category_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='blog-category-images/', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -368,7 +368,7 @@ class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(default="", null=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
-    image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='blog-list-images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     category = models.ForeignKey(BlogCategory, on_delete=models.CASCADE, related_name='blog_posts')
     is_new = models.BooleanField(default=False, verbose_name='Nowość')
@@ -403,7 +403,7 @@ class ContentBlock(models.Model):
     block_type = models.CharField(max_length=10, choices=BLOCK_TYPE_CHOICES)
     order = models.PositiveIntegerField()
     text = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='blog_content_images/', blank=True, null=True)
+    image = models.ImageField(upload_to='blog-details-images/', blank=True, null=True)
 
     class Meta:
         ordering = ['order']

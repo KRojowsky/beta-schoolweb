@@ -8,7 +8,7 @@
         <h1>{{ post.title }}</h1>
     </header>
     <section class="post-meta">
-        <p><strong>Autor:</strong> {{ post.author.username }}</p>
+        <p><strong>Autor:</strong> {{ post.author }}</p>
         <p><strong>Data:</strong> {{ post.created_at|date:"d M Y" }}</p>
         <div class="details-info">
             <i class="fa fa-eye"></i>
@@ -67,7 +67,7 @@
         <div class="posts-container">
             {% for similar_post in similar_posts %}
             <div class="post-item">
-                <a href="{% url 'schoolweb:blog_post_detail' slug=similar_post.slug id=similar_post.id %}" class="post-link">
+                <a href="{% url 'schoolweb:blog-post-detail' slug=similar_post.slug id=similar_post.id %}" class="post-link">
                     <div class="post-image" style="background-image: url('{{ similar_post.image.url }}');"></div>
                     <div class="post-content">
                         <h3>{{ similar_post.title }}</h3>
@@ -84,7 +84,7 @@
 </div>
 
 <script>
-    const likePostUrl = "{% url 'schoolweb:like_post' post.id %}";
+    const likePostUrl = "{% url 'schoolweb:like-post' post.id %}";
     const csrfToken = "{{ csrf_token }}";
 </script>
 

@@ -4,7 +4,7 @@
     <div class="container">
         <div class="blog-posts">
             {% for post in blog_posts %}
-                <a href="{% url 'schoolweb:blog_post_detail' slug=post.slug id=post.id %}" class="blog-post-link">
+                <a href="{% url 'schoolweb:blog-post-detail' slug=post.slug id=post.id %}" class="blog-post-link">
                     <div class="blog-post" style="background-image: url('{{ post.image.url }}');">
                         <div class="post-meta">
                             <div class="meta-left">

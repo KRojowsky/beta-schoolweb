@@ -33,11 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         menu.style.visibility = 'hidden';
     }
 
-    function showMenu(menu) {
-        menu.style.visibility = 'visible';
-    }
-
-    // Initialize menu state
     hideMenu(categoryMenu);
     hideMenu(filterMenu);
 

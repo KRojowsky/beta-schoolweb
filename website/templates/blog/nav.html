@@ -22,26 +22,26 @@
         <h2>Kategorie</h2>
         <ul>
             <li>
-                <a href="{% url 'schoolweb:blog_post_list' %}" class="{% if not request.GET.category %}active{% endif %}">
-                    <img src="{% static 'img/icons/19.svg' %}" alt="Wszystkie zdjęcie" class="menu-image">
+                <a href="{% url 'schoolweb:blog-post-list' %}" class="{% if not request.GET.category %}active{% endif %}">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Ikona kategorii Wszystkie" class="menu-image">
                     Wszystkie
                 </a>
             </li>
             <li>
-                <a href="{% url 'schoolweb:blog_post_list' %}?new=true" class="{% if request.GET.new == 'true' %}active{% endif %}">
-                    <img src="{% static 'img/icons/19.svg' %}" alt="Nowość zdjęcie" class="menu-image">
+                <a href="{% url 'schoolweb:blog-post-list' %}?new=true" class="{% if request.GET.new == 'true' %}active{% endif %}">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Ikona kategorii Nowości" class="menu-image">
                     Nowość
                 </a>
             </li>
             <li>
-                <a href="{% url 'schoolweb:blog_post_list' %}?trending=true" class="{% if request.GET.trending == 'true' %}active{% endif %}">
-                    <img src="{% static 'img/icons/19.svg' %}" alt="Na czasie zdjęcie" class="menu-image">
+                <a href="{% url 'schoolweb:blog-post-list' %}?trending=true" class="{% if request.GET.trending == 'true' %}active{% endif %}">
+                    <img src="{% static 'img/icons/19.svg' %}" alt="Ikona kategorii Na czasie" class="menu-image">
                     Na czasie
                 </a>
             </li>
             {% for category in categories %}
                 <li>
-                    <a href="{% url 'schoolweb:blog_post_list' %}?category={{ category.id }}" class="category-link {% if request.GET.category == category.id|stringformat:"s" %}active{% endif %}">
+                    <a href="{% url 'schoolweb:blog-post-list' %}?category={{ category.id }}" class="category-link {% if request.GET.category == category.id|stringformat:"s" %}active{% endif %}">
                         {% if category.image %}
                             <img src="{{ category.image.url }}" alt="{{ category.name }} image" class="category-image">
                         {% endif %}
@@ -57,7 +57,7 @@
         <form method="GET">
             <label for="year">Rok:</label>
             <select name="year" id="year">
-                <option value="">-- Wybierz rok --</option>
+                <option value="">Wybierz rok</option>
                 {% for year in years %}
                     <option value="{{ year.year }}" {% if request.GET.year == year.year|stringformat:"s" %}selected{% endif %}>{{ year.year }}</option>
                 {% endfor %}
@@ -65,7 +65,7 @@
 
             <label for="month">Miesiąc:</label>
             <select name="month" id="month">
-                <option value="">-- Wybierz miesiąc --</option>
+                <option value="">Wybierz miesiąc</option>
                 {% for month in months %}
                     <option value="{{ month.month }}" {% if request.GET.month == month.month|stringformat:"s" %}selected{% endif %}>{{ month|date:"F" }}</option>
                 {% endfor %}
@@ -73,7 +73,7 @@
 
             <label for="day">Dzień:</label>
             <select name="day" id="day">
-                <option value="">-- Wybierz dzień --</option>
+                <option value="">Wybierz dzień</option>
                 {% for day in days %}
                     <option value="{{ day.day }}" {% if request.GET.day == day.day|stringformat:"s" %}selected{% endif %}>{{ day.day }}</option>
                 {% endfor %}

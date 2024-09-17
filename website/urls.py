@@ -16,6 +16,10 @@ urlpatterns = [
 
     path('wiadomosc/', views.user_message, name='user-message'),
 
+    # BLOG
+    path('blog/', views.blog_post_list, name='blog-post-list'),
+    path('post/<slug:slug>/<int:id>/', views.blog_post_detail, name='blog-post-detail'),
+    path('post/<int:pk>/like/', views.like_post, name='like-post'),
 
     # KNOWLEDGE ZONE
     path('logowanie-strefa-wiedzy/', views.loginPage, name="login"),
@@ -104,9 +108,4 @@ urlpatterns = [
     path('delete_member/', views.deleteMember),
     path('dostępność/', views.manage_availability, name='manage_availability'),
     path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
-
-    # BLOG
-    path('blog/', views.blog_post_list, name='blog_post_list'),
-    path('post/<slug:slug>/<int:id>/', views.blog_post_detail, name='blog_post_detail'),
-    path('post/<int:pk>/like/', views.like_post, name='like_post'),
 ]
