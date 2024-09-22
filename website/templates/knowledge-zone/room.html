@@ -103,22 +103,18 @@
           </div>
         </div>
         {% if request.user.is_authenticated %}
-        <div class="room-info">
-            <button class="room-info-button like-room-button" data-room-id="{{ room.id }}" {% if request.user in room.likes.all %}data-liked="true"{% endif %}>
-                {% if request.user in room.likes.all %}
+            <div class="room-info">
+                <button class="room-info-button like-room-button" data-room-id="{{ room.id }}"
+                        data-liked="{% if request.user in room.likes.all %}true{% else %}false{% endif %}"
+                        style="color: {% if request.user in room.likes.all %}#BB00FF{% endif %};">
                     <span>
-                        <i class="fa fa-thumbs-up"></i>Lubię to!
+                        <i class="fa fa-thumbs-up"></i> Lubię to!
                     </span>
-                {% else %}
-                    <span>
-                        <i class="fa fa-thumbs-up"></i>Lubię to!
-                    </span>
-                {% endif %}
-            </button>
-            <a href="#left-side" class="room-info-button">
-                <i class="fa fa-envelope"></i> Komentarz
-            </a>
-        </div>
+                </button>
+                <a href="#left-side" class="room-info-button">
+                    <i class="fa fa-envelope"></i> Komentarz
+                </a>
+            </div>
         {% endif %}
 
 
@@ -199,12 +195,11 @@
 
                 <div class="likes-container">
                     {% if request.user.is_authenticated %}
-                        <button class="like-button" data-message-id="{{ message.id }}" {% if request.user in message.likes.all %}data-liked="true"{% endif %}>
-                            {% if request.user in message.likes.all %}
-                                <i class="fa fa-thumbs-up"></i> Lubię to!
-                            {% else %}
-                                <i class="fa fa-thumbs-up"></i> Lubię to!
-                            {% endif %}
+                        <button class="like-button"
+                                data-message-id="{{ message.id }}"
+                                data-liked="{% if request.user in message.likes.all %}true{% else %}false{% endif %}"
+                                style="color: {% if request.user in message.likes.all %}#BB00FF{% endif %};">
+                            <i class="fa fa-thumbs-up"></i> Lubię to!
                         </button>
                     {% endif %}
                     <span class="likes-count" data-message-id="{{ message.id }}" onclick="showLikedUsers('{{ message.id }}')">

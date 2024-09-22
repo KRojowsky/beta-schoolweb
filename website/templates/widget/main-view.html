@@ -125,12 +125,31 @@
                 produktów, aby sprostać potrzebom każdego ucznia i nauczyciela. Odkryj nasz sklep, aby znaleźć
                 inspirujące i efektywne narzędzia do nauki i rozwijania swoich umiejętności.
             </p>
-            <a id="jak-zaczac" class="hvr-buzz-out" onclick="openModal()">Kup materiały edukacyjne</a>
+            <a class="hvr-buzz-out" onclick="openModal()">Kup materiały edukacyjne</a>
         </div>
     </div>
 </section>
 
 <section class="hero sub-hero">
+    <div class="hero-container sub-hero-container">
+        <div class="sub-hero-label">
+            <h2 class="sub-hero-heading"><span>Blog</span> edukacyjny</h2>
+            <p class="sub-hero-text left-side">
+                Platforma SchoolWeb oferuje dodatkowo blog edukacyjny, który pełen jest cennych porad, inspiracji
+                oraz nowinek ze świata nauki i korepetycji. <span>Znajdziesz tam artykuły o efektywnych metodach
+                uczenia się, ciekawostki z różnych dziedzin, a także wskazówki, jak maksymalnie wykorzystać
+                możliwości platformy</span>. Zachęcamy do regularnych odwiedzin – nasz blog to nie tylko dodatkowe źródło
+                wiedzy, ale także miejsce, gdzie uczniowie, rodzice i nauczyciele mogą poszerzać swoje horyzonty.
+            </p>
+            <a href="{% url 'schoolweb:blog-post-list' %}" class="hvr-buzz-out">Odwiedź blog</a>
+        </div>
+        <div class="sub-hero-image">
+            <img src="{% static 'img/widget/logo.png' %}" alt="Odwiedź blog">
+        </div>
+    </div>
+</section>
+
+<section id="jak-zaczac" class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-label-list">
             <h2 class="sub-hero-heading"><span>Jak zacząć</span> . . . ?</h2>
@@ -144,6 +163,7 @@
         </div>
     </div>
 </section>
+
 
 <div class="pricing">
     <h2 class="sub-hero-heading"><span>Cennik</span> zajęć</h2>
@@ -330,7 +350,7 @@
 </div>
 
 
-<div class="opinions">
+<div id="opinie" class="opinions">
     <div class="testimonial">
         <h2 class="sub-hero-heading"><span>Opinie</span> naszych użytkowników</h2>
         <div class="slider-wrapper">

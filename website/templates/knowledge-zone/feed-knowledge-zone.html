@@ -29,7 +29,7 @@
         {% endif %}
     </div>
     <div class="roomListRoom__content">
-        <a href="{% url 'schoolweb:room' room.id %}" class="lesson-link" title="Zobacz post">{{room.name}}</a>
+        <a href="{% url 'schoolweb:room' room.id %}" title="Zobacz post">{{room.name}}</a>
         <p>{{ room.description|truncatechars:150 }}</p>
         <br>
         {% if room.image %}

@@ -30,7 +30,7 @@
                     <div class="activities__boxHeader roomListRoom__header">
                         {% if message.user and message.user.id %}
                         <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
-                            <div class="avatar avatar--small">
+                            <div class="avatar avatar--small active">
                                 <img src="{{ message.user.avatar.url }}" class="user-avatar" alt="Autor wiadomości"/>
                             </div>
                             <p>

@@ -10,6 +10,7 @@ from datetime import timedelta
 
 
 class MyUserCreationForm(UserCreationForm):
+    usable_password = None
     username = forms.CharField(
         max_length=10,
         label=_("Nazwa użytkownika (maks. 10 znaków)"),
