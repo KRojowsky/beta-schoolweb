@@ -18,14 +18,17 @@
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@48,400,0,0">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="{% static 'css/widget.css' %}" rel="stylesheet">
     <script src="{% static 'js/widget-menu-dropdown.js' %}" defer></script>
     <script src="{% static 'js/no-content-info.js' %}" defer></script>
+    <script src="{% static 'js/chat.js' %}" defer></script>
 </head>
 <body>
 	{% include 'widget/nav.html' %}
 
 	{% block content %}
+
     {% endblock content %}
 
 	{% include 'widget/footer.html' %}
@@ -36,5 +39,63 @@
             <p>Opcja dostępna już wkrótce!</p>
         </div>
     </div>
+
+    <a title="Zapytaj Resq" class="chat-icon">
+        <img src="{% static 'img/widget/bot.png' %}" alt="Ikona chatbota Resq">
+        <span class="chat-status-dot"></span>
+    </a>
+
+    <div class="chat-popup" id="chatPopup">
+        <div class="chat-header">
+            <div class="header-left">
+                <div class="chatbot-img-container">
+                    <img src="{% static 'img/widget/bot.png' %}" alt="ikona chatbota" class="chatbot-img">
+                    <span class="chat-status-dot"></span>
+                </div>
+                <div class="status-container">
+                    <h2>Resq</h2>
+                    <span class="status-text">online</span>
+                    <div id="response">
+
+                    </div>
+                </div>
+            </div>
+            <span class="close-btn" onclick="closeChatPopup()">&times;</span>
+        </div>
+
+        <div class="chat-body">
+            <div id="chatMessages">
+                <div class="message-bot">
+                    <div class="chatbot-img-container">
+                        <img src="{% static 'img/widget/bot.png' %}" alt="ikona chatbota" class="chatbot-img">
+                    </div>
+                    <div class="message-text">
+                        <p>Cześć jestem Resq - chatbot platformy edukacyjnej SchoolWeb! &#128512<br><br>Jak mogę Ci pomóc?</p>
+                        <button onclick="addUserMessage('Jak zostać uczniem')">Jak zostać uczniem?</button>
+                        <button onclick="addUserMessage('Jak zostać korepetytorem')">Jak zostać korepetytorem?</button>
+                        <button onclick="addUserMessage('Ile trwają pojedyncze zajęcia')">Ile trwają pojedyncze zajęcia?</button>
+                        <button onclick="addUserMessage('Metody płatności')">Metody płatności</button>
+                        <button onclick="addUserMessage('Jakie macie rabaty')">Jakie macie rabaty?</button>
+                    </div>
+                </div>
+
+                <div id="typingIndicator" class="message-bot" style="display: none;">
+                    <div class="chatbot-img-container">
+                        <img src="{% static 'img/chatbot-icon.png' %}" alt="ikona chatbota" class="chatbot-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+         <form class="input-container">
+            {% csrf_token %}
+            <input type="text" id="chatInput" name="chatInput" placeholder="Napisz wiadomość..." onkeypress="sendMessage(event)">
+            <button type="submit" class="send-button">
+                <i class="material-icons">&#xe163;</i>
+            </button>
+        </form>
+    </div>
+
+    <input type="hidden" id="static-image-path" value="{% static 'img/widget/bot.png' %}">
 </body>
 </html>

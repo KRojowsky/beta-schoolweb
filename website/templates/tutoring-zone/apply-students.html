@@ -1,7 +1,7 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-{% include 'tutoring-zone/nav-no-search.html' %}
+    {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
 {% endblock navbar %}
 
 {% block content %}
@@ -14,10 +14,7 @@
         </div>
       </div>
       <div class="layout__body">
-        <h2 class="auth__tagline">Dołącz do SchoolWeb jako uczeń<br>
-          <i><span>Jeśli posiadasz konto w "Strefie Wiedzy" pomiń poniższą rejestrację i zaloguj się tymi samymi danymi,
-            aby dokończyć proces dołączania.</span></i>
-        </h2>
+        <h2 class="auth__tagline">Dołącz do SchoolWeb jako uczeń</h2>
 
         <form class="form" action="" method="POST">
           {% csrf_token %}

@@ -1420,3 +1420,247 @@ button:hover{
         display: none
     }
 }
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CHAT-BOT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.chat-icon {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    width: 60px;
+    height: auto;
+    animation: pulse2 2s infinite;
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 8px 9px;
+    border: 2px solid #9C27B0;
+    background: #F9D0FF;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-icon img {
+    width: 100%;
+    height: auto;
+}
+
+.chat-status-dot {
+    position: absolute;
+    bottom: 3px;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #00FF00;
+    border-radius: 50%;
+    border: 2px solid #FFF;
+    z-index: 1001;
+}
+
+@keyframes pulse2 {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.07);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.chat-popup {
+    display: none;
+    position: fixed;
+    bottom: 80px;
+    right: 15px;
+    width: 350px;
+    border-radius: 7px;
+    border: 1px solid #DDD;
+    z-index: 999;
+    background: #FFF;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    border: 1px solid #A9A9A9;
+    overflow: hidden;
+}
+
+.chat-header {
+    background: #FFF;
+    color: #000;
+    padding: 5px 5px 5px 15px;
+    border-bottom: 1px solid #DDD;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header .header-left {
+    display: flex;
+    align-items: center;
+}
+
+.chat-header .chatbot-img-container {
+    position: relative;
+    margin-right: 10px;
+}
+
+.chat-header .chatbot-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.chat-header .status-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-size: 18px;
+    text-transform: uppercase;
+}
+
+.chat-header .status-text {
+    color: #A9A9A9;
+    font-size: 14px;
+}
+
+.chat-body {
+    padding: 11px;
+    background: #F4F4F4;
+}
+
+.chat-body #chatMessages {
+    height: 350px;
+    overflow-y: auto;
+    border: 1px solid #DDD;
+    padding: 10px;
+    background: #FFF;
+    border-radius: 5px;
+}
+
+.chat-body #chatInput {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #DDD;
+    margin-top: 10px;
+    border-radius: 5px;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.close-btn {
+    font-size: 40px;
+    cursor: pointer;
+    color: #A9A9A9;
+    margin-top:-30px;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.message-bot {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.message-bot .chatbot-img-container {
+    margin-right: 5px;
+}
+
+.message-bot .chatbot-img {
+    width: 30px;
+    height: auto;
+    border-radius: 50%;
+}
+
+.message-bot .message-text, .message-user .message-text {
+    background-color: #F9D0FF;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 80%;
+    font-size: 14px;
+}
+
+.message-text button {
+    background: #FFF;
+    margin-top: 7px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    max-width: 100%;
+    font-size: 13px;
+    border: 1px solid #808080;
+    cursor: pointer;
+    color: #333;
+}
+
+.message-user {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+}
+
+.message-user .message-text {
+    background-color: #d2e2fd;
+    text-align: right;
+    overflow: hidden;
+    word-wrap: break-word;
+}
+
+.message-time {
+    font-size: 12px;
+    color: #888;
+    margin: 5px 0 0 0;
+}
+
+::-webkit-scrollbar {
+  width: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #DBDBDB;
+  border-radius: 7px;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 10px;
+    background-color: #FFF;
+}
+
+.input-container input[type="text"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #DDD;
+    border-radius: 5px;
+    outline: none;
+    margin-right: 5px;
+}
+
+.input-container button {
+    border: none;
+    background-color: #9C27B0;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    width: 40px;
+    height: 40px;
+    margin: 0 0 15px 0;
+}
+
+.input-container button:hover {
+    background-color: #9C27B0;
+    opacity: 0.7;
+}

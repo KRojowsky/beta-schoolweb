@@ -1375,6 +1375,8 @@ a {
     text-align: center;
     margin-bottom: 30px;
     font-size: 18px;
+    color: #BB00FF;
+    text-transform: uppercase;
 }
 
 .auth .layout__boxHeader {
@@ -1506,8 +1508,8 @@ a {
     justify-content: center;
     align-items: stretch;
     flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 40px;
+    gap: 25px;
+    margin-bottom: 30px;
 }
 
 .teacher_register, .student_register {
@@ -1530,7 +1532,7 @@ a {
 
 .teacher_logo h2, .student_logo h2{
     font-size: 25px;
-    color: #000;
+    color: #BB00FF;
     text-transform: uppercase;
 }
 
@@ -1547,26 +1549,6 @@ a {
     display: none;
 }
 
-.home-info {
-    text-transform: uppercase;
-    color: #333;
-    border: none;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-    background: #FFF;
-    width: 100%;
-    padding: 15px;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 1000;
-    font-size: 16px;
-}
-
-.home-info h3 span {
-    color: #FF0000;
-}
-
-
 @media (max-width: 900px) {
     .registration-container {
         flex-direction: column;
@@ -1579,23 +1561,16 @@ a {
 
     .student_register .mobile-text, .teacher_register .mobile-text {
         display: block;
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .registration-container h2 {
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .mobile-text {
-        padding: 10px 0;
-        font-size: 14px;
+        padding: 20px 0;
         line-height: 1.4;
-    }
-
-    .home-info {
-        font-size: 14px;
-        padding: 10px;
-        text-align: center;
     }
 }
 

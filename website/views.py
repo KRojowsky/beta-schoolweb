@@ -383,6 +383,9 @@ def lessonsHome(request):
     if user.groups.filter(name='Students').exists():
         return redirect('schoolweb:studentPage')
 
+    if user.groups.filter(name='NewStudents').exists():
+        return redirect('schoolweb:coursesLoader')
+
     return render(request, 'tutoring-zone/lessons-home.html')
 
 
@@ -391,7 +394,12 @@ def newStudent(request):
         form = NewStudentForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('schoolweb:applyStudent'))
+
+            if request.user.is_authenticated:
+                change_user_group(request.user, 'NewStudents')
+                return redirect(reverse('schoolweb:coursesLoader'))
+            else:
+                return redirect(reverse('schoolweb:applyStudent'))
     else:
         form = NewStudentForm()
 
@@ -403,12 +411,27 @@ def applyStudent(request):
     if request.method == 'POST':
         form = ApplyStudentForm(request.POST)
         if form.is_valid():
+            # Zapisz formularz i utwórz nowego użytkownika
             user = form.save()
-            group = Group.objects.get(name='NewStudents')
-            user.groups.add(group)
-            return redirect('schoolweb:lessonsLogin')
+
+            # Uwierzytelnij użytkownika na podstawie danych formularza
+            email = form.cleaned_data.get('email')  # Pobierz nazwę użytkownika z formularza
+            password = form.cleaned_data.get('password1')  # Pobierz hasło z formularza (jeśli jest pole password1)
+            user = authenticate(request, email=email, password=password)
+
+            if user is not None:
+                # Zaloguj użytkownika
+                login(request, user)
+
+                # Dodaj użytkownika do grupy 'NewStudents'
+                group = Group.objects.get(name='NewStudents')
+                user.groups.add(group)
+
+                # Przekierowanie do widoku 'lessonsLogin'
+                return redirect('schoolweb:lessonsLogin')
     else:
         form = ApplyStudentForm()
+
     return render(request, 'tutoring-zone/apply-students.html', {'form': form})
 
 
@@ -462,7 +485,7 @@ def lessonsLogin(request):
             messages.error(request, 'Użytkownik nie istnieje')
             return redirect('schoolweb:lessonsLogin')
 
-        user = authenticate(request, username=email, password=password)
+        user = authenticate(request, email=email, password=password)
 
         if user is not None:
             user_groups = set(user.groups.values_list('name', flat=True))
@@ -517,7 +540,7 @@ def lessonsRegister(request):
 
 def lessonsLogout(request):
     logout(request)
-    return redirect('schoolweb:lessons-home')
+    return redirect('schoolweb:knowledge_zone')
 
 
 @user_passes_test(lambda user: user.groups.filter(name='Teachers').exists(), login_url='lessonsLogin')
