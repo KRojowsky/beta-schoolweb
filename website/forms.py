@@ -135,6 +135,13 @@ class PostFormCreate(forms.ModelForm):
         input_formats=['%Y-%m-%dT%H:%M'],
     )
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(PostFormCreate, self).__init__(*args, **kwargs)
+
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(teacher=user)
+
     def clean_event_datetime(self):
         event_datetime = self.cleaned_data['event_datetime']
         minimum_datetime = timezone.now() + timedelta(minutes=15)
@@ -180,6 +187,11 @@ class LessonFeedbackForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         post_instance = kwargs.pop('post_instance')
         super(LessonFeedbackForm, self).__init__(*args, **kwargs)
+
+        self.fields['attended_teachers'].queryset = User.objects.filter(
+            courses_taught=post_instance.course
+        )
+
         self.fields['attended_students'].queryset = post_instance.course.students.all()
 
     class Meta:
@@ -187,14 +199,14 @@ class LessonFeedbackForm(forms.ModelForm):
         fields = ['feedback', 'points', 'schoolweb_rating', 'attended_students', 'attended_teachers']
 
     attended_teachers = forms.ModelMultipleChoiceField(
-        queryset=User.objects.filter(groups__name='Teachers'),
+        queryset=User.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label='Nauczyciele, którzy dołączyli'
     )
 
     attended_students = forms.ModelMultipleChoiceField(
-        queryset=User.objects.filter(groups__name='Students'),
+        queryset=User.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
         label='Uczniowie, którzy dołączyli'
@@ -212,7 +224,12 @@ class LessonCorrectionForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         course = kwargs.pop('course', None)
         super(LessonCorrectionForm, self).__init__(*args, **kwargs)
+
         if course:
+            self.fields['attended_teachers'].queryset = User.objects.filter(
+                courses_taught=course
+            )
+
             self.fields['attended_students'].queryset = course.students.all()
 
     class Meta:
@@ -220,10 +237,10 @@ class LessonCorrectionForm(forms.ModelForm):
         fields = ['attended_teachers', 'attended_students', 'feedback', 'lesson_image']
 
     attended_teachers = forms.ModelMultipleChoiceField(
-        queryset=User.objects.filter(groups__name='Teachers'),
+        queryset=User.objects.none(),
         widget=forms.CheckboxSelectMultiple,
         required=False,
-        label='Nauczyciele, którzy dołączyli',
+        label='Nauczyciele, którzy dołączyli'
     )
 
     attended_students = forms.ModelMultipleChoiceField(
@@ -239,7 +256,10 @@ class LessonCorrectionForm(forms.ModelForm):
         required=False
     )
 
-    lesson_image = forms.ImageField(label='Zdjęcie lekcji', required=False)
+    lesson_image = forms.ImageField(
+        label='Zdjęcie lekcji',
+        required=False
+    )
 
 
 class ResignationForm(forms.ModelForm):

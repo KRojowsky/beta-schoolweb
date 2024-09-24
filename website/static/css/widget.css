@@ -167,15 +167,17 @@ nav .mobile-menu{
     .mobile-menu.show {
         display: flex;
         align-items: center;
+        justify-content: center;
         flex-direction: column;
         position: absolute;
-        top: 100%;
+        top: 73px;
         left: 0;
         right: 0;
-        height: 100vh;
+        bottom: 0;
         background: #FCF7FC;
         box-sizing: border-box;
         overflow-y: auto;
+        height: calc(100vh - 73px);
     }
 
     .mobile-menu ul {
@@ -186,8 +188,8 @@ nav .mobile-menu{
         justify-content: center;
         padding: 0;
         margin: 0;
-        margin-top: 45px;
         width: 100%;
+        flex-grow: 1;
     }
 
     .mobile-menu li{
@@ -1425,20 +1427,26 @@ button:hover{
 
 .chat-icon {
     position: fixed;
-    bottom: 15px;
-    right: 15px;
-    width: 60px;
+    bottom: 20px;
+    right: 20px;
+    width: 70px;
     height: auto;
-    animation: pulse2 2s infinite;
     cursor: pointer;
     border-radius: 50%;
     padding: 8px 9px;
     border: 2px solid #9C27B0;
-    background: #F9D0FF;
+    background: #FFF;
     z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: 0 0 6px 3px rgba(187, 0, 255, 0.5);
+}
+
+.chat-icon:hover{
+    transform: scale(1.1);
+    box-shadow: 0 0 8px 4px rgba(187, 0, 255, 0.6);
+    transition: 0.3s;
 }
 
 .chat-icon img {
@@ -1458,23 +1466,11 @@ button:hover{
     z-index: 1001;
 }
 
-@keyframes pulse2 {
-    0% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.07);
-    }
-    100% {
-        transform: scale(1);
-    }
-}
-
 .chat-popup {
     display: none;
     position: fixed;
-    bottom: 80px;
-    right: 15px;
+    bottom: 100px;
+    right: 12px;
     width: 350px;
     border-radius: 7px;
     border: 1px solid #DDD;
@@ -1663,4 +1659,17 @@ button:hover{
 .input-container button:hover {
     background-color: #9C27B0;
     opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+    .chat-icon {
+        position: fixed;
+        bottom: 12px;
+        right: 12px;
+        width: 60px;
+    }
+
+    .chat-popup {
+        bottom: 80px;
+    }
 }

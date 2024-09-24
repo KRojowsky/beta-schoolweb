@@ -38,8 +38,8 @@ urlpatterns = [
     path('edytuj-komentarz/<int:pk>/', views.editRoomMessage, name='edit-message'),
 
 
-    path('profil/<str:pk>/', views.userProfile, name="user-profile"),
-    path('edytuj-uzytkownika/', views.updateUser, name="update-user"),
+    path('profil-strefa-wiedzy/<str:pk>/', views.userProfile, name="user-profile"),
+    path('edytuj-uzytkownika-strefa-wiedzy/', views.updateUser, name="update-user"),
 
     path('tematy/', views.topicsPage, name="topics"),
     path('aktywnosc/', views.activityPage, name="activity"),
@@ -48,38 +48,38 @@ urlpatterns = [
     path('zaczynaj/', views.lessonsHome, name="lessons-home"),
     path('logowanie-strefa-korepetycji/', views.lessonsLogin, name="lessonsLogin"),
 
-    path('nowy-uczen/', views.newStudent, name='newStudent'),
-    path('uczen-aplikuj/', views.applyStudent, name="applyStudent"),
+    path('uczen-zgloszenie/', views.newStudent, name='newStudent'),
+    path('uczen-rejestracja/', views.applyStudent, name="applyStudent"),
 
-    path('nowy-korepetytor/', views.newTeacher, name='newTeacher'),
-    path('korepetytor-aplikuj/', views.applyTeacher, name="applyTeacher"),
+    path('korepetytor-zgloszenie/', views.newTeacher, name='newTeacher'),
+    path('korepetytor-rejestracja/', views.applyTeacher, name="applyTeacher"),
 
-    path('create-loader/', views.coursesLoader, name="coursesLoader"),
+    path('towrzenie-konta/', views.coursesLoader, name="coursesLoader"),
 
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
-    path('strefa-korepetycji-korepetytor-uczen/', views.studentPage, name="studentPage"),
+    path('strefa-korepetycji-uczen/', views.studentPage, name="studentPage"),
 
-    path('lesson-profile/<str:pk>/', views.lessonProfile, name="lesson-profile"),
-    path('update-user-lessons/', views.updateUserLessons, name="update-user-lessons"),
+    path('profil-strefa-korepetycji/<str:pk>/', views.lessonProfile, name="lesson-profile"),
+    path('edytuj-uzytkownika-strefa-korepetycji/', views.updateUserLessons, name="update-user-lessons"),
 
-    path('courses-teachers/', views.courses_teachersPage, name="courses-teachers"),
+    path('kursy-korepetytor/', views.courses_teachersPage, name="courses-teachers"),
 
-    path('create-lesson/', views.createLesson, name='create-lesson'),
-    path('activity-lesson/', views.activity_lessonPage, name="activity-lesson"),
+    path('utworz-lekcje/', views.createLesson, name='create-lesson'),
+    path('aktywnosci-strefa-korepetycji/', views.activity_lessonPage, name="activity-lesson"),
 
-    path('lessons-logout/', views.lessonsLogout, name="lessonsLogout"),
+    path('wylogowywanie-strefa-korepetycji/', views.lessonsLogout, name="lessonsLogout"),
 
-    path('lesson/<str:pk>/', views.lesson, name="lesson"),
-    path('update-lesson/', views.updateLesson, name='updateLesson'),
-    path('update-lesson/<str:pk>/', views.updateLesson, name='updateLesson'),
+    path('lekcja/<str:pk>/', views.lesson, name="lesson"),
+    path('edytuj-lekcje/', views.updateLesson, name='updateLesson'),
+    path('edytuj-lekcje/<str:pk>/', views.updateLesson, name='updateLesson'),
 
-    path('delete-lesson/<str:pk>/', views.deleteLesson, name='delete-lesson'),
-    path('delete-lesson-message/<str:pk>/', views.deleteLessonMessage, name='delete-lesson-message'),
+    path('usun-lekcje/<str:pk>/', views.deleteLesson, name='delete-lesson'),
+    path('usun-wiadomosc-lekcji/<str:pk>/', views.deleteLessonMessage, name='delete-lesson-message'),
 
-    path('lesson-feedback/<int:pk>/', views.lessonFeedback, name='lesson-feedback'),
-    path('lesson-correction/<int:pk>/', views.lessonCorrection, name='lesson-correction'),
+    path('feedback-lekcji/<int:pk>/', views.lessonFeedback, name='lesson-feedback'),
+    path('poprawka-lekcji/<int:pk>/', views.lessonCorrection, name='lesson-correction'),
 
-    path('resignation/', views.resignation, name='resignation'),
+    path('rezygnacja/', views.resignation, name='resignation'),
 
     path('success/', views.successPage, name='success-page'),
 

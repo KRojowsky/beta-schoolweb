@@ -1009,8 +1009,7 @@ a {
 }
 
 .likes-count {
-    display: inline-block;
-    text-align: center;
+    margin-left: auto;
     cursor: pointer;
     white-space: nowrap;
 }
@@ -1030,9 +1029,15 @@ a {
 }
 
 .thread__details {
-    font-size: 15px;
-    padding: 10px 10px 0 78px;
     word-wrap: break-word;
+}
+
+.thread__details {
+    padding-left: 50px;
+}
+
+.thread__details.authenticated {
+    padding-left: 78px;
 }
 
 .thread__details img{
@@ -1374,9 +1379,8 @@ a {
 .auth__tagline {
     text-align: center;
     margin-bottom: 30px;
-    font-size: 18px;
+    font-size: 16px;
     color: #BB00FF;
-    text-transform: uppercase;
 }
 
 .auth .layout__boxHeader {

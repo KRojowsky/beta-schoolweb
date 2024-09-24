@@ -28,7 +28,6 @@ from .forms import AvailabilityForm
 from .models import Availability
 from django.core.paginator import Paginator
 
-
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
@@ -386,6 +385,9 @@ def lessonsHome(request):
     if user.groups.filter(name='NewStudents').exists():
         return redirect('schoolweb:coursesLoader')
 
+    if user.groups.filter(name='NewTeachers').exists():
+        return redirect('schoolweb:coursesLoader')
+
     return render(request, 'tutoring-zone/lessons-home.html')
 
 
@@ -411,23 +413,18 @@ def applyStudent(request):
     if request.method == 'POST':
         form = ApplyStudentForm(request.POST)
         if form.is_valid():
-            # Zapisz formularz i utwórz nowego użytkownika
             user = form.save()
 
-            # Uwierzytelnij użytkownika na podstawie danych formularza
-            email = form.cleaned_data.get('email')  # Pobierz nazwę użytkownika z formularza
-            password = form.cleaned_data.get('password1')  # Pobierz hasło z formularza (jeśli jest pole password1)
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
             user = authenticate(request, email=email, password=password)
 
             if user is not None:
-                # Zaloguj użytkownika
                 login(request, user)
 
-                # Dodaj użytkownika do grupy 'NewStudents'
                 group = Group.objects.get(name='NewStudents')
                 user.groups.add(group)
 
-                # Przekierowanie do widoku 'lessonsLogin'
                 return redirect('schoolweb:lessonsLogin')
     else:
         form = ApplyStudentForm()
@@ -440,7 +437,12 @@ def newTeacher(request):
         form = NewTeacherForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('schoolweb:applyTeacher'))
+
+            if request.user.is_authenticated:
+                change_user_group(request.user, 'NewStudents')
+                return redirect(reverse('schoolweb:coursesLoader'))
+            else:
+                return redirect(reverse('schoolweb:applyTeacher'))
     else:
         form = NewTeacherForm()
 
@@ -453,11 +455,21 @@ def applyTeacher(request):
         form = ApplyTeacherForm(request.POST)
         if form.is_valid():
             user = form.save()
-            group = Group.objects.get(name='NewTeachers')
-            user.groups.add(group)
-            return redirect('schoolweb:lessonsLogin')
+
+            email = form.cleaned_data.get('email')
+            password = form.cleaned_data.get('password1')
+            user = authenticate(request, email=email, password=password)
+
+            if user is not None:
+                login(request, user)
+
+                group = Group.objects.get(name='NewTeachers')
+                user.groups.add(group)
+
+                return redirect('schoolweb:lessonsLogin')
     else:
         form = ApplyTeacherForm()
+
     return render(request, 'tutoring-zone/apply-teacher.html', {'form': form})
 
 
@@ -543,8 +555,12 @@ def lessonsLogout(request):
     return redirect('schoolweb:knowledge_zone')
 
 
-@user_passes_test(lambda user: user.groups.filter(name='Teachers').exists(), login_url='lessonsLogin')
-@login_required(login_url='lessonsLogin')
+def is_teacher(user):
+    return user.groups.filter(name='Teachers').exists()
+
+
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def teacherPage(request):
     now = datetime.now() - timedelta(minutes=15)
     time_difference = timedelta(minutes=35)
@@ -616,9 +632,9 @@ def lessonProfile(request, pk):
         )
 
     is_accessible_profile = (
-        logged_in_user == user or
-        (is_teacher and user in accessible_users) or
-        (logged_in_user.groups.filter(name='Students').exists() and user in accessible_users)
+            logged_in_user == user or
+            (is_teacher and user in accessible_users) or
+            (logged_in_user.groups.filter(name='Students').exists() and user in accessible_users)
     )
 
     if not is_accessible_profile:
@@ -650,7 +666,7 @@ def updateUserLessons(request):
         form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('lesson-profile', pk=user.id)
+            return redirect('schoolweb:lesson-profile', pk=user.id)
 
     navbar_template = 'tutoring-zone/nav-teacher-view.html'
     error_messages = [error for field, errors in form.errors.items() for error in errors]
@@ -662,14 +678,15 @@ def updateUserLessons(request):
     return render(request, 'tutoring-zone/update-user-lessons.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def createLesson(request):
     initial_data = {'host': request.user}
-    form = PostFormCreate(initial=initial_data)
+    form = PostFormCreate(user=request.user, initial=initial_data)  # Przekazujemy użytkownika do formularza
     current_date = timezone.now().strftime('%Y-%m-%dT%H:%M')
 
     if request.method == 'POST':
-        form = PostFormCreate(request.POST, initial=initial_data)
+        form = PostFormCreate(request.POST, user=request.user, initial=initial_data)
         minimum_datetime = timezone.now() + timedelta(minutes=15)
 
         if form.is_valid():
@@ -682,22 +699,34 @@ def createLesson(request):
                 event_datetime__lte=post.event_datetime + timedelta(minutes=50)
             )
 
-            if overlapping_lessons.exists():
-                form.add_error('event_datetime', "W wybranym terminie istnieje już inna lekcja.")
+            students_in_course = post.course.students.all()
+            student_has_lessons = True
+
+            for student in students_in_course:
+                if post.course.course_type == 'basic':
+                    if student.lessons <= 0:
+                        student_has_lessons = False
+                        break
+                elif post.course.course_type == 'intermediate':
+                    if student.lessons_intermediate <= 0:
+                        student_has_lessons = False
+                        break
+
+            if not student_has_lessons:
+                messages.error(request, "Jeden lub więcej studentów nie ma dostępnych lekcji w tym kursie.")
+            elif overlapping_lessons.exists():
+                messages.error(request, "W wybranym terminie istnieje już inna lekcja.")
             elif post.event_datetime <= minimum_datetime:
-                form.add_error('event_datetime', "Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
+                messages.error(request, "Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
             else:
                 post.save()
 
-                students_in_course = post.course.students.all()
-                if post.course.course_type == 'basic':
-                    for student in students_in_course:
+                for student in students_in_course:
+                    if post.course.course_type == 'basic':
                         student.lessons -= 1
-                        student.save()
-                elif post.course.course_type == 'intermediate':
-                    for student in students_in_course:
+                    elif post.course.course_type == 'intermediate':
                         student.lessons_intermediate -= 1
-                        student.save()
+                    student.save()
 
                 return redirect('schoolweb:teacherPage')
 
@@ -760,7 +789,8 @@ def lesson(request, pk):
     return render(request, 'tutoring-zone/lesson.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def updateLesson(request, pk):
     post = get_object_or_404(Post, id=pk)
 
@@ -791,7 +821,8 @@ def updateLesson(request, pk):
     return render(request, 'tutoring-zone/update-lesson.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def deleteLesson(request, pk):
     post = Post.objects.get(id=pk)
 
@@ -834,7 +865,8 @@ def deleteLessonMessage(request, pk):
     return render(request, 'tutoring-zone/delete-lessons.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def lessonFeedback(request, pk):
     lesson = get_object_or_404(Post, id=pk)
     user = request.user
@@ -890,7 +922,8 @@ def lessonFeedback(request, pk):
     return render(request, 'tutoring-zone/lesson-feedback.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def lessonCorrection(request, pk):
     lesson = get_object_or_404(Post, id=pk)
     user = request.user
@@ -914,14 +947,6 @@ def lessonCorrection(request, pk):
     return render(request, 'tutoring-zone/lesson-correction.html', context)
 
 
-
-
-
-
-
-
-
-
 def successPage(request):
     return render(request, 'tutoring-zone/success-page.html')
 
@@ -931,7 +956,7 @@ def getToken(request):
     appCertificate = '1e44bf1ba1fd49018795989293a7382c'
     channelName = request.GET.get('channel')
     uid = random.randint(1, 230)
-    expirationTimeInSeconds = 3600*24
+    expirationTimeInSeconds = 3600 * 24
     currentTimeStamp = time.time()
     privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
     role = 1
@@ -1018,8 +1043,12 @@ def courses_studentsPage(request):
     return render(request, 'website/courses-students.html', {'courses': courses})
 
 
-@user_passes_test(lambda user: user.groups.filter(name='Students').exists(), login_url='lessonsLogin')
-@login_required(login_url='lessonsLogin')
+def is_student(user):
+    return user.groups.filter(name='Students').exists()
+
+
+@user_passes_test(is_student, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def studentPage(request):
     now = datetime.now() - timedelta(minutes=15)
     time_difference = timedelta(minutes=35)
@@ -1062,6 +1091,8 @@ def access_denied(request):
     return render(request, 'website/lesson-no-exists.html')
 
 
+@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
+@login_required(login_url='schoolweb:lessonsLogin')
 def resignation(request):
     if request.method == 'POST':
         form = ResignationForm(request.POST)
@@ -1074,7 +1105,6 @@ def resignation(request):
         form = ResignationForm()
 
     return render(request, 'tutoring-zone/resignation.html', {'form': form})
-
 
 
 @login_required
@@ -1103,7 +1133,8 @@ def manage_availability(request):
 
     user_availability = Availability.objects.filter(user=user)
 
-    return render(request, 'tutoring-zone/manage-availability.html', {'form': form, 'user_availability': user_availability})
+    return render(request, 'tutoring-zone/manage-availability.html',
+                  {'form': form, 'user_availability': user_availability})
 
 
 def get_availability(request, selected_date):

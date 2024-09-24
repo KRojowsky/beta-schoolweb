@@ -2,28 +2,35 @@
     "questions": [
       {
         "question": [
-          "Jak zostać uczniem"
+          "Jak zostac uczniem",
+          "Jak dolaczyc jako uczen",
+          "Uczen"
         ],
         "answers": [
-          "W trakcie tworzenia..."
+          "Aby dołączyć do grona uczniów platformy SchoolWeb i rozpocząć korepetycje, <b>kliknij na głównej stronie w przycisk „Umów pierwsze zajęcia” lub przejdź do sekcji „Strefa Korepetycji”</b>. Następnie <b>wypełnij formularz zgłoszeniowy</b>, a nasz zespół szybko go rozpatrzy. Po akceptacji otrzymasz dostęp do Strefy Korepetycji, gdzie, po opłaceniu zajęć, przydzielimy Ci korepetytora, z którym odbędziesz swoje pierwsze zajęcia."
         ]
       },
       {
         "question": [
-          "Jak zostać korepetytorem"
+          "Jak zostać korepetytorem",
+          "Jak dolaczyc jako korepetytor",
+          "Korepetytor",
+          "Jak udzielać korepetycji"
         ],
         "answers": [
-          "W trakcie tworzenia..."
-         
+          "Aby zostać korepetytorem na platformie <b>kliknij na głównej stronie w przycisk „Zostań korepetytorem” lub przejdź do sekcji „Strefa Korepetycji”</b>. Następnie <b>wypełnij formularz zgłoszeniowy</b>, a nasz zespół szybko go rozpatrzy. Po akceptacji otrzymasz dostęp do Strefy Korepetycji, gdzie po przydzieleniu ucznia będziesz mogł przeprowadzać lekcje."
+
         ]
       },
       {
         "question": [
-          "Ile trwają pojedyncze zajęcia"
+          "Ile trwają pojedyncze zajęcia",
+          "Czas trwania lekcji",
+          "Ile trwa lekcja"
         ],
         "answers": [
-          "W trakcie tworzenia..."
-         
+          "Czas trwania pojedynczej jednostki lekcyjnej to <b>50 minut</b>."
+
         ]
       },
       {
@@ -31,16 +38,15 @@
           "Metody płatności"
         ],
         "answers": [
-          "W trakcie tworzenia..."
-         
+          "Obecnie dostępne metody płatności to:<br><b>BLIK: 572930585</b><br>lub<br><b>Przelew na numer rachunku<br>62 1240 2656 1111 0011 0441 8595</b>"
         ]
       },
       {
         "question": [
-          "Jakie macie rabaty"
+          "Dostepne rabaty"
         ],
         "answers": [
-          "W trakcie tworzenia..."
+          "Dostępne rabaty dla każdego rodzaju zajęć są dostępne na naszej głównej stronie w sekcji <b>„Cennik zajęć”</b>."
          
         ]
       }

@@ -71,23 +71,17 @@
                     </div>
                     <div class="message-text">
                         <p>Cześć jestem Resq - chatbot platformy edukacyjnej SchoolWeb! &#128512<br><br>Jak mogę Ci pomóc?</p>
-                        <button onclick="addUserMessage('Jak zostać uczniem')">Jak zostać uczniem?</button>
-                        <button onclick="addUserMessage('Jak zostać korepetytorem')">Jak zostać korepetytorem?</button>
-                        <button onclick="addUserMessage('Ile trwają pojedyncze zajęcia')">Ile trwają pojedyncze zajęcia?</button>
+                        <button onclick="addUserMessage('Jak zostać uczniem?')">Jak zostać uczniem?</button>
+                        <button onclick="addUserMessage('Jak zostać korepetytorem?')">Jak zostać korepetytorem?</button>
+                        <button onclick="addUserMessage('Ile trwają pojedyncze zajęcia?')">Ile trwają pojedyncze zajęcia?</button>
                         <button onclick="addUserMessage('Metody płatności')">Metody płatności</button>
-                        <button onclick="addUserMessage('Jakie macie rabaty')">Jakie macie rabaty?</button>
-                    </div>
-                </div>
-
-                <div id="typingIndicator" class="message-bot" style="display: none;">
-                    <div class="chatbot-img-container">
-                        <img src="{% static 'img/chatbot-icon.png' %}" alt="ikona chatbota" class="chatbot-img">
+                        <button onclick="addUserMessage('Dostępne rabaty')">Jakie macie rabaty?</button>
                     </div>
                 </div>
             </div>
         </div>
 
-         <form class="input-container">
+        <form class="input-container" id="chatForm">
             {% csrf_token %}
             <input type="text" id="chatInput" name="chatInput" placeholder="Napisz wiadomość..." onkeypress="sendMessage(event)">
             <button type="submit" class="send-button">

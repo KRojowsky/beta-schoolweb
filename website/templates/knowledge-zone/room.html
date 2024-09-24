@@ -179,18 +179,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="thread__details">
-                  {{message.body}}
-                  {% if message.image %}
-                    <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
-                      <img src="{{ message.image.url }}" alt="Message Image" />
-                    </a>
-                  {% endif %}
-                  {% if message.file %}
-                      <div class="file-name-wrapper">
-                        <a href="{{ message.file.url }}" target="_blank" title="Otwórz">{{ message.file.name }}</a>
-                      </div>
-                  {% endif %}
+                <div class="thread__details {% if request.user == message.user %} authenticated{% else %} guest{% endif %}">
+                    {{ message.body }}
+                    {% if message.image %}
+                        <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
+                            <img src="{{ message.image.url }}" alt="Message Image" />
+                        </a>
+                    {% endif %}
+                    {% if message.file %}
+                        <div class="file-name-wrapper">
+                            <a href="{{ message.file.url }}" target="_blank" title="Otwórz">{{ message.file.name }}</a>
+                        </div>
+                    {% endif %}
                 </div>
 
                 <div class="likes-container">
