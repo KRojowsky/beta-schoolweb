@@ -20,7 +20,7 @@
       <div>
         {% if lesson.event_datetime %}
             {% if lesson.event_datetime > now %}
-                <a href="#" target="_blank" class="joinButton">
+                <a href="{% url 'schoolweb:lobby' %}" target="_blank" class="joinButton">
                     <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
                 </a>
             {% elif lesson.event_datetime <= time_threshold %}

@@ -1166,23 +1166,15 @@ def get_availability(request, selected_date):
     return JsonResponse(availability_data)
 
 
-@login_required(login_url='lessonsLogin')
-def Lobby(request, pk):
-    user = request.user
-    lesson = Post.objects.get(pk=pk)
-    lesson.add_click(request.user)
-    first_name = user.first_name if user.first_name else "Default Name"
+def Lobby(request):
+    return render(request, 'website/lobby1.html')
 
+
+def converse(request, room_code):
     context = {
-        'first_name': first_name,
+        'room_code': room_code,
     }
-
-    return render(request, 'website/lobby1.html', context)
-
-
-@login_required(login_url='lessonsLogin')
-def converse(request):
-    return render(request, 'website/lesson_converse1.html')
+    return render(request, 'website/room2.html', context)
 
 
 @csrf_exempt
