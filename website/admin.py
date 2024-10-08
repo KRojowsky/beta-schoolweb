@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, NewStudent, \
-    RoomMember, NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock
+            NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
@@ -270,5 +270,4 @@ admin.site.register(Course, CourseAdmin)
 admin.site.register(Post, LessonInfo)
 admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
-admin.site.register(RoomMember)
 admin.site.register(Resign, ResignationAdmin)

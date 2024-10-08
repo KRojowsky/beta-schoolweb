@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
+import random
+import string
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -169,18 +171,6 @@ class Report(models.Model):
     def __str__(self):
         return f'Report by {self.reporter.username} on {self.room.name}'
 
-
-class RoomMember(models.Model):
-    name = models.CharField(max_length=200, default="Default Name")
-    uid = models.CharField(max_length=200)
-    room_name = models.CharField(max_length=200)
-
-    def __str__(self):
-        return self.name
-
-
-import random
-import string
 
 class Post(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

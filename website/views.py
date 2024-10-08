@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, RoomMember, Report,
-                     BlogPost, BlogCategory)
+from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, Report, BlogPost,
+                     BlogCategory)
 from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
                     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
                     ResignationForm, ReportForm, RoomMessageForm)
@@ -1158,9 +1158,16 @@ def Lobby(request):
 
 def converse(request):
     user = request.user
+    room_code = request.GET.get('room')
+
+    post = get_object_or_404(Post, invite_code=room_code)
+
+    if user not in post.clicked_users.all():
+        post.add_click(user)
 
     context = {
         'user': user,
+        'post': post,
     }
 
     return render(request, 'website/room2.html', context)
