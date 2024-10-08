@@ -1170,7 +1170,8 @@ def Lobby(request):
     return render(request, 'website/lobby1.html')
 
 
-def converse(request, room_code):
+def converse(request):
+    room_code = request.GET.get('room')
     context = {
         'room_code': room_code,
     }

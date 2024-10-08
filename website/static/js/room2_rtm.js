@@ -90,7 +90,7 @@ let addBotMessageToDom = (botMessage) => {
 
     let newMessage = `<div class="message__wrapper">
                         <div class="message__body__bot">
-                            <strong class="message__author__bot">🤖 Mumble Bot</strong>
+                            <strong class="message__author__bot">🐻‍❄️ Resq Bot</strong>
                             <p class="message__text__bot">${botMessage}</p>
                         </div>
                     </div>`

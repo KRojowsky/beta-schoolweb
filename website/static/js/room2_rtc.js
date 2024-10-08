@@ -15,6 +15,7 @@ let channel;
 const queryString = window.location.search
 const urlParams = new URLSearchParams(queryString)
 let roomId = urlParams.get('room')
+console.log('Room ID:', roomId);
 
 if(!roomId){
     roomId = 'main'
@@ -207,8 +208,16 @@ let toggleScreen = async (e) => {
     }
 }
 
+let leaveChannelAndGoToLobby = async () => {
+    await leaveChannel();
+
+    window.location = '/lobby/'
+}
+
 document.getElementById('camera-btn').addEventListener('click', toggleCamera)
 document.getElementById('mic-btn').addEventListener('click', toggleMic)
 document.getElementById('screen-btn').addEventListener('click', toggleScreen)
+document.getElementById('leave-btn').addEventListener('click', leaveChannelAndGoToLobby);
+
 
 joinRoomInit()

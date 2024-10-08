@@ -101,7 +101,7 @@ urlpatterns = [
     path('access-denied/', views.access_denied, name='access_denied'),
 
     path('lobby/', views.Lobby, name='lobby'),
-    path('converse/<str:room_code>/', views.converse, name='converse'),
+    path('converse/', views.converse, name='converse'),
     path('get_token/', views.getToken),
     path('create_member/', views.createMember),
     path('get_member/', views.getMember),
