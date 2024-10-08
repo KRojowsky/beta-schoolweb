@@ -8,6 +8,10 @@
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link href="{% static 'css/main.css' %}" rel="stylesheet">
     <link href="{% static 'css/room.css' %}" rel="stylesheet">
+    <script>
+        // Przekaż imię użytkownika do sessionStorage
+        sessionStorage.setItem('display_name', '{{ user.first_name }}');
+    </script>
 </head>
 <body>
 

@@ -100,12 +100,8 @@ urlpatterns = [
 
     path('access-denied/', views.access_denied, name='access_denied'),
 
-    path('lobby/', views.Lobby, name='lobby'),
-    path('converse/', views.converse, name='converse'),
-    path('get_token/', views.getToken),
-    path('create_member/', views.createMember),
-    path('get_member/', views.getMember),
-    path('delete_member/', views.deleteMember),
+    path('converse', views.converse, name='converse'),
+
     path('dostępność/', views.manage_availability, name='manage_availability'),
     path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
 ]

@@ -179,6 +179,9 @@ class RoomMember(models.Model):
         return self.name
 
 
+import random
+import string
+
 class Post(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
@@ -196,6 +199,17 @@ class Post(models.Model):
     attended_students = models.ManyToManyField(User, related_name='attended_students_lessons', blank=True)
     attended_teachers = models.ManyToManyField(User, related_name='attended_teachers_lessons', blank=True)
     feedback_submitted = models.BooleanField(default=False)
+    invite_code = models.CharField(max_length=10, unique=True, blank=True)  # Nowe pole na kod zaproszenia
+
+    def save(self, *args, **kwargs):
+        # Generowanie unikalnego invite_code
+        if not self.invite_code:
+            self.invite_code = self.generate_invite_code()
+        super().save(*args, **kwargs)
+
+    def generate_invite_code(self):
+        """Generuje unikalny kod zaproszenia."""
+        return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
 
     def add_click(self, user):
         if user not in self.clicked_users.all():
@@ -212,6 +226,7 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+
 
 
 class CourseMessage(models.Model):

@@ -22,9 +22,6 @@ if(!roomId){
 }
 
 let displayName = sessionStorage.getItem('display_name')
-if(!displayName){
-    window.location = 'lobby.html'
-}
 
 let localTracks = []
 let remoteUsers = {}
@@ -211,7 +208,7 @@ let toggleScreen = async (e) => {
 let leaveChannelAndGoToLobby = async () => {
     await leaveChannel();
 
-    window.location = '/lobby/'
+    window.location = '/strefa-wiedzy/'
 }
 
 document.getElementById('camera-btn').addEventListener('click', toggleCamera)

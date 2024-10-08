@@ -1,19 +1,18 @@
-let form = document.getElementById('lobby__form');
+let form = document.getElementById('lobby__form')
 
-let displayName = sessionStorage.getItem('display_name');
+let displayName = sessionStorage.getItem('display_name')
 if(displayName){
-    form.name.value = displayName;
+    form.name.value = displayName
 }
 
 form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    sessionStorage.setItem('display_name', e.target.name.value);
+    sessionStorage.setItem('display_name', e.target.name.value)
 
-    let inviteCode = e.target.room.value;
-    if (!inviteCode) {
-        inviteCode = String(Math.floor(Math.random() * 10000));
+    let inviteCode = e.target.room.value
+    if(!inviteCode){
+        inviteCode = String(Math.floor(Math.random() * 10000))
     }
-
-    window.location = `/converse?room=${inviteCode}`;
-});
+    window.location = `/converse/?room=${inviteCode}`;
+})

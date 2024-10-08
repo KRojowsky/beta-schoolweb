@@ -20,9 +20,11 @@
       <div>
         {% if lesson.event_datetime %}
             {% if lesson.event_datetime > now %}
-                <a href="{% url 'schoolweb:lobby' %}" target="_blank" class="joinButton">
-                    <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
-                </a>
+                <div>
+                    <a href="{% url 'schoolweb:converse' %}?room={{ lesson.invite_code }}" target="_blank" class="joinButton">
+                        <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
+                    </a>
+                </div>
             {% elif lesson.event_datetime <= time_threshold %}
                 {% if lesson.feedback is not None and lesson.feedback != "-" %}
                         <div class="inactiveButton">

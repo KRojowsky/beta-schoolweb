@@ -951,20 +951,6 @@ def successPage(request):
     return render(request, 'tutoring-zone/success-page.html')
 
 
-def getToken(request):
-    appId = '770b21a50e5c43f7afee0b043509cdbb'
-    appCertificate = '1e44bf1ba1fd49018795989293a7382c'
-    channelName = request.GET.get('channel')
-    uid = random.randint(1, 230)
-    expirationTimeInSeconds = 3600 * 24
-    currentTimeStamp = time.time()
-    privilegeExpiredTs = currentTimeStamp + expirationTimeInSeconds
-    role = 1
-    token = RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs)
-
-    return JsonResponse({'token': token, 'uid': uid}, safe=False)
-
-
 def check_user_group(username):
     try:
         user = User.objects.get(username=username)
@@ -1171,47 +1157,13 @@ def Lobby(request):
 
 
 def converse(request):
-    room_code = request.GET.get('room')
+    user = request.user
+
     context = {
-        'room_code': room_code,
+        'user': user,
     }
+
     return render(request, 'website/room2.html', context)
-
-
-@csrf_exempt
-def createMember(request):
-    data = json.loads(request.body)
-
-    member, created = RoomMember.objects.get_or_create(
-        name=data['name'],
-        uid=data['UID'],
-        room_name=data['room_name']
-    )
-    return JsonResponse({'name': data['name']}, safe=False)
-
-
-def getMember(request):
-    uid = request.GET.get('UID')
-    room_name = request.GET.get('room_name')
-
-    member = RoomMember.objects.get(
-        uid=uid,
-        room_name=room_name,
-    )
-    name = member.name
-    return JsonResponse({'name': member.name}, safe=False)
-
-
-@csrf_exempt
-def deleteMember(request):
-    data = json.loads(request.body)
-    member = RoomMember.objects.get(
-        name=data['name'],
-        uid=data['UID'],
-        room_name=data['room_name']
-    )
-    member.delete()
-    return JsonResponse('Member deleted', safe=False)
 
 
 @receiver(pre_delete, sender=User)
