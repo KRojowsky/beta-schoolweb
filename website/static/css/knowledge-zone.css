@@ -938,14 +938,10 @@ a {
     }
 }
 
-.room__conversation {
-    margin: 10px 0 40px 0;
-}
-
 .threads {
     overflow-y: auto;
     height: 100%;
-    padding: 0 0 80px 0;
+    padding: 0 0 10px 0;
 }
 
 .thread__top {
@@ -1046,11 +1042,7 @@ a {
 }
 
 .room__message {
-    padding: 15px 10px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    padding: 10px;
     background: transparent;
     z-index: 111;
 }

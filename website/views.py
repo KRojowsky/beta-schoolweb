@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, Report, BlogPost,
+from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, BlogPost,
                      BlogCategory)
 from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
                     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
@@ -11,18 +11,12 @@ from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, Ap
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.contrib.auth.models import Group
-from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
 from django.http import JsonResponse
-from django.core.files.base import ContentFile
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from agora_token_builder import RtcTokenBuilder
-import random
-import time
 from datetime import datetime
 from django.utils import timezone
-import json
 from datetime import timedelta
 from .forms import AvailabilityForm
 from .models import Availability

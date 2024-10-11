@@ -164,32 +164,33 @@ nav .mobile-menu{
         display: none;
     }
 
-    .mobile-menu.show {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        position: absolute;
-        top: 73px;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: #FCF7FC;
-        box-sizing: border-box;
-        overflow-y: auto;
-        height: calc(100vh - 73px);
-    }
+   .mobile-menu.show {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FCF7FC;
+    box-sizing: border-box;
+    overflow-y: auto;
+    z-index: 1000;
+    height: calc(100vh - 73px);
+}
 
     .mobile-menu ul {
         list-style: none;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
         padding: 0;
         margin: 0;
         width: 100%;
         flex-grow: 1;
+        margin-top: 25px;
     }
 
     .mobile-menu li{
@@ -603,6 +604,7 @@ span{
     align-items: center;
     background: linear-gradient(90deg, rgba(255,255,255,1) 0%, rgba(245,217,253,1) 0%, rgba(228,155,250,1) 100%, rgba(255,255,255,1) 100%);
     border-radius: 22px;
+    cursor: pointer;
 }
 
 .hero-list li:before{
@@ -682,6 +684,10 @@ th, td{
     padding: 4px 5px;
 }
 
+tr td a{
+    cursor: pointer;
+}
+
 .pricing-plan h4{
     font-size: 20px;
 }
@@ -707,9 +713,10 @@ th, td{
     color: #BB00FF;
 }
 
-.pricing-plan .fa-chevron-circle-right:hover{
-    color: #000;
+.pricing-plan .fa-chevron-circle-right:hover,
+.pricing-plan > a:hover {
     transition: .3s;
+    opacity: .5;
 }
 
 .pricing-plan > a{
@@ -721,11 +728,6 @@ th, td{
     font-size: 15px;
     color: #FFF;
     cursor: pointer;
-}
-
-.pricing-plan > a:hover{
-    background: #000;
-    transition: .3s;
 }
 
 @media (max-width: 1150px){
