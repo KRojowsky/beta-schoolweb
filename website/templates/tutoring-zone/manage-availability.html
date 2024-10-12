@@ -11,6 +11,15 @@
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
+          <a href="javascript:window.history.back()">
+              <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                  viewBox="0 0 32 32">
+                  <title>Cofnij</title>
+                  <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
+                  1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                  </path>
+              </svg>
+          </a>
           <h1>Zaznacz swoją dostępność</h1>
         </div>
       </div>
@@ -87,7 +96,7 @@
           </div>
           *Każdy dzień musi zostać zapisany osobno
            <div class="form__action" style="margin-top:15px;">
-            <a class="btn btn--dark" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
+            <a class="btn btn--main" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
             <button class="btn btn--main" type="submit">Zatwierdź</button>
           </div>
         </form>
@@ -99,47 +108,35 @@
 <style>
   .form-day {
     margin-bottom: 20px;
-    text-align: left;
-  }
+    text-align: center;
+}
 
-  .day-label {
+.day-label {
     font-size: 18px;
     font-weight: bold;
-    margin-bottom: 8px;
-    margin-right:5px;
-  }
+    margin-right: 5px;
+}
 
-  .form-group {
-    margin-top: 10px;
-    border: 2px solid #000000;
+.form-group {
+    margin-top: 5px;
+    border: 1px solid #808080;
     text-align: center;
-    color: #000000;
-    background: #ffffff;
-    border-radius: 7px;
-    font-size: 17px;
-    font-weight: 900;
+    color: #000;
+    background: #FFF;
+    border-radius: 5px;
+    font-size: 15px;
     padding: 5px 0;
-  }
+}
 
-  .form-group.clicked {
-    background: #03ff13;
-    border: 2px solid #000000;
-  }
+.form-group.clicked {
+    background: #E59DFF;
+}
 
-  .form-group:hover{
-    background: #71c6dd;
+.form-group:hover{
+    background: #F5DDFF;
     transition: 0.3s ease;
     cursor: pointer;
-  }
-
-  hour-label:hover{
-    cursor: pointer;
-  }
-
-  .form-group .checked {
-    background-color: #03ff13;
-    color: #000000;
-  }
+}
 </style>
 
 <script>

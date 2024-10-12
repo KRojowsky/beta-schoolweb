@@ -53,7 +53,7 @@ urlpatterns = [
     path('korepetytor-zgloszenie/', views.newTeacher, name='newTeacher'),
     path('korepetytor-rejestracja/', views.applyTeacher, name="applyTeacher"),
 
-    path('towrzenie-konta/', views.coursesLoader, name="coursesLoader"),
+    path('tworzenie-konta/', views.coursesLoader, name="coursesLoader"),
 
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
     path('strefa-korepetycji-uczen/', views.studentPage, name="studentPage"),

@@ -615,6 +615,7 @@ a {
     display: flex;
     align-items: center;
     margin-top: 10px;
+    overflow: hidden;
 }
 
 .avatar--participant img{
@@ -1648,9 +1649,13 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    position: fixed;
+    top: 73px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - 73px);
     padding: 0 20px;
-    margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -1689,7 +1694,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     margin: 0 0 20px 0;
 }
 
-@media (max-width: 676px) {
+@media (max-width: 850px) {
     .create-account-container {
         padding: 0 10px;
     }
