@@ -26,16 +26,16 @@ class MyUserCreationForm(UserCreationForm):
 class NewTeacherForm(forms.ModelForm):
     class Meta:
         model = NewTeacher
+        fields = ['first_name', 'last_name', 'phone_number', 'school', 'subject', 'age_language']
 
         labels = {
-            'name': 'Imie i nazwisko korepetytora',
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
             'phone_number': 'Numer telefonu',
             'school': 'Najwyższy osiągnięty stopień edukacji',
             'subject': 'Wybierz podstawowy przedmiot, z którego chcesz udzielać korepetycji',
             'age_language': 'Czy masz ukończone 18 lat i znasz język polski na poziomie ojczystym?',
         }
-
-        fields = ['name', 'phone_number', 'school', 'subject', 'age_language']
 
 
 class ApplyTeacherForm(UserCreationForm):
@@ -62,14 +62,15 @@ class NewStudentForm(forms.ModelForm):
         model = NewStudent
 
         labels = {
-            'name': 'Imie i nazwisko ucznia',
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
             'phone_number': 'Numer telefonu',
             'subject': 'Wybierz podstawowy przedmiot, z którego chcesz otrzymywać korepetycje',
             'school': 'Aktualny stopień edukacji',
             'level': 'Wybierz rodzaj zajęć',
         }
 
-        fields = ['name', 'phone_number', 'subject', 'school', 'level']
+        fields = ['first_name', 'last_name', 'phone_number', 'subject', 'school', 'level']
 
 
 class ApplyStudentForm(UserCreationForm):

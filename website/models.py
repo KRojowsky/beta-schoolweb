@@ -252,10 +252,11 @@ class NewTeacher(models.Model):
         ('nie', 'Nie'),
     ]
 
-    name = models.CharField(max_length=50, null=True)
+    first_name = models.CharField(max_length=30, null=False, default='')
+    last_name = models.CharField(max_length=30, null=False, default='')
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',
-        message="Numer telefonu musi byc w formacie: '999 999 999'. Maksymalnie 15 cyfr."
+        message="Numer telefonu musi być w formacie: '999 999 999'. Maksymalnie 15 cyfr."
     )
     phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, null=True)
     school = models.CharField(choices=SCHOOL_CHOICES, max_length=20, null=True)
@@ -263,7 +264,7 @@ class NewTeacher(models.Model):
     age_language = models.CharField(choices=LANGUAGE, max_length=20, null=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.first_name} {self.last_name}'
 
 
 class NewStudent(models.Model):
@@ -279,7 +280,8 @@ class NewStudent(models.Model):
         ('korygujące', 'Korygujące'),
     ]
 
-    name = models.CharField(max_length=50, null=True)
+    first_name = models.CharField(max_length=30, null=False, default='')
+    last_name = models.CharField(max_length=30, null=False, default='')
     phone_regex = RegexValidator(
         regex=r'^\+?1?\d{9,15}$',
         message="Numer telefonu musi byc w formacie: '999 999 999'. Maksymalnie 15 cyfr."
@@ -290,7 +292,7 @@ class NewStudent(models.Model):
     level = models.CharField(choices=LEVEL_CHOICES, max_length=20, null=True)
 
     def __str__(self):
-        return self.name
+        return f'{self.first_name} {self.last_name}'
 
 
 class LessonCorrection(models.Model):

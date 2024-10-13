@@ -433,7 +433,7 @@ def newTeacher(request):
             form.save()
 
             if request.user.is_authenticated:
-                change_user_group(request.user, 'NewStudents')
+                change_user_group(request.user, 'NewTeachers')
                 return redirect(reverse('schoolweb:coursesLoader'))
             else:
                 return redirect(reverse('schoolweb:applyTeacher'))
@@ -467,8 +467,24 @@ def applyTeacher(request):
     return render(request, 'tutoring-zone/apply-teacher.html', {'form': form})
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
+
+
 def coursesLoader(request):
-    return render(request, 'tutoring-zone/user-creator.html')
+    if not request.user.is_authenticated:
+        return redirect('schoolweb:knowledge_zone')
+
+    user_groups = request.user.groups.values_list('name', flat=True)
+
+    if 'Teachers' in user_groups:
+        return redirect('schoolweb:teacherPage')
+    elif 'Student' in user_groups:
+        return redirect('schoolweb:studentPage')
+    elif 'NewStudents' in user_groups or 'NewTeachers' in user_groups:
+        return render(request, 'tutoring-zone/user-creator.html')
+    else:
+        return redirect('schoolweb:knowledge_zone')
 
 
 def noLessons(request):
