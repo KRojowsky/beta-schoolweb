@@ -1,5 +1,6 @@
 from django.forms import ModelForm, ImageField
-from .models import Room, Post, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability, Report
+from .models import (Room, Post, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability,
+                     Report)
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError

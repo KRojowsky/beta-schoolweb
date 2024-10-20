@@ -26,11 +26,8 @@
 </head>
 <body>
 	{% include 'widget/nav.html' %}
-
 	{% block content %}
-
     {% endblock content %}
-
 	{% include 'widget/footer.html' %}
 
     <div id="shop-modal" class="modal">
@@ -41,7 +38,7 @@
     </div>
 
     <a title="Zapytaj Resq" class="chat-icon">
-        <img src="{% static 'img/widget/bot.png' %}" alt="Ikona chatbota Resq">
+        <img src="{% static 'img/icons/robot.svg' %}" alt="Ikona chatbota Resq">
         <span class="chat-status-dot"></span>
     </a>
 
@@ -49,15 +46,13 @@
         <div class="chat-header">
             <div class="header-left">
                 <div class="chatbot-img-container">
-                    <img src="{% static 'img/widget/bot.png' %}" alt="ikona chatbota" class="chatbot-img">
+                    <img src="{% static 'img/icons/robot.svg' %}" alt="Ikona chatbota Resq" class="chatbot-img">
                     <span class="chat-status-dot"></span>
                 </div>
                 <div class="status-container">
                     <h2>Resq</h2>
                     <span class="status-text">online</span>
-                    <div id="response">
-
-                    </div>
+                    <div id="response"></div>
                 </div>
             </div>
             <span class="close-btn" onclick="closeChatPopup()">&times;</span>
@@ -67,7 +62,7 @@
             <div id="chatMessages">
                 <div class="message-bot">
                     <div class="chatbot-img-container">
-                        <img src="{% static 'img/widget/bot.png' %}" alt="ikona chatbota" class="chatbot-img">
+                        <img src="{% static 'img/icons/robot.svg' %}" alt="ikona chatbota" class="chatbot-img">
                     </div>
                     <div class="message-text">
                         <p>Cześć jestem Resq - chatbot platformy edukacyjnej SchoolWeb! &#128512<br><br>Jak mogę Ci pomóc?</p>
@@ -90,6 +85,6 @@
         </form>
     </div>
 
-    <input type="hidden" id="static-image-path" value="{% static 'img/widget/bot.png' %}">
+    <input type="hidden" id="static-image-path" value="{% static 'img/icons/robot.svg' %}">
 </body>
 </html>

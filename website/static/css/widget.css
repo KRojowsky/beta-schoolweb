@@ -159,26 +159,26 @@ nav .mobile-menu{
     }
 }
 
-@media (max-width: 1192px){
+@media (max-width: 1180px){
     .nav-links, .additional-nav, .nav-brand-name{
         display: none;
     }
 
-   .mobile-menu.show {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #FCF7FC;
-    box-sizing: border-box;
-    overflow-y: auto;
-    z-index: 1000;
-    height: calc(100vh - 73px);
-}
+       .mobile-menu.show {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #FCF7FC;
+        box-sizing: border-box;
+        overflow-y: auto;
+        z-index: 1000;
+        height: calc(100vh - 73px);
+    }
 
     .mobile-menu ul {
         list-style: none;
@@ -247,12 +247,11 @@ nav .mobile-menu{
 .modal{
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 1001;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background: rgba(0, 0, 0, 0.8);
 }
 
@@ -263,7 +262,7 @@ nav .mobile-menu{
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    padding: 10px;
+    padding: 35px 0;
     border-radius: 10px;
     width: 90%;
 }
@@ -271,22 +270,20 @@ nav .mobile-menu{
 .modal-content p{
     font-size: 32px;
     text-align: center;
-    margin: 50px 0;
 }
 
 .close{
     color: #AAA;
     position: absolute;
-    top: 10px;
-    right: 15px;
-    font-size: 28px;
+    top: 0;
+    right: 10px;
+    font-size: 32px;
     font-weight: bold;
 }
 
 .close:hover,
 .close:focus{
     color: black;
-    text-decoration: none;
     cursor: pointer;
 }
 
@@ -414,44 +411,44 @@ span{
 
 @-webkit-keyframes hvr-buzz-out {
     10% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
+        -webkit-transform: translateX(3px) rotate(2deg);
+        transform: translateX(3px) rotate(2deg);
     }
     20% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
+        -webkit-transform: translateX(-3px) rotate(-2deg);
+        transform: translateX(-3px) rotate(-2deg);
     }
     30% {
-    -webkit-transform: translateX(3px) rotate(2deg);
-    transform: translateX(3px) rotate(2deg);
+        -webkit-transform: translateX(3px) rotate(2deg);
+        transform: translateX(3px) rotate(2deg);
     }
     40% {
-    -webkit-transform: translateX(-3px) rotate(-2deg);
-    transform: translateX(-3px) rotate(-2deg);
+        -webkit-transform: translateX(-3px) rotate(-2deg);
+        transform: translateX(-3px) rotate(-2deg);
     }
     50% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
+        -webkit-transform: translateX(2px) rotate(1deg);
+        transform: translateX(2px) rotate(1deg);
     }
     60% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
+        -webkit-transform: translateX(-2px) rotate(-1deg);
+        transform: translateX(-2px) rotate(-1deg);
     }
     70% {
-    -webkit-transform: translateX(2px) rotate(1deg);
-    transform: translateX(2px) rotate(1deg);
+        -webkit-transform: translateX(2px) rotate(1deg);
+        transform: translateX(2px) rotate(1deg);
     }
     80% {
-    -webkit-transform: translateX(-2px) rotate(-1deg);
-    transform: translateX(-2px) rotate(-1deg);
+        -webkit-transform: translateX(-2px) rotate(-1deg);
+        transform: translateX(-2px) rotate(-1deg);
     }
     90% {
-    -webkit-transform: translateX(1px) rotate(0);
-    transform: translateX(1px) rotate(0);
+        -webkit-transform: translateX(1px) rotate(0);
+        transform: translateX(1px) rotate(0);
     }
     100% {
-    -webkit-transform: translateX(-1px) rotate(0);
-    transform: translateX(-1px) rotate(0);
+        -webkit-transform: translateX(-1px) rotate(0);
+        transform: translateX(-1px) rotate(0);
     }
 }
 
@@ -1431,12 +1428,12 @@ button:hover{
     position: fixed;
     bottom: 20px;
     right: 20px;
-    width: 70px;
+    width: 85px;
     height: auto;
     cursor: pointer;
     border-radius: 50%;
     padding: 8px 9px;
-    border: 2px solid #9C27B0;
+    border: 1px solid #9C27B0;
     background: #FFF;
     z-index: 1000;
     display: flex;
@@ -1471,12 +1468,12 @@ button:hover{
 .chat-popup {
     display: none;
     position: fixed;
-    bottom: 100px;
+    bottom: 15px;
     right: 12px;
     width: 350px;
     border-radius: 7px;
     border: 1px solid #DDD;
-    z-index: 999;
+    z-index:1002;
     background: #FFF;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
     border: 1px solid #A9A9A9;
@@ -1604,7 +1601,7 @@ button:hover{
 }
 
 .message-user .message-text {
-    background-color: #d2e2fd;
+    background-color: #D2E2FD;
     text-align: right;
     overflow: hidden;
     word-wrap: break-word;
@@ -1668,7 +1665,7 @@ button:hover{
         position: fixed;
         bottom: 12px;
         right: 12px;
-        width: 60px;
+        width: 70px;
     }
 
     .chat-popup {

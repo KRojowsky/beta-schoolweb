@@ -9,8 +9,14 @@ from website.models import User
 from django.contrib.auth.models import Group
 
 
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
 class PlatformMessageAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone_number', 'message', 'created')
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 class CustomUserAdmin(UserAdmin):

@@ -45,7 +45,6 @@ urlpatterns = [
 
     # TUTORING ZONE
     path('zaczynaj/', views.lessonsHome, name="lessons-home"),
-    path('logowanie-strefa-korepetycji/', views.lessonsLogin, name="lessonsLogin"),
 
     path('uczen-zgloszenie/', views.newStudent, name='newStudent'),
     path('uczen-rejestracja/', views.applyStudent, name="applyStudent"),
@@ -65,8 +64,6 @@ urlpatterns = [
 
     path('utworz-lekcje/', views.createLesson, name='create-lesson'),
     path('aktywnosci-strefa-korepetycji/', views.activity_lessonPage, name="activity-lesson"),
-
-    path('wylogowywanie-strefa-korepetycji/', views.lessonsLogout, name="lessonsLogout"),
 
     path('lekcja/<str:pk>/', views.lesson, name="lesson"),
     path('edytuj-lekcje/', views.updateLesson, name='updateLesson'),

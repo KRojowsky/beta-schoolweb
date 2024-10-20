@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
@@ -10,7 +10,6 @@ from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, Ap
                     ResignationForm, ReportForm, RoomMessageForm)
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
-from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.http import JsonResponse
 from django.db.models.signals import pre_delete
@@ -26,16 +25,7 @@ from django.core.paginator import Paginator
 
 
 def home(request):
-    user_in_migrates = False
-
-    if request.user.is_authenticated:
-        user_in_migrates = request.user.groups.filter(name='Migrates').exists()
-
-    context = {
-        'user_in_migrates': user_in_migrates,
-    }
-
-    return render(request, 'widget/main-view.html', context)
+    return render(request, 'widget/main-view.html')
 
 
 def become_tutor(request):
@@ -77,22 +67,21 @@ def user_message(request):
 def loginPage(request):
     page = 'login'
 
-    if request.user.is_authenticated:
-        return redirect('schoolweb:knowledge_zone')
-
     if request.method == 'POST':
         email = request.POST.get('email').lower()
         password = request.POST.get('password')
+
+        next_url = request.POST.get('next') or reverse('schoolweb:knowledge_zone')
 
         user = User.objects.filter(email=email).first()
 
         if user is None:
             messages.error(request, 'Użytkownik nie istnieje')
         else:
-            user = authenticate(request, email=email, password=password)
+            user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('schoolweb:knowledge_zone')
+                return redirect(next_url)
             else:
                 messages.error(request, 'Błędny Email lub Hasło')
 
@@ -103,7 +92,8 @@ def loginPage(request):
 @login_required(login_url='schoolweb:login')
 def logoutUser(request):
     logout(request)
-    return redirect('schoolweb:knowledge_zone')
+    next_url = request.GET.get('next', 'schoolweb:knowledge_zone')
+    return redirect(next_url)
 
 
 def registerPage(request):
@@ -174,7 +164,7 @@ def knowledge_zone(request):
         'topics': topics,
         'room_count': room_count,
         'room_messages': room_messages,
-        'user_in_migrates': user_in_migrates,  # Przekazanie informacji do szablonu
+        'user_in_migrates': user_in_migrates,
     }
 
     return render(request, 'knowledge-zone/knowledge-zone.html', context)
@@ -419,7 +409,7 @@ def applyStudent(request):
                 group = Group.objects.get(name='NewStudents')
                 user.groups.add(group)
 
-                return redirect('schoolweb:lessonsLogin')
+                return redirect('schoolweb:login')
     else:
         form = ApplyStudentForm()
 
@@ -460,7 +450,7 @@ def applyTeacher(request):
                 group = Group.objects.get(name='NewTeachers')
                 user.groups.add(group)
 
-                return redirect('schoolweb:lessonsLogin')
+                return redirect('schoolweb:login')
     else:
         form = ApplyTeacherForm()
 
@@ -491,47 +481,6 @@ def noLessons(request):
     return render(request, 'tutoring-zone/no-lessons.html')
 
 
-def lessonsLogin(request):
-    page = 'lessonsLogin'
-
-    if request.user.groups.filter(name__in=['NewStudents', 'NewTeachers']).exists():
-        return redirect('schoolweb:coursesLoader')
-
-    if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            messages.error(request, 'Użytkownik nie istnieje')
-            return redirect('schoolweb:lessonsLogin')
-
-        user = authenticate(request, email=email, password=password)
-
-        if user is not None:
-            user_groups = set(user.groups.values_list('name', flat=True))
-
-            if 'Teachers' in user_groups:
-                login(request, user)
-                return redirect('schoolweb:teacherPage')
-            elif 'Students' in user_groups:
-                login(request, user)
-                return redirect('schoolweb:studentPage')
-            elif 'Writers' in user_groups:
-                change_user_group(user, 'Migrates')
-                login(request, user)
-                return redirect('schoolweb:coursesLoader')
-            elif user_groups & {'NONE', 'Migrates', 'NewStudents', 'NewTeachers'}:
-                login(request, user)
-                return redirect('schoolweb:coursesLoader')
-        else:
-            messages.error(request, 'Błędny Email lub Hasło')
-
-    context = {'page': page}
-    return render(request, 'tutoring-zone/login_register_lessons.html', context)
-
-
 def change_user_group(user, new_group_name):
     try:
         new_group = Group.objects.get(name=new_group_name)
@@ -542,35 +491,12 @@ def change_user_group(user, new_group_name):
         return False
 
 
-def lessonsRegister(request):
-    form = MyUserCreationForm()
-
-    if request.method == 'POST':
-        form = MyUserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.save()
-            user.groups.add(Group.objects.get(name='NONE'))
-            return redirect('lessonsLogin')
-        else:
-            messages.error(request, 'Wystąpił błąd podczas próby rejestracji.')
-
-    context = {'form': form}
-    return render(request, 'website/login_register_lessons.html', context)
-
-
-def lessonsLogout(request):
-    logout(request)
-    return redirect('schoolweb:knowledge_zone')
-
-
 def is_teacher(user):
     return user.groups.filter(name='Teachers').exists()
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def teacherPage(request):
     now = datetime.now() - timedelta(minutes=15)
     time_difference = timedelta(minutes=35)
@@ -609,7 +535,7 @@ def teacherPage(request):
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@login_required(login_url='login')
 def lessonProfile(request, pk):
     user = get_object_or_404(User, id=pk)
     lessons = user.post_set.all()
@@ -667,7 +593,7 @@ def lessonProfile(request, pk):
     return render(request, 'tutoring-zone/lesson-profile.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@login_required(login_url='login')
 def updateUserLessons(request):
     user = request.user
     form = UserForm(instance=user)
@@ -688,8 +614,8 @@ def updateUserLessons(request):
     return render(request, 'tutoring-zone/update-user-lessons.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def createLesson(request):
     initial_data = {'host': request.user}
     form = PostFormCreate(user=request.user, initial=initial_data)  # Przekazujemy użytkownika do formularza
@@ -754,7 +680,7 @@ def activity_lessonPage(request):
     return render(request, 'tutoring-zone/activity-lesson.html', {'lesson_messages': lesson_messages})
 
 
-@login_required(login_url='lessonsLogin')
+@login_required(login_url='login')
 def lesson(request, pk):
     lesson = get_object_or_404(Post, id=pk)
     lesson_messages = lesson.coursemessage_set.order_by('-messageCreated')
@@ -799,8 +725,8 @@ def lesson(request, pk):
     return render(request, 'tutoring-zone/lesson.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def updateLesson(request, pk):
     post = get_object_or_404(Post, id=pk)
 
@@ -831,8 +757,8 @@ def updateLesson(request, pk):
     return render(request, 'tutoring-zone/update-lesson.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:lgin')
+@login_required(login_url='schoolweb:login')
 def deleteLesson(request, pk):
     post = Post.objects.get(id=pk)
 
@@ -854,7 +780,7 @@ def deleteLesson(request, pk):
     return render(request, 'tutoring-zone/delete-lessons.html', context)
 
 
-@login_required(login_url='lessonsLogin')
+@login_required(login_url='login')
 def deleteLessonMessage(request, pk):
     message = CourseMessage.objects.get(id=pk)
     if request.user != message.user:
@@ -875,8 +801,8 @@ def deleteLessonMessage(request, pk):
     return render(request, 'tutoring-zone/delete-lessons.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def lessonFeedback(request, pk):
     lesson = get_object_or_404(Post, id=pk)
     user = request.user
@@ -932,8 +858,8 @@ def lessonFeedback(request, pk):
     return render(request, 'tutoring-zone/lesson-feedback.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def lessonCorrection(request, pk):
     lesson = get_object_or_404(Post, id=pk)
     user = request.user
@@ -1043,8 +969,8 @@ def is_student(user):
     return user.groups.filter(name='Students').exists()
 
 
-@user_passes_test(is_student, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_student, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def studentPage(request):
     now = datetime.now() - timedelta(minutes=15)
     time_difference = timedelta(minutes=35)
@@ -1087,8 +1013,8 @@ def access_denied(request):
     return render(request, 'website/lesson-no-exists.html')
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lessonsLogin')
-@login_required(login_url='schoolweb:lessonsLogin')
+@user_passes_test(is_teacher, login_url='schoolweb:login')
+@login_required(login_url='schoolweb:login')
 def resignation(request):
     if request.method == 'POST':
         form = ResignationForm(request.POST)

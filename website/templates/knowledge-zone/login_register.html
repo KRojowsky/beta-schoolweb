@@ -20,6 +20,7 @@
                 <form class="form" action="" method="POST">
                     {% csrf_token %}
                     <div class="form__group">
+                        <input type="hidden" name="next" value="{{ request.GET.next }}">
                         <label for="room_name">E-mail</label>
                         <input id="username" name="email" type="text" placeholder="np.tadeusz217@poczta.pl"/>
                     </div>
