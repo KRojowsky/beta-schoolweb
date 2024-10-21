@@ -71,7 +71,7 @@
                         </p>
                         {% if message.body %}
                         <div class="activities__boxRoomContent lesson-link">
-                            {{message.body}}
+                            {{message.body|truncatechars:60}}
                         </div>
                         {% endif %}
                         {% else %}

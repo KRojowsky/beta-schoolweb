@@ -24,7 +24,7 @@
         <div class="activities__box">
           <div class="activities__boxHeader roomListRoom__header">
             <a href="{% url 'schoolweb:lesson' message.room.id %}" class="roomListRoom__author">
-              <div class="avatar avatar--small">
+              <div class="avatar avatar--small active">
                 <img src="{{message.user.avatar.url}}"/>
               </div>
               <p>
@@ -45,9 +45,9 @@
             {% endif %}
             </div>
             <div class="activities__boxContent">
-              <p>Odpowiedział/a na: "<a href="{% url 'schoolweb:lesson' message.room.id %}" class="lesson-link">{{message.room}}</a>"</p>
+              <p>Odpisał/a na: "<a href="{% url 'schoolweb:lesson' message.room.id %}" class="lesson-link">{{message.room}}</a>"</p>
               <div class="activities__boxRoomContent lesson-link">
-                {{message.body}}
+                {{message.body|truncatechars:60}}
               </div>
             </div>
         </div>

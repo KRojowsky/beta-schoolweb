@@ -31,7 +31,7 @@
           <p title="Zobacz lekcję">Odpisał/a na: "<a href="{% url 'schoolweb:lesson' message.room.id %}" class="lesson-link">{{message.room}}</a>”</p>
           {% if message.body %}
           <div class="activities__boxRoomContent lesson-link">
-              {{message.body}}
+              {{message.body|truncatechars:60}}
           </div>
           {% endif %}
       </div>

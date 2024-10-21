@@ -20,11 +20,11 @@
       <div class="topics-page layout__body">
         <ul class="topics__list">
           <li>
-            <a href="{% url 'studentPage' %}" class="active">Wszystkie<span>{{courses.count}}</span></a>
+            <a href="{% url 'studentPage' %}" class="active">📌 Wszystkie<span>{{courses.count}}</span></a>
           </li>
           {% for course in courses %}
           <li>
-            <a href="{% url 'studentPage' %}?q={{course.name}}">{{course.name}}<span>{{course.post_set.all.count}}</span></a>
+            <a href="{% url 'studentPage' %}?q={{course.name}}">📌 {{course.name}}<span>{{course.post_set.all.count}}</span></a>
           </li>
           {% endfor %}
         </ul>

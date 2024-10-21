@@ -9,6 +9,8 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta
 
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
 
 class MyUserCreationForm(UserCreationForm):
     usable_password = None
@@ -24,73 +26,7 @@ class MyUserCreationForm(UserCreationForm):
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
 
-class NewTeacherForm(forms.ModelForm):
-    class Meta:
-        model = NewTeacher
-        fields = ['first_name', 'last_name', 'phone_number', 'school', 'subject', 'age_language']
-
-        labels = {
-            'first_name': 'Imię',
-            'last_name': 'Nazwisko',
-            'phone_number': 'Numer telefonu',
-            'school': 'Najwyższy osiągnięty stopień edukacji',
-            'subject': 'Wybierz podstawowy przedmiot, z którego chcesz udzielać korepetycji',
-            'age_language': 'Czy masz ukończone 18 lat i znasz język polski na poziomie ojczystym?',
-        }
-
-
-class ApplyTeacherForm(UserCreationForm):
-    usable_password = None
-    username = forms.CharField(
-        max_length=30,
-        validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
-        label=_("Nazwa użytkownika (będzie używana w 'Strefie Wiedzy')")
-    )
-
-    class Meta:
-        model = User
-
-        labels = {
-            'username': 'Nazwa użytkownika (będzie używana w "Strefie Wiedzy")',
-            'email': 'Email',
-        }
-
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
-
-
-class NewStudentForm(forms.ModelForm):
-    class Meta:
-        model = NewStudent
-
-        labels = {
-            'first_name': 'Imię',
-            'last_name': 'Nazwisko',
-            'phone_number': 'Numer telefonu',
-            'subject': 'Wybierz podstawowy przedmiot, z którego chcesz otrzymywać korepetycje',
-            'school': 'Aktualny stopień edukacji',
-            'level': 'Wybierz rodzaj zajęć',
-        }
-
-        fields = ['first_name', 'last_name', 'phone_number', 'subject', 'school', 'level']
-
-
-class ApplyStudentForm(UserCreationForm):
-    usable_password = None
-    username = forms.CharField(
-        max_length=30,
-        validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
-        label=_("Nazwa użytkownika (będzie używana w 'Strefie Wiedzy')")
-    )
-
-    class Meta:
-        model = User
-
-        labels = {
-            'username': 'Nazwa użytkownika (będzie używana w "Strefie Wiedzy")',
-            'email': 'Email'
-        }
-
-        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 class RoomForm(ModelForm):
@@ -183,6 +119,78 @@ class RoomMessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ['body', 'image', 'file']
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
+class NewTeacherForm(forms.ModelForm):
+    class Meta:
+        model = NewTeacher
+        fields = ['first_name', 'last_name', 'phone_number', 'school', 'subject', 'age_language']
+
+        labels = {
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
+            'phone_number': 'Numer telefonu',
+            'school': 'Najwyższy osiągnięty stopień edukacji',
+            'subject': 'Wybierz podstawowy przedmiot, z którego chcesz udzielać korepetycji',
+            'age_language': 'Czy masz ukończone 18 lat i znasz język polski na poziomie ojczystym?',
+        }
+
+
+class ApplyTeacherForm(UserCreationForm):
+    usable_password = None
+    username = forms.CharField(
+        max_length=30,
+        validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
+        label=_("Nazwa użytkownika (będzie używana w 'Strefie Wiedzy')")
+    )
+
+    class Meta:
+        model = User
+
+        labels = {
+            'username': 'Nazwa użytkownika (będzie używana w "Strefie Wiedzy")',
+            'email': 'Email',
+        }
+
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
+
+
+class NewStudentForm(forms.ModelForm):
+    class Meta:
+        model = NewStudent
+
+        labels = {
+            'first_name': 'Imię',
+            'last_name': 'Nazwisko',
+            'phone_number': 'Numer telefonu',
+            'subject': 'Wybierz podstawowy przedmiot, z którego chcesz otrzymywać korepetycje',
+            'school': 'Aktualny stopień edukacji',
+            'level': 'Wybierz rodzaj zajęć',
+        }
+
+        fields = ['first_name', 'last_name', 'phone_number', 'subject', 'school', 'level']
+
+
+class ApplyStudentForm(UserCreationForm):
+    usable_password = None
+    username = forms.CharField(
+        max_length=30,
+        validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
+        label=_("Nazwa użytkownika (będzie używana w 'Strefie Wiedzy')")
+    )
+
+    class Meta:
+        model = User
+
+        labels = {
+            'username': 'Nazwa użytkownika (będzie używana w "Strefie Wiedzy")',
+            'email': 'Email'
+        }
+
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
 
 class LessonFeedbackForm(forms.ModelForm):

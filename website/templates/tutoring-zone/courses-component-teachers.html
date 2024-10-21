@@ -4,11 +4,11 @@
   </div>
   <ul class="topics__list">
     <li>
-      <a href="{% url 'schoolweb:teacherPage' %}" class="active">Wszystkie<span>{{courses.count}}</span></a>
+      <a href="{% url 'schoolweb:teacherPage' %}" class="active">📌 Wszystkie<span>{{courses.count}}</span></a>
     </li>
     {% for course in courses %}
     <li>
-      <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">{{course.student}}<span>{{course.post_set.all.count}}</span></a>
+      <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">📌 {{course.student}}<span>{{course.post_set.all.count}}</span></a>
     </li>
     {% endfor %}
   </ul>

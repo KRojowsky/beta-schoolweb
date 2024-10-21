@@ -1314,6 +1314,12 @@ a {
     margin: 20px;
 }
 
+.auth__tagline {
+    text-align: center;
+    font-size: 16px;
+    color: #6D6D6D;
+}
+
 .form__action {
     display: flex;
     justify-content: flex-end;
@@ -1844,7 +1850,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 }
 
 .roomListRoom__content .lesson-content a{
-    font-weight: 500;
+    font-weight: 900;
     font-size: 17px;
 }
 
@@ -1977,7 +1983,11 @@ ul.messages {
     list-style-type: none;
 }
 
-ul.messages li {
+.form__error ul {
+    list-style: none; 
+}
+
+ul.messages li, .form__error  {
     margin: 15px 0;
     padding: 5px;
     color: #FF0000;

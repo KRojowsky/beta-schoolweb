@@ -8,16 +8,7 @@ from django import forms
 from website.models import User
 from django.contrib.auth.models import Group
 
-
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-
-
-class PlatformMessageAdmin(admin.ModelAdmin):
-    list_display = ('email', 'phone_number', 'message', 'created')
-
-
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class CustomUserAdmin(UserAdmin):
     list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups',
@@ -46,6 +37,34 @@ class CustomUserAdmin(UserAdmin):
 
     display_groups.short_description = 'Groups'
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class PlatformMessageAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone_number', 'message', 'created')
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+class RoomAdmin(admin.ModelAdmin):
+    list_display = ('name', 'host_name', 'created', 'total_likes')
+    list_filter = ('created', 'host__username')
+    search_fields = ('name', 'host__username')
+
+    def host_name(self, obj):
+        return obj.host.username if obj.host else "None"
+    host_name.short_description = 'Host'
+
+    def total_likes(self, obj):
+        return obj.likes.count()
+    total_likes.short_description = 'Likes'
+
+
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ['room', 'reporter', 'reason', 'created']
+    search_fields = ['room__name', 'reporter__username', 'reason']
+    list_filter = ['reason', 'created']
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class LessonInfo(admin.ModelAdmin):
     def clicked_users_count(self, obj):
@@ -201,14 +220,12 @@ class CourseAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Filter teachers (Users in the "Teachers" group)
         teachers_group = Group.objects.get(name="Teachers")
         self.fields['teacher'].queryset = User.objects.filter(groups=teachers_group)
 
-        # Filter students (Users in the "Students" group)
         students_group = Group.objects.get(name="Students")
         self.fields['students'].queryset = User.objects.filter(groups=students_group)
-
+        
 
 class CourseAdmin(admin.ModelAdmin):
     form = CourseAdminForm
@@ -218,27 +235,6 @@ class CourseAdmin(admin.ModelAdmin):
     def get_students_list(self, obj):
         return ", ".join([student.username for student in obj.students.all()])
     get_students_list.short_description = 'Students'
-
-
-class RoomAdmin(admin.ModelAdmin):
-    list_display = ('name', 'host_name', 'created', 'total_likes')
-    list_filter = ('created', 'host__username')
-    search_fields = ('name', 'host__username')
-
-    def host_name(self, obj):
-        return obj.host.username if obj.host else "None"
-    host_name.short_description = 'Host'
-
-    def total_likes(self, obj):
-        return obj.likes.count()
-    total_likes.short_description = 'Likes'
-
-
-class ReportAdmin(admin.ModelAdmin):
-    list_display = ['room', 'reporter', 'reason', 'created']
-    search_fields = ['room__name', 'reporter__username', 'reason']
-    list_filter = ['reason', 'created']
-
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -260,6 +256,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'image')
     search_fields = ('name',)
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(BlogCategory, BlogCategoryAdmin)
