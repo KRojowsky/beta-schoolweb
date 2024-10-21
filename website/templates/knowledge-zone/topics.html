@@ -27,11 +27,27 @@
             <div class="topics-page layout__body">
                 <ul class="topics__list">
                     <li>
-                        <a href="{% url 'schoolweb:knowledge_zone' %}" class="active"> Wszystkie<span>{{topics.count}}</span></a>
+                        <a href="{% url 'schoolweb:knowledge_zone' %}" class="active">
+                            <div>
+                                <img src="{% static 'img/icons/19.svg' %}"/>
+                                Wszystkie
+                            </div>
+                            <span>{{topics.count}}</span>
+                        </a>
                     </li>
                     {% for topic in topics %}
                     <li>
-                        <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">{{ topic.name }} <span>{{topic.room_set.all.count}}</span></a>
+                        <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">
+                            <div>
+                                {% if topic.svg_icon %}
+                                    <img src="{{ topic.svg_icon.url }}" alt="{{ topic.name }} icon" />
+                                {% else %}
+                                    <img src="{% static 'img/knowledge-zone/topic-icon.png' %}"/>
+                                {% endif %}
+                                {{topic.name}}
+                            </div>
+                            <span>{{topic.room_set.all.count}}</span>
+                        </a>
                     </li>
                     {% endfor %}
                 </ul>

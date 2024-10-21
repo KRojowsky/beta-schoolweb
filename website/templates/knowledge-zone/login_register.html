@@ -16,7 +16,6 @@
                 </div>
             </div>
             <div class="layout__body">
-                <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
                 <form class="form" action="" method="POST">
                     {% csrf_token %}
                     <div class="form__group">
@@ -46,7 +45,7 @@
                     </ul>
                     {% endif %}
 
-                    <button class="btn btn--main" type="submit">
+                    <button class="btn btn--link" type="submit">
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                              viewBox="0 0 32 32">
                             <title>lock</title>
@@ -63,12 +62,12 @@
                 <div class="auth__actions">
                     <div class="auth__action">
                         <p>Nie posiadasz konta?</p>
-                        <a href="{% url 'schoolweb:register' %}" class="btn btn--link">Zarejestruj się</a>
+                        <a href="{% url 'schoolweb:register' %}" class="btn btn--main">Zarejestruj się</a>
                     </div>
 
                     <div class="auth__action">
                         <p>Zapomniałeś hasła?</p>
-                        <a href="{% url 'reset_password' %}" class="btn btn--link">Zresetuj hasło</a>
+                        <a href="{% url 'reset_password' %}" class="btn btn--main">Zresetuj hasło</a>
                     </div>
                 </div>
             </div>
@@ -83,7 +82,6 @@
                 </div>
             </div>
             <div class="layout__body">
-                <h2 class="auth__tagline">Twórz z nami najlepszą platformę edukacyjną</h2>
                 <form class="form" action="" method="POST">
                     {% csrf_token %}
                     {% for field in form %}
@@ -101,7 +99,7 @@
                     </ul>
                     {% endif %}
 
-                    <button class="btn btn--main" type="submit">
+                    <button class="btn btn--link" type="submit">
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                              viewBox="0 0 32 32">
                             <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553
@@ -116,7 +114,7 @@
 
                 <div class="auth__action">
                     <p>Posiadasz już konto?</p>
-                    <a href="{% url 'schoolweb:login' %}" class="btn btn--link">Zaloguj się</a>
+                    <a href="{% url 'schoolweb:login' %}" class="btn btn--main">Zaloguj się</a>
                 </div>
             </div>
         </div>

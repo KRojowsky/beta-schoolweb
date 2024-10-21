@@ -433,7 +433,7 @@ a {
     font-size: 14px;
     color: #000;
     transition: all 0.2s ease-in-out;
-    margin-bottom: 8px;
+    margin: 10px;
 }
 
 .topics__list a div {
@@ -1320,13 +1320,8 @@ a {
     gap: 10px;
 }
 
-.layout__body .form__action .btn{
-    background: #F0F0F0;
-    border: 1px solid #DBDBDB;
-}
-
 .form__group {
-    margin-bottom: 20px;
+    margin: 15px 0;
     width: 100%;
 }
 
@@ -1369,13 +1364,6 @@ a {
     padding: 0 10px;
 }
 
-.auth__tagline {
-    text-align: center;
-    margin-bottom: 30px;
-    font-size: 16px;
-    color: #BB00FF;
-}
-
 .auth .layout__boxHeader {
     text-align: center;
     justify-content: center;
@@ -1388,11 +1376,16 @@ a {
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin-top: 10px;
 }
 
 .auth__action{
     text-align: center;
     margin-top: 25px;
+}
+
+.auth__action p{
+    margin-bottom:5px;
 }
 
 @media (max-width: 768px) {
@@ -1980,21 +1973,17 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     }
 }
 
-.errorlist{
-    list-style-type: none;
-    color: red;
-    padding: 0;
-    margin: 0;
-}
-
 ul.messages {
     list-style-type: none;
-    padding: 0;
-    margin: 0;
 }
 
 ul.messages li {
-    margin-bottom: 10px;
-    padding: 0;
-    color: red;
+    margin: 15px 0;
+    padding: 5px;
+    color: #FF0000;
+    text-align: center;
+    border: 2px solid #FF0000;
+    border-radius: 5px;
+    font-weight: bold;
+    background-color: #FFE5E5;
 }

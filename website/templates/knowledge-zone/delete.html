@@ -26,10 +26,10 @@
                 <form class="form" action="" method="POST">
                     {% csrf_token %}
                     <div class="form__group">
-                        <p>Czy na pewno chcesz usunąć: "{{obj}}"?</p>
+                        <p>Czy na pewno chcesz usunąć: <b><i>"{{obj}}"</i></b>...?</p>
                     </div>
                     <div class="for__group">
-                        <input class="btn btn--main" type="submit" value="Zatwierdź"/>
+                        <input class="btn btn--link" type="submit" value="Zatwierdź"/>
                     </div>
                 </form>
             </div>
