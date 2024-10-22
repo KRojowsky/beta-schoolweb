@@ -1,14 +1,27 @@
+{% load static %}
 <div class="topics">
   <div class="topics__header">
     <h2>Twoje kursy</h2>
   </div>
   <ul class="topics__list">
     <li>
-      <a href="{% url 'schoolweb:studentPage' %}" class="active">📌 Wszystkie<span>{{courses.count}}</span></a>
+      <a href="{% url 'schoolweb:studentPage' %}" class="active">
+          <div>
+              <img src="{% static 'img/icons/5.svg' %}"/>
+              Wszystkie
+          </div>
+          <span>{{courses.count}}</span>
+      </a>
     </li>
     {% for course in courses %}
     <li>
-      <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}">📌 {{course.name}}<span>{{course.post_set.all.count}}</span></a>
+      <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}">
+          <div>
+              <img src="{% static 'img/icons/5.svg' %}"/>
+              {{course.student}}
+          </div>
+          <span>{{course.post_set.all.count}}</span>
+      </a>
     </li>
     {% endfor %}
   </ul>

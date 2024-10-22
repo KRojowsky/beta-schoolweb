@@ -182,6 +182,7 @@
                 <div class="thread__details {% if request.user == message.user %} authenticated{% else %} guest{% endif %}">
                     {{ message.body }}
                     {% if message.image %}
+                        <br>
                         <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
                             <img src="{{ message.image.url }}" alt="Message Image" />
                         </a>
@@ -327,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function () {
             success: function(response) {
                 var likedUsers = response.liked_users || [];
 
-                var modalContent = $('#roomLikesModal .modal-content');
+                var modalContent = $('.modal-container .modal-content');
                 modalContent.html('<span class="close" onclick="closeModal()">&times;</span>');
                 modalContent.append('<p>Polubienia:</p>');
 
@@ -339,14 +340,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             '<div class="avatar avatar--small active">' +
                             '<img src="' + (user.avatar || '') + '" />' +
                             '</div>' +
-                            '<span><a href="/profile/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
+                            '<span><a href="/profil-strefa-wiedzy/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
                             '</div>');
                     });
                 } else {
                     modalContent.append('<p>Brak polubień dla tego postu.</p>');
                 }
 
-                $('#roomLikesModal').show();
+                $('.modal-container').show();
             },
             error: function(error) {
                 console.log(error);
@@ -380,7 +381,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 '<div class="avatar avatar--small active">' +
                                 '<img src="' + (user.avatar || '') + '" />' +
                                 '</div>' +
-                                '<span><a href="/profile/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
+                                '<span><a href="/profil-strefa-wiedzy/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
                                 '</div>');
                         });
                     } else {

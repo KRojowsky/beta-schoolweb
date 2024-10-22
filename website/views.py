@@ -282,9 +282,15 @@ def deleteMessage(request, pk):
     if request.user != message.user:
         return HttpResponse('Operacja wzbroniona.')
 
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        request.session['lesson_url'] = lesson_url
+
     if request.method == 'POST':
         message.delete()
-        return redirect('schoolweb:knowledge_zone')
+
+        lesson_url = request.session.get('lesson_url', '/')
+        return redirect(lesson_url)
 
     return render(request, 'knowledge-zone/delete.html', {'obj': message})
 
@@ -296,11 +302,16 @@ def editRoomMessage(request, pk):
     if request.user != message.user:
         return redirect('room', pk=message.room.pk)
 
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        request.session['lesson_url'] = lesson_url
+
     if request.method == 'POST':
         form = RoomMessageForm(request.POST, request.FILES, instance=message)
         if form.is_valid():
             form.save()
-            return redirect('schoolweb:room', pk=message.room.pk)
+            lesson_url = request.session.get('lesson_url', '/')
+            return redirect(lesson_url)
     else:
         form = RoomMessageForm(instance=message)
 
@@ -730,6 +741,10 @@ def updateLesson(request, pk):
     if request.user != post.host:
         return HttpResponse('Brak dostępu')
 
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        request.session['lesson_url'] = lesson_url
+
     time_difference = post.event_datetime - timezone.now()
     can_edit = time_difference.total_seconds() > 900
 
@@ -746,7 +761,8 @@ def updateLesson(request, pk):
                 form.add_error('event_datetime', "W wybranym terminie już istnieje inna lekcja.")
             else:
                 form.save()
-                return redirect('schoolweb:teacherPage')
+                lesson_url = request.session.get('lesson_url', '/')
+                return redirect(lesson_url)
     else:
         form = PostFormEdit(instance=post)
 
@@ -754,48 +770,56 @@ def updateLesson(request, pk):
     return render(request, 'tutoring-zone/update-lesson.html', context)
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:lgin')
-@login_required(login_url='schoolweb:login')
-def deleteLesson(request, pk):
-    post = Post.objects.get(id=pk)
-
-    if request.method == 'POST':
-        post.delete()
-        return redirect('schoolweb:teacherPage')
-
-    user = request.user
-
-    if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'tutoring-zone/nav-teacher-view.html'
-        back_link = reverse('schoolweb:teacherPage')
-
-    elif user.groups.filter(name='Students').exists():
-        navbar_template = 'tutoring-zone/nav-student-view.html'
-        back_link = reverse('schoolweb:studentPage')
-
-    context = {'obj': post, 'navbar_template': navbar_template, 'back_link': back_link}
-    return render(request, 'tutoring-zone/delete-lessons.html', context)
-
-
 @login_required(login_url='login')
 def deleteLessonMessage(request, pk):
-    message = CourseMessage.objects.get(id=pk)
+    message = get_object_or_404(CourseMessage, id=pk)
+
     if request.user != message.user:
         return HttpResponse('Brak dostępu')
+
+
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        request.session['lesson_url'] = lesson_url
+
     if request.method == 'POST':
         message.delete()
-        return redirect('schoolweb:teacherPage')
+
+        lesson_url = request.session.get('lesson_url', '/')
+        return redirect(lesson_url)
 
     user = request.user
 
     if user.groups.filter(name='Teachers').exists():
         navbar_template = 'tutoring-zone/nav-teacher-view.html'
-
     elif user.groups.filter(name='Students').exists():
         navbar_template = 'tutoring-zone/nav-student-view.html'
 
     context = {'obj': message, 'navbar_template': navbar_template}
-    return render(request, 'tutoring-zone/delete-lessons.html', context)
+    return render(request, 'tutoring-zone/delete-lesson-message.html', context)
+
+
+@login_required(login_url='login')
+def editLessonMessage(request, pk):
+    message = get_object_or_404(CourseMessage, id=pk)
+
+    if request.user != message.user:
+        return redirect('lesson', pk=message.room.pk)
+
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        request.session['lesson_url'] = lesson_url
+
+    if request.method == 'POST':
+        form = RoomMessageForm(request.POST, request.FILES, instance=message)
+        if form.is_valid():
+            form.save()
+            lesson_url = request.session.get('lesson_url', '/')
+            return redirect(lesson_url)
+    else:
+        form = RoomMessageForm(instance=message)
+
+    return render(request, 'tutoring-zone/edit-lesson-message.html', {'form': form, 'message': message})
 
 
 @user_passes_test(is_teacher, login_url='schoolweb:login')

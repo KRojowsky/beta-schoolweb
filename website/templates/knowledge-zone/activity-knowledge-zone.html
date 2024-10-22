@@ -43,7 +43,7 @@
             {% if message.room.id %}
                 <p title="Zobacz post">
                     Odpisał/a na: <a href="{% url 'schoolweb:room' message.room.id %}" class="lesson-link">
-                    {{ message.room.name }}</a>
+                    {{ message.room.name|truncatechars:60 }}</a>
                 </p>
                 {% if message.body %}
                 <div class="activities__boxRoomContent lesson-link">

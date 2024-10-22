@@ -859,7 +859,7 @@ a {
 }
 
 .room-image img {
-    max-width: 400px;
+    max-width: 500px;
     border-radius: 5px;
 }
 
@@ -1026,10 +1026,8 @@ a {
 }
 
 .thread__details {
+    margin-top: 5px;
     word-wrap: break-word;
-}
-
-.thread__details {
     padding-left: 50px;
 }
 
@@ -1040,6 +1038,8 @@ a {
 .thread__details img{
     max-width: 400px;
     height: auto;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .room__message {
@@ -1212,7 +1212,7 @@ a {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.5);
 }
 
 .modal-content {
@@ -1324,6 +1324,7 @@ a {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    margin-top: 15px;
 }
 
 .form__group {
@@ -1577,15 +1578,15 @@ input[type="checkbox"], input[type="radio"] {
     -moz-appearance: none;
     appearance: none;
     border: 1px solid #000;
-    width: 15px;
-    height: 15px;
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
     background-color: #FFF;
     vertical-align: middle;
 }
 
 input[type="checkbox"] {
-    border-radius: 2px;
+    border-radius: 5px;
 }
 
 input[type="radio"] {
@@ -1593,9 +1594,7 @@ input[type="radio"] {
 }
 
 input[type="checkbox"]:checked, input[type="radio"]:checked {
-    background-color: #007BFF;
-    color: #FFF;
-    border: 1px solid #007BFF;
+    background-color: #0FFF50;
 }
 
 .custom-checkbox {
@@ -1814,6 +1813,11 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     background: #E8ADFE;
     font-size: 16px;
     color: #000;
+}
+
+.joinButton:hover{
+    transform: scale(1.1);
+    transition: 0.3s;
 }
 
 .inactiveButton{

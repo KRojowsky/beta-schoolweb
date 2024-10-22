@@ -1,5 +1,6 @@
 {% extends 'base-tutoring-zone.html' %}
 {% block content %}
+{% load static %}
 <main class="create-room layout">
   <div class="container">
     <div class="layout__box">
@@ -34,11 +35,23 @@
 
         <ul class="topics__list">
           <li>
-            <a href="{% url 'schoolweb:teacherPage' %}" class="active">📌 Wszystkie<span>{{courses.count}}</span></a>
+            <a href="{% url 'schoolweb:teacherPage' %}" class="active">
+                <div>
+                    <img src="{% static 'img/icons/5.svg' %}"/>
+                    Wszystkie
+                </div>
+                <span>{{courses.count}}</span>
+            </a>
           </li>
           {% for course in courses %}
           <li>
-            <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">📌 {{ course.name }} <span>{{course.post_set.all.count}}</span></a>
+            <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">
+                <div>
+                    <img src="{% static 'img/icons/5.svg' %}"/>
+                    {{course.student}}
+                </div>
+                <span>{{course.post_set.all.count}}</span>
+            </a>
           </li>
           {% endfor %}
         </ul>

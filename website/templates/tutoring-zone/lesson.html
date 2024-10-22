@@ -102,7 +102,7 @@
                           </svg>
                         </a>
 
-                         <a href="{% url 'schoolweb:edit-message' message.id %}">
+                         <a href="{% url 'schoolweb:edit-lesson-message' message.id %}">
                           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
                             <title>Edytuj</title>
                             <path d="M19.404,6.65l-5.998-5.996c-0.292-0.292-0.765-0.292-1.056,0l-2.22,2.22l-8.311,8.313l-0.003,
@@ -140,9 +140,10 @@
                     {% endif %}
                   </div>
                 </div>
-                <div class="thread__details">
+                <div class="thread__details {% if request.user == message.user %} authenticated{% else %} guest{% endif %}">
                   {{message.body}}
                   {% if message.image %}
+                      <br>
                       <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
                           <img src="{{ message.image.url }}" alt="Message Image" />
                       </a>

@@ -66,11 +66,10 @@ urlpatterns = [
     path('aktywnosci-strefa-korepetycji/', views.activity_lessonPage, name="activity-lesson"),
 
     path('lekcja/<str:pk>/', views.lesson, name="lesson"),
-    path('edytuj-lekcje/', views.updateLesson, name='updateLesson'),
     path('edytuj-lekcje/<str:pk>/', views.updateLesson, name='updateLesson'),
 
-    path('usun-lekcje/<str:pk>/', views.deleteLesson, name='delete-lesson'),
-    path('usun-wiadomosc-lekcji/<str:pk>/', views.deleteLessonMessage, name='delete-lesson-message'),
+    path('usun-komentarz-lekcji/<str:pk>/', views.deleteLessonMessage, name='delete-lesson-message'),
+    path('edytuj-komentarz-lekcji/<str:pk>/', views.editLessonMessage, name='edit-lesson-message'),
 
     path('feedback-lekcji/<int:pk>/', views.lessonFeedback, name='lesson-feedback'),
     path('poprawka-lekcji/<int:pk>/', views.lessonCorrection, name='lesson-correction'),
