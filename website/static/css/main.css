@@ -36,6 +36,10 @@ p,a {
   font-weight: 300;
 }
 
+a:hover{
+    opacity: 0.8;
+}
+
 #nav {
   position: fixed;
   top: 0;
@@ -92,6 +96,18 @@ p,a {
   display: flex;
   gap: 1rem;
   align-items: center;
+}
+
+.whiteboard {
+    color: #FFF;
+    text-decoration: none;
+    padding: 5px 10px;
+    text-transform: uppercase;
+    font-weight: 900;
+    border-radius: 3px;
+    font-size: 15px;
+    border: 1px solid #FFF;
+    letter-spacing: .5px;
 }
 
 #members__button,

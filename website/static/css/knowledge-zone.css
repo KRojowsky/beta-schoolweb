@@ -434,6 +434,7 @@ a {
     color: #000;
     transition: all 0.2s ease-in-out;
     margin: 10px;
+    margin-left: 0;
 }
 
 .topics__list a div {
