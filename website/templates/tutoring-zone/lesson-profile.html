@@ -69,32 +69,35 @@
         <div class="course-cards">
           {% for course in courses %}
             <div class="course-card">
-              {% if course.students.count == 1 and not course.students.first.is_teacher %}
-                <div class="profile-picture">
-                  <img src="{{ course.students.first.avatar.url }}" alt="Profile Picture">
-                </div>
-              {% elif course.teacher %}
-                <div class="profile-picture">
-                  <img src="{{ course.teacher.avatar.url }}" alt="Profile Picture">
-                </div>
-              {% endif %}
-
               <div class="lesson-count">
                   <p>{{ course.get_lessons_with_feedback_count }} lekcji</p>
               </div>
+
               {% if is_teacher %}
-              <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">
-                <h3 class="lesson-title">{{ course.name }}</h3>
+              <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}" class="course-link">
+                <h3>{{ course.name }}</h3>
+                <h4 class="type">{{ course.get_course_type_display }}</h4>
               </a>
               {% else %}
-              <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}">
-                <h3 class="lesson-title">{{ course.name }}</h3>
+              <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}" class="course-link">
+                <h3>{{ course.course_type }}</h3>
+                <h4 class="type">{{ course.get_course_type_display }}</h4>
               </a>
               {% endif %}
-              <p>Uczniowie:</p>
+
               <ul>
                 {% for student in course.students.all %}
-                  <li>{{ student.first_name }} {{ student.last_name }} [ {{ student.lessons }} ]</li>
+                  <li class="student-item">
+                    <img src="{{ student.avatar.url }}" alt="Profile Picture" class="student-avatar">
+                    <div class="student-info">
+                      <span>{{ student.first_name }} {{ student.last_name }}</span>
+                      {% if course.course_type == 'basic' %}
+                        <span class="lesson-badge">Dostępne lekcje: {{ student.lessons }}</span>
+                      {% elif course.course_type == 'intermediate' %}
+                        <span class="lesson-badge">Dostępne lekcje: {{ student.lessons_intermediate }}</span>
+                      {% endif %}
+                    </div>
+                  </li>
                 {% endfor %}
               </ul>
             </div>
