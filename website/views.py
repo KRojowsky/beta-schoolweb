@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, BlogPost,
-                     BlogCategory)
+                     BlogCategory, BankInformation)
 from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
                     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
-                    ResignationForm, ReportForm, RoomMessageForm)
+                    ResignationForm, ReportForm, RoomMessageForm, BankInformationForm)
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
 from django.urls import reverse
@@ -21,6 +21,7 @@ from .forms import AvailabilityForm
 from .models import Availability
 from django.core.paginator import Paginator
 from django.contrib.auth.models import Group
+from datetime import date
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
@@ -602,6 +603,34 @@ def lessonProfile(request, pk):
 
 
 @login_required(login_url='login')
+def bankInformation(request):
+    bank_info = BankInformation.objects.filter(user=request.user).first()
+
+    # Check if the "edit" parameter is in the GET request
+    is_editing = request.GET.get('edit') == 'true'
+
+    if request.method == 'POST':
+        # Process the form if in edit mode
+        if not bank_info:
+            bank_info = BankInformation(user=request.user)
+
+        form = BankInformationForm(request.POST, instance=bank_info)
+
+        if form.is_valid():
+            form.save()  # Save the form data
+            return redirect('schoolweb:bank_information')
+    else:
+        form = BankInformationForm(instance=bank_info) if is_editing else None  # Only show form if editing
+
+    context = {
+        'form': form,
+        'bank_info': bank_info,
+        'is_editing': is_editing,
+    }
+    return render(request, 'tutoring-zone/bank-informations.html', context)
+
+
+@login_required(login_url='login')
 def updateUserLessons(request):
     user = request.user
     form = UserForm(instance=user)
@@ -626,7 +655,7 @@ def updateUserLessons(request):
 @login_required(login_url='schoolweb:login')
 def createLesson(request):
     initial_data = {'host': request.user}
-    form = PostFormCreate(user=request.user, initial=initial_data)  # Przekazujemy użytkownika do formularza
+    form = PostFormCreate(user=request.user, initial=initial_data)
     current_date = timezone.now().strftime('%Y-%m-%dT%H:%M')
 
     if request.method == 'POST':

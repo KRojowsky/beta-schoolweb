@@ -70,6 +70,17 @@ class User(AbstractUser):
         return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
 
 
+class BankInformation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='bank_information')
+    card_number = models.CharField(max_length=16, unique=True)
+    cvv = models.CharField(max_length=3)
+    cardholder_name = models.CharField(max_length=100)
+    expiration_date = models.DateField()
+
+    def __str__(self):
+        return f'{self.cardholder_name} - {self.card_number}'
+
+
 class Topic(models.Model):
     name = models.CharField(max_length=200, unique=True)
     svg_icon = models.FileField(upload_to='icons/', null=True, blank=True)

@@ -1372,6 +1372,37 @@ a {
     padding: 0 10px;
 }
 
+.bank-info-card {
+    border: 1px solid #E0E0E0;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #F9F9F9;
+    margin-bottom: 15px;
+    font-size: 15px;
+}
+
+.bank-info-card p {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    color: #333;
+}
+
+.bank-info-card p strong {
+    color: #555;
+}
+
+.no-bank-info {
+    padding: 16px;
+    color: #777;
+    font-style: italic;
+    background-color: #fcfcfc;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
 .auth .layout__boxHeader {
     text-align: center;
     justify-content: center;
@@ -1406,26 +1437,24 @@ a {
     }
 }
 
-.password-container {
+.password-container
+{
     position: relative;
 }
 
-.toggle-password {
+.toggle-password
+{
+    cursor: pointer;
     position: absolute;
     right: 10px;
-    top: 50%;
+    top: 58%;
     transform: translateY(-50%);
-    cursor: pointer;
-    user-select: none;
 }
 
-.toggle-password svg {
-    fill: #696969;
-}
-
-.toggle-password svg:hover {
-    fill: #000;
-    transition: 0.2s ease;
+.toggle-password svg
+{
+    transition: fill 0.3s ease;
+    fill: #FF0000;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PROFILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -1603,6 +1632,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     position: relative;
     padding-left: 30px;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .custom-checkbox input {
@@ -1610,8 +1640,12 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     width: 100%;
     height: 100%;
     opacity: 0;
-    cursor: pointer;
     z-index: 1;
+}
+
+.custom-checkbox a {
+    position: relative;
+    z-index: 2;
 }
 
 .checkmark {

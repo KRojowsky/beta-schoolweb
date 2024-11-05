@@ -1,12 +1,13 @@
-function togglePasswordVisibility() {
-  const passwordInput = document.getElementById("password");
-  const togglePasswordBtn = document.querySelector(".toggle-password");
+function togglePasswordVisibility(passwordFieldId, iconId, pathId) {
+    const passwordInput = document.getElementById(passwordFieldId);
+    const toggleIcon = document.getElementById(iconId);
+    const iconPath = document.getElementById(pathId);
 
-  if (passwordInput.type === "password") {
-    passwordInput.type = "text";
-    togglePasswordBtn.classList.add("visible");
-  } else {
-    passwordInput.type = "password";
-    togglePasswordBtn.classList.remove("visible");
-  }
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.style.fill = '#32CD32';
+    } else {
+        passwordInput.type = 'password';
+        toggleIcon.style.fill = '#FF0000';
+    }
 }

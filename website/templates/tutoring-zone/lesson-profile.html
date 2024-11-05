@@ -23,6 +23,9 @@
           {% if request.user == user %}
             <a href="{% url 'schoolweb:update-user-lessons' %}" class="btn btn--main btn--pill">Ustawienia</a>
           {% endif %}
+          {% if request.user == user and is_teacher %}
+            <a href="{% url 'schoolweb:bank_information' %}" class="btn btn--main btn--pill">Dane bankowe</a>
+          {% endif %}
         </div>
         <div class="profile__about lesson-link">
           <h3>O mnie</h3>
@@ -106,7 +109,7 @@
       </div>
       {% endif %}
 
-      {% if request.user == user and is_teacher%}
+      {% if request.user == user and is_teacher %}
         <div class="profile__about">
           <h3>Więcej opcji:</h3>
           <a href="{% url 'schoolweb:resignation' %}" class="btn btn--link">Rezygnacja</a>

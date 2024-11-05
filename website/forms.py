@@ -1,13 +1,13 @@
 from django.forms import ModelForm, ImageField
 from .models import (Room, Post, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability,
-                     Report)
+                     Report, BankInformation)
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
@@ -228,6 +228,47 @@ class LessonFeedbackForm(forms.ModelForm):
         required=False,
         initial="-",
     )
+
+
+class BankInformationForm(forms.ModelForm):
+    expiration_month = forms.ChoiceField(label='Miesiąc', choices=[])
+    expiration_year = forms.ChoiceField(label='Rok', choices=[])
+
+    class Meta:
+        model = BankInformation
+        fields = ['card_number', 'cvv', 'cardholder_name', 'expiration_month', 'expiration_year']
+        labels = {
+            'card_number': 'Numer karty',
+            'cvv': 'CVV',
+            'cardholder_name': 'Imię i nazwisko',
+        }
+        widgets = {
+            'card_number': forms.TextInput(attrs={
+                'maxlength': '16',
+                'placeholder': '16-cyfrowy numer karty',
+            }),
+            'cvv': forms.TextInput(attrs={
+                'maxlength': '3',
+                'placeholder': 'CVV',
+            }),
+            'cardholder_name': forms.TextInput(attrs={'placeholder': 'Imię i nazwisko właściciela'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        current_year = datetime.now().year
+        self.fields['expiration_month'].choices = [(i, f'{i:02}') for i in range(1, 13)]  # Months 1 to 12
+        self.fields['expiration_year'].choices = [(year, year) for year in range(current_year, current_year + 6)]  # Current year to 5 years ahead
+
+    def clean(self):
+        cleaned_data = super().clean()
+        month = cleaned_data.get('expiration_month')
+        year = cleaned_data.get('expiration_year')
+
+        if month and year:
+            # Create the expiration date with the first day of the month
+            cleaned_data['expiration_date'] = f'{year}-{month}-01'  # Format YYYY-MM-DD
+        return cleaned_data
 
 
 class LessonCorrectionForm(forms.ModelForm):
