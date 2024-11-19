@@ -17,16 +17,19 @@
           </div>
         </div>
         <div class="profile__info">
-          <p>{{user.username}}</p>
+          <p>@{{user.username}}</p>
           {% if request.user == user %}
             <a href="{% url 'schoolweb:update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
           {% endif %}
         </div>
-        <div class="profile__about lesson-link">
+        <div class="profile__about">
           <h3>O mnie</h3>
-          <p>
-           {{user.bio}}
-          </p>
+          <p>{{user.bio}}</p>
+        </div>
+
+        <div class="profile__about">
+          <h3>Zainteresowania</h3>
+          <p>{{ user.interests }}</p>
         </div>
       </div>
 

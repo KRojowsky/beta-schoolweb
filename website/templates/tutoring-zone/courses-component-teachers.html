@@ -5,7 +5,7 @@
   </div>
   <ul class="topics__list">
     <li>
-      <a href="{% url 'schoolweb:teacherPage' %}" class="active">
+      <a href="{% url 'schoolweb:teacherPage' %}" class="topic-link {% if not request.GET.q %}active{% endif %}">
           <div>
               <img src="{% static 'img/icons/5.svg' %}"/>
               Wszystkie
@@ -13,9 +13,10 @@
           <span>{{courses.count}}</span>
       </a>
     </li>
+
     {% for course in courses %}
     <li>
-      <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">
+      <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}" class="topic-link {% if request.GET.q == course.name %}active{% endif %}">
           <div>
               <img src="{% static 'img/icons/5.svg' %}"/>
               {{course.student}}

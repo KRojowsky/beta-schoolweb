@@ -23,6 +23,7 @@ class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
     email = models.EmailField(unique=True, null=True, )
     bio = models.TextField(null=True, default="Brak opisu")
+    interests = models.TextField(null=True, blank=True, default="Brak zainteresowań")
     avatar = models.ImageField(upload_to='profile-pictures/', null=True, blank=True, default='profile-pictures/avatar.svg')
 
     lessons = models.IntegerField(default=0)
@@ -183,7 +184,7 @@ class Report(models.Model):
         return f'Report by {self.reporter.username} on {self.room.name}'
 
 
-class Post(models.Model):
+class Lesson(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
     title = models.CharField(max_length=200)
@@ -232,7 +233,7 @@ class Post(models.Model):
 
 class CourseMessage(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    room = models.ForeignKey(Post, on_delete=models.CASCADE)
+    room = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     body = models.TextField()
     messageUpdated = models.DateTimeField(auto_now=True)
     messageCreated = models.DateTimeField(auto_now_add=True)
@@ -307,7 +308,7 @@ class NewStudent(models.Model):
 
 
 class LessonCorrection(models.Model):
-    lesson = models.ForeignKey(Post, on_delete=models.CASCADE, default="")
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default="")
     feedback = models.TextField(null=True, blank=True, default="")
     attended_students = models.ManyToManyField(User, related_name='attended_students', blank=True)
     attended_teachers = models.ManyToManyField(User, related_name='attended_teachers', blank=True)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, NewStudent, \
+from .models import Room, Topic, Message, Course, Lesson, CourseMessage, PlatformMessage, NewStudent, \
             NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
@@ -25,7 +25,7 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar', 'bio', 'interests')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
         ('Lessons info', {'fields': ('lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons',
@@ -274,7 +274,7 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Topic)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Course, CourseAdmin)
-admin.site.register(Post, LessonInfo)
+admin.site.register(Lesson, LessonInfo)
 admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
 admin.site.register(Resign, ResignationAdmin)

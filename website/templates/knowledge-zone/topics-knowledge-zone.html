@@ -4,8 +4,8 @@
         <h2>Kategorie tematów</h2>
     </div>
     <ul class="topics__list">
-        <li class="all">
-            <a href="{% url 'schoolweb:knowledge_zone' %}" class="active">
+        <li>
+            <a href="{% url 'schoolweb:knowledge_zone' %}" class="topic-link {% if not request.GET.q %}active{% endif %}">
                 <div>
                     <img src="{% static 'img/icons/19.svg' %}"/>
                     Wszystkie
@@ -15,7 +15,7 @@
         </li>
         {% for topic in topics %}
         <li>
-            <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}">
+            <a href="{% url 'schoolweb:knowledge_zone' %}?q={{topic.name}}" class="topic-link {% if request.GET.q == topic.name %}active{% endif %}">
                 <div>
                     {% if topic.svg_icon %}
                         <img src="{{ topic.svg_icon.url }}" alt="{{ topic.name }} icon" />

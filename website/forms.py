@@ -1,5 +1,5 @@
 from django.forms import ModelForm, ImageField
-from .models import (Room, Post, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability,
+from .models import (Room, Lesson, User, NewStudent, NewTeacher, Message, Course, LessonCorrection, Resign, Availability,
                      Report, BankInformation)
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -60,8 +60,9 @@ class UserForm(forms.ModelForm):
             'username': 'Nazwa użytkownika(maks. 10 znaków)',
             'email': 'Email',
             'bio': 'Bio',
+            'interests': 'Zainteresowania'
         }
-        fields = ['avatar', 'username', 'email', 'bio']
+        fields = ['avatar', 'username', 'email', 'bio', 'interests']
 
     bio = forms.CharField(widget=forms.Textarea, required=False)
 
@@ -90,7 +91,7 @@ class PostFormCreate(forms.ModelForm):
         return event_datetime
 
     class Meta:
-        model = Post
+        model = Lesson
         fields = ['title', 'description', 'course', 'event_datetime']
 
 
@@ -102,7 +103,7 @@ class PostFormEdit(forms.ModelForm):
     )
 
     class Meta:
-        model = Post
+        model = Lesson
         fields = ['title', 'description', 'event_datetime']
 
     def clean_event_datetime(self):
@@ -205,7 +206,7 @@ class LessonFeedbackForm(forms.ModelForm):
         self.fields['attended_students'].queryset = post_instance.course.students.all()
 
     class Meta:
-        model = Post
+        model = Lesson
         fields = ['feedback', 'points', 'schoolweb_rating', 'attended_students', 'attended_teachers']
 
     attended_teachers = forms.ModelMultipleChoiceField(

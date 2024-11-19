@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import (User, Room, Topic, Message, Course, Post, CourseMessage, PlatformMessage, BlogPost,
+from .models import (User, Room, Topic, Message, Course, Lesson, CourseMessage, PlatformMessage, BlogPost,
                      BlogCategory, BankInformation)
 from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
                     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
@@ -517,11 +517,11 @@ def teacherPage(request):
     courses = Course.objects.filter(teacher=teacher)
     all_courses = Course.objects.all()
 
-    upcoming_lessons = Post.objects.filter(
+    upcoming_lessons = Lesson.objects.filter(
         Q(course__in=courses) & Q(event_datetime__gt=now) & (Q(course__name=q) | Q(title__icontains=q))
     ).order_by('event_datetime')
 
-    past_lessons = Post.objects.filter(
+    past_lessons = Lesson.objects.filter(
         Q(course__in=courses) & Q(event_datetime__lte=now) & (Q(course__name=q) | Q(title__icontains=q))
     ).order_by('-event_datetime')
 
@@ -544,7 +544,7 @@ def teacherPage(request):
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
 
-@login_required(login_url='login')
+@login_required(login_url='schoolweb:login')
 def lessonProfile(request, pk):
     user = get_object_or_404(User, id=pk)
     lessons = user.post_set.all()
@@ -666,7 +666,7 @@ def createLesson(request):
             post = form.save(commit=False)
             post.host = request.user
 
-            overlapping_lessons = Post.objects.filter(
+            overlapping_lessons = Lesson.objects.filter(
                 course__teacher=request.user,
                 event_datetime__gte=post.event_datetime - timedelta(minutes=50),
                 event_datetime__lte=post.event_datetime + timedelta(minutes=50)
@@ -719,7 +719,7 @@ def activity_lessonPage(request):
 
 @login_required(login_url='login')
 def lesson(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
+    lesson = get_object_or_404(Lesson, id=pk)
     lesson_messages = lesson.coursemessage_set.order_by('-messageCreated')
     participants = lesson.participants.all()
 
@@ -765,7 +765,7 @@ def lesson(request, pk):
 @user_passes_test(is_teacher, login_url='schoolweb:login')
 @login_required(login_url='schoolweb:login')
 def updateLesson(request, pk):
-    post = get_object_or_404(Post, id=pk)
+    post = get_object_or_404(Lesson, id=pk)
 
     if request.user != post.host:
         return HttpResponse('Brak dostępu')
@@ -780,7 +780,7 @@ def updateLesson(request, pk):
     if request.method == 'POST':
         form = PostFormEdit(request.POST, instance=post)
         if form.is_valid() and can_edit:
-            overlapping_lessons = Post.objects.filter(
+            overlapping_lessons = Lesson.objects.filter(
                 course__teacher=request.user,
                 event_datetime__gte=form.cleaned_data['event_datetime'] - timedelta(minutes=50),
                 event_datetime__lte=form.cleaned_data['event_datetime'] + timedelta(minutes=50)
@@ -854,7 +854,7 @@ def editLessonMessage(request, pk):
 @user_passes_test(is_teacher, login_url='schoolweb:login')
 @login_required(login_url='schoolweb:login')
 def lessonFeedback(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
+    lesson = get_object_or_404(Lesson, id=pk)
     user = request.user
 
     if user != lesson.course.teacher:
@@ -911,7 +911,7 @@ def lessonFeedback(request, pk):
 @user_passes_test(is_teacher, login_url='schoolweb:login')
 @login_required(login_url='schoolweb:login')
 def lessonCorrection(request, pk):
-    lesson = get_object_or_404(Post, id=pk)
+    lesson = get_object_or_404(Lesson, id=pk)
     user = request.user
 
     if user != lesson.course.teacher:
@@ -1033,11 +1033,11 @@ def studentPage(request):
     other_students = User.objects.filter(groups__name='Students', courses_enrolled__in=courses).exclude(id=student.id)
     all_courses = Course.objects.all()
 
-    upcoming_lessons = Post.objects.filter(
+    upcoming_lessons = Lesson.objects.filter(
         Q(course__in=courses) & Q(event_datetime__gt=now) & (Q(course__name=q) | Q(title__icontains=q))
     ).order_by('event_datetime')
 
-    past_lessons = Post.objects.filter(
+    past_lessons = Lesson.objects.filter(
         Q(course__in=courses) & Q(event_datetime__lte=now) & (Q(course__name=q) | Q(title__icontains=q))
     ).order_by('-event_datetime')
 
@@ -1146,7 +1146,7 @@ def converse(request):
     user = request.user
     room_code = request.GET.get('room')
 
-    post = get_object_or_404(Post, invite_code=room_code)
+    post = get_object_or_404(Lesson, invite_code=room_code)
 
     if user not in post.clicked_users.all():
         post.add_click(user)

@@ -1,6 +1,10 @@
-{% extends "base.html" %}
+{% extends 'base-tutoring-zone.html' %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-login-no-search.html' %}
+{% endblock navbar %}
+
 {% block content %}
-{% include 'navbarTeacher.html' %}
   <main class="create-room layout">
     <div class="container">
       <div class="layout__box" style="margin-top:300px;">

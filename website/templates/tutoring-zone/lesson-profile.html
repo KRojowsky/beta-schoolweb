@@ -18,35 +18,48 @@
           </div>
         </div>
         <div class="profile__info">
-          <h3>{{user.first_name}} {{user.last_name}}</h3>
-          <p>@{{user.username}}</p>
+          <h3>@{{user.username}}</h3>
+          <p>{{user.first_name}} {{user.last_name}}</p>
           {% if request.user == user %}
             <a href="{% url 'schoolweb:update-user-lessons' %}" class="btn btn--main btn--pill">Ustawienia</a>
           {% endif %}
           {% if request.user == user and is_teacher %}
             <a href="{% url 'schoolweb:bank_information' %}" class="btn btn--main btn--pill">Dane bankowe</a>
           {% endif %}
+          {% if request.user == user and is_teacher %}
+            <a href="{% url 'schoolweb:bank_information' %}" class="btn btn--main btn--pill">Plik PDF z dochodami</a>
+          {% endif %}
         </div>
-        <div class="profile__about lesson-link">
+        <div class="profile__about">
           <h3>O mnie</h3>
-          <p>
-            {{user.bio}}
-          </p>
+          <p>{{user.bio}}</p>
+          {% if request.user == user and is_teacher %}
+          <span>Ta sekcja będzie widoczna przez ucznia</span>
+          {% endif %}
+        </div>
+
+        <div class="profile__about">
+          <h3>Zainteresowania</h3>
+          <p>{{ user.interests }}</p>
+          {% if request.user == user and is_teacher %}
+          <span>Ta sekcja będzie widoczna przez ucznia</span>
+          {% endif %}
         </div>
 
         {% if request.user == user and is_teacher %}
         <div class="profile__about">
-          <h3>Przychody:</h3>
+          <h3>Przychody</h3>
           <div class="animated-progress1">
-            <p>W tym miesiącu:</p>
-            <h5>{{ month_earnings }} zł</h5>
+            <p><i>W tym miesiącu</i></p>
+            <h4>{{ month_earnings }} zł</h4>
             <canvas id="monthEarningsChart" width="400" height="200"></canvas>
           </div>
           <div class="animated-progress2">
-            <p>Ogólne:</p>
-            <h5>{{ all_earnings }} zł</h5>
+            <p><i>Ogólne</i></p>
+            <h4>{{ all_earnings }} zł</h4>
             <canvas id="allEarningsChart" width="400" height="200"></canvas>
           </div>
+          <span>Ta sekcja NIE będzie widoczna przez ucznia</span>
         </div>
         {% endif %}
 
@@ -68,7 +81,7 @@
 
       {% if request.user == user %}
       <div class="profile__about">
-        <h3>Twoje kursy:</h3>
+        <h3>Twoje kursy</h3>
         <div class="course-cards">
           {% for course in courses %}
             <div class="course-card">
@@ -93,11 +106,11 @@
                   <li class="student-item">
                     <img src="{{ student.avatar.url }}" alt="Profile Picture" class="student-avatar">
                     <div class="student-info">
-                      <span>{{ student.first_name }} {{ student.last_name }}</span>
+                      <div>{{ student.first_name }} {{ student.last_name }}</div>
                       {% if course.course_type == 'basic' %}
-                        <span class="lesson-badge">Dostępne lekcje: {{ student.lessons }}</span>
+                        <div class="lesson-badge">Dostępne lekcje: {{ student.lessons }}</div>
                       {% elif course.course_type == 'intermediate' %}
-                        <span class="lesson-badge">Dostępne lekcje: {{ student.lessons_intermediate }}</span>
+                        <div class="lesson-badge">Dostępne lekcje: {{ student.lessons_intermediate }}</div>
                       {% endif %}
                     </div>
                   </li>
@@ -111,7 +124,7 @@
 
       {% if request.user == user and is_teacher %}
         <div class="profile__about">
-          <h3>Więcej opcji:</h3>
+          <h3>Więcej opcji</h3>
           <a href="{% url 'schoolweb:resignation' %}" class="btn btn--link">Rezygnacja</a>
         </div>
       {% endif %}

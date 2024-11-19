@@ -432,7 +432,7 @@ a {
     padding: 2px;
     font-size: 14px;
     color: #000;
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.3s ease;
     margin: 10px;
     margin-left: 0;
 }
@@ -448,9 +448,12 @@ a {
     margin-right: 10px;
 }
 
-.topics__list a:hover {
-    background: #E8E8E8;
+.topics__list li a.active,
+.topics__list li a:hover{
+    background: #F0F0F0;
     border-radius: 5px;
+    transform: translateX(8px);
+    color: #BB00FF;
 }
 
 .topics__header h2, .activities__header h2 {
@@ -464,11 +467,6 @@ a {
     list-style: none;
 }
 
-.topics__list li a.active,
-.topics__list li a:hover {
-    color: #BB00FF;
-}
-
 .topics__list li a span {
     padding: 5px;
     background: #F0F0F0;
@@ -478,6 +476,7 @@ a {
     min-width: 30px;
     text-align: center;
     height: 50%;
+    border: 1px solid #C0C0C0;
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FEED-COMPONENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -1484,38 +1483,73 @@ a {
 
 .profile__info {
     text-align: center;
+    margin-bottom: 50px;
+}
+
+.profile__info h3{
+    color: #808080;
 }
 
 .profile__info p {
-    color: #000;
     font-weight: 900;
     margin: 0 0 30px 0;
     font-size: 20px;
 }
 
 .profile__info a {
+    display: inline-block;
     background: #FFF;
+    margin: 5px;
+}
+
+@media (max-width: 768px) {
+    .profile__info a {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+    }
 }
 
 .profile__about {
-    margin-top: 20px;
-    color: #222440;
+    margin: 30px 0;
     font-weight: 900;
+    padding: 10px;
+    border-radius: 10px;
+    color: #808080;
 }
 
 .profile__about h3 {
     text-transform: uppercase;
-    color: #808080;
-    margin: 40px 0 5px 0;
+    color: #000;
+    margin-bottom: 5px;
 }
 
-.profile-page .roomList__header h2 {
-    color: #808080;
+.profile__about span {
+    display: block;
+    text-align: center;
+    color: #696969;
+    font-weight: 500;
+    margin-top: 15px;
+    background: #FFF;
+    border: 1px solid #808080;
+    border-style: dashed;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 13px;
 }
 
+.animated-progress1 h4, .animated-progress2 h4{
+    font-size: 30px;
+    margin: 10px 0;
+}
 
+.animated-progress1 h4{
+    color: #32CD32;
+}
 
-
+.animated-progress2 h4{
+    color: #FF0000;
+}
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LESSONS-HOME~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
@@ -1903,7 +1937,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 
 .course-card {
     width: 320px;
-    margin: 25px;
+    margin: 15px;
     padding: 15px;
     background-color: #FFF;
     border: 1px solid #696969;
@@ -2000,6 +2034,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 }
 
 .lesson-badge {
+    display: inline-block;
     font-size: 14px;
     color: #333;
     background-color: #f5d8ff;
