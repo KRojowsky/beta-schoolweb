@@ -59,6 +59,7 @@ urlpatterns = [
 
     path('profil-strefa-korepetycji/<str:pk>/', views.lessonProfile, name="lesson-profile"),
     path('informacje-bankowe/', views.bankInformation, name='bank_information'),
+    path('pdf-dochody/', views.Teachersearnings, name='earnings_pdf'),
     path('edytuj-uzytkownika-strefa-korepetycji/', views.updateUserLessons, name="update-user-lessons"),
 
     path('kursy-korepetytor/', views.courses_teachersPage, name="courses-teachers"),

@@ -27,7 +27,7 @@
             <a href="{% url 'schoolweb:bank_information' %}" class="btn btn--main btn--pill">Dane bankowe</a>
           {% endif %}
           {% if request.user == user and is_teacher %}
-            <a href="{% url 'schoolweb:bank_information' %}" class="btn btn--main btn--pill">Plik PDF z dochodami</a>
+            <a href="{% url 'schoolweb:earnings_pdf' %}" class="btn btn--main btn--pill">Plik PDF z dochodami</a>
           {% endif %}
         </div>
         <div class="profile__about">
@@ -108,9 +108,9 @@
                     <div class="student-info">
                       <div>{{ student.first_name }} {{ student.last_name }}</div>
                       {% if course.course_type == 'basic' %}
-                        <div class="lesson-badge">Dostępne lekcje: {{ student.lessons }}</div>
+                        <div class="lesson-badge">Dostępne lekcje: {{ student.lesson_stats.lessons }}</div>
                       {% elif course.course_type == 'intermediate' %}
-                        <div class="lesson-badge">Dostępne lekcje: {{ student.lessons_intermediate }}</div>
+                        <div class="lesson-badge">Dostępne lekcje: {{ student.lesson_stats.lessons_intermediate }}</div>
                       {% endif %}
                     </div>
                   </li>
@@ -176,8 +176,8 @@
             if (label) {
               label += ': ';
             }
-            var totalLessons = {{ user.lessons }} + {{ user.lessons_intermediate }};
-            label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessons + ' - przeprowadzonych ' + {{user.break_lessons}} + ' - opuszczonych przez ucznia ' + {{user.missed_lessons}} + ' - opuszczonych przez korepetytora)';
+            var totalLessons = {{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }};
+            label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessons + ' - przeprowadzonych ' + {{lesson_stats.break_lessons}} + ' - opuszczonych przez ucznia ' + {{lesson_stats.missed_lessons}} + ' - opuszczonych przez korepetytora)';
             return label;
           },
         },
@@ -220,8 +220,8 @@ var allEarningsChart = new Chart(document.getElementById('allEarningsChart'), {
             if (label) {
               label += ': ';
             }
-          var totalLessonsMonth = {{ user.all_lessons }} + {{ user.all_lessons_intermediate }};
-          label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessonsMonth  + ' - przeprowadzonych ' + {{user.all_break_lessons}} + ' - opuszczonych przez ucznia ' + {{user.all_missed_lessons}} + ' - opuszczonych przez korepetytora)';
+          var totalLessonsMonth = {{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }};
+          label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessonsMonth  + ' - przeprowadzonych ' + {{lesson_stats.all_break_lessons}} + ' - opuszczonych przez ucznia ' + {{lesson_stats.all_missed_lessons}} + ' - opuszczonych przez korepetytora)';
           return label;
           },
         },

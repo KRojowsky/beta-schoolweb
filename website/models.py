@@ -1,8 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, Group
 from django.core.validators import RegexValidator
 import random
 import string
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from datetime import datetime
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -16,16 +19,31 @@ class PlatformMessage(models.Model):
     def __str__(self):
         return self.email
 
+    class Meta:
+        verbose_name = 'Wiadomości z Platformy'
+        verbose_name_plural = 'Wiadomości z Platformy'
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
-    email = models.EmailField(unique=True, null=True, )
+    email = models.EmailField(unique=True, null=True)
     bio = models.TextField(null=True, default="Brak opisu")
     interests = models.TextField(null=True, blank=True, default="Brak zainteresowań")
     avatar = models.ImageField(upload_to='profile-pictures/', null=True, blank=True, default='profile-pictures/avatar.svg')
+    phone_number = models.CharField(default='N/A', max_length=20)
+    add_info = models.CharField(max_length=100, default="rola/przedmiot")
 
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
+
+
+class LessonStats(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="lesson_stats")
     lessons = models.IntegerField(default=0)
     lessons_intermediate = models.IntegerField(default=0)
 
@@ -37,38 +55,56 @@ class User(AbstractUser):
 
     all_lessons = models.IntegerField(default=0)
     all_lessons_intermediate = models.IntegerField(default=0)
-    phone_number = models.CharField(default='N/A', max_length=20)
-    add_info = models.CharField(max_length=100, default="rola/przedmiot")
 
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    def update_all_lessons(self):
+        try:
+            original_instance = LessonStats.objects.get(pk=self.pk)
+            original_lessons = original_instance.lessons
+        except LessonStats.DoesNotExist:
+            original_lessons = 0
+
+        if original_lessons != 0 and self.lessons == 0:
+            if self.all_lessons > 0:
+                self.all_lessons += 1
+        elif original_lessons > self.lessons:
+            self.all_lessons += 1
+
+    @property
+    def month_earnings(self):
+        if self.user.groups.filter(name='Teachers').exists():
+            return (
+                60 * self.lessons_intermediate +
+                40 * self.lessons +
+                20 * self.break_lessons -
+                50 * self.missed_lessons
+            )
+        return -1
+
+    @property
+    def all_earnings(self):
+        if self.user.groups.filter(name='Teachers').exists():
+            return (
+                60 * self.all_lessons_intermediate +
+                40 * self.all_lessons +
+                20 * self.all_break_lessons -
+                50 * self.all_missed_lessons
+            )
+        return -1
 
     def save(self, *args, **kwargs):
-        if not self.pk:
-            super(User, self).save(*args, **kwargs)
-
-        is_student = self.groups.filter(name='Students').exists()
-
-        if is_student:
-            try:
-                original_instance = User.objects.get(pk=self.pk)
-                original_lessons = original_instance.lessons
-            except User.DoesNotExist:
-                original_lessons = 0
-
-            if original_lessons != 0 and self.lessons == 0:
-                if self.lessons == 0 and self.all_lessons > 0:
-                    self.all_lessons += 1
-                self.all_lessons += 0
-            elif original_lessons > self.lessons:
-                self.all_lessons += 1
-        else:
-            pass
-
-        super(User, self).save(*args, **kwargs)
+        self.update_all_lessons()
+        super(LessonStats, self).save(*args, **kwargs)
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
+        return (
+            f"LessonStats for {self.user} | "
+            f"Monthly Earnings: {self.month_earnings} | "
+            f"Total Earnings: {self.all_earnings}"
+        )
+
+    class Meta:
+        verbose_name = 'Lekcje - statystyki'
+        verbose_name_plural = 'Lekcje - statystyki'
 
 
 class BankInformation(models.Model):
@@ -82,12 +118,38 @@ class BankInformation(models.Model):
         return f'{self.cardholder_name} - {self.card_number}'
 
 
+    class Meta:
+        verbose_name = 'Informacje bankowe'
+        verbose_name_plural = 'Informacje bankowe'
+
+
 class Topic(models.Model):
     name = models.CharField(max_length=200, unique=True)
     svg_icon = models.FileField(upload_to='icons/', null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Kategorie - Strefa Wiedzy'
+        verbose_name_plural = 'Kategorie - Strefa Wiedzy'
+
+
+class TeachersEarning(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='earnings')
+    monthly_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    date_added = models.DateTimeField(auto_now_add=True)
+    month = models.PositiveIntegerField(default=datetime.now().month)
+    year = models.PositiveIntegerField(default=datetime.now().year)
+
+    class Meta:
+        verbose_name = 'Wypłata'
+        verbose_name_plural = 'Wypłaty'
+        unique_together = ('user', 'month', 'year')  # Ensures one payout per user per month/year combination
+
+    def __str__(self):
+        return f"Earnings for {self.user.username} | Monthly: {self.monthly_earnings} | {self.month}/{self.year}"
+
 
 
 class Room(models.Model):
@@ -111,6 +173,10 @@ class Room(models.Model):
         if self.host and self.host.deleted:
             self.host = None
             self.save()
+
+    class Meta:
+        verbose_name = 'Posty - Strefa Wiedzy'
+        verbose_name_plural = 'Posty - Strefa Wiedzy'
 
 
 class Message(models.Model):
@@ -137,6 +203,11 @@ class Message(models.Model):
         self.save()
 
 
+    class Meta:
+        verbose_name = 'Komentarze - Strefa Wiedzy'
+        verbose_name_plural = 'Komentarze - Strefa Wiedzy'
+
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class Course(models.Model):
@@ -153,13 +224,17 @@ class Course(models.Model):
     course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES, default='basic')
 
     def get_lessons_with_feedback_count(self):
-        return self.post_set.filter(feedback__isnull=False).count()
+        return self.lesson_set.filter(feedback__isnull=False).count()
 
     class Meta:
         ordering = ['-courseCreated']
 
     def __str__(self):
         return self.student
+
+    class Meta:
+        verbose_name = 'Kursy - Strefa Korepetycji'
+        verbose_name_plural = 'Kursy - Strefa Korepetycji'
 
 
 class Report(models.Model):
@@ -183,6 +258,9 @@ class Report(models.Model):
     def __str__(self):
         return f'Report by {self.reporter.username} on {self.room.name}'
 
+    class Meta:
+        verbose_name = 'Zgłoszenia - Strefa Wiedzy'
+        verbose_name_plural = 'Zgłoszenia - Strefa Wiedzy'
 
 class Lesson(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -229,6 +307,10 @@ class Lesson(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        verbose_name = 'Lekcje - Strefa Korepetycji'
+        verbose_name_plural = 'Lekcje - Strefa Korepetycji'
+
 
 
 class CourseMessage(models.Model):
@@ -245,6 +327,10 @@ class CourseMessage(models.Model):
 
     def __str__(self):
         return self.body[0:50]
+
+    class Meta:
+        verbose_name = 'Komentarze - Strefa Korepetycji'
+        verbose_name_plural = 'Komentarze - Strefa Korepetycji'
 
 
 class NewTeacher(models.Model):
@@ -279,6 +365,10 @@ class NewTeacher(models.Model):
         return f'{self.first_name} {self.last_name}'
 
 
+    class Meta:
+        verbose_name = 'Nowi korepetytorzy'
+        verbose_name_plural = 'Nowi korepetytorzy'
+
 class NewStudent(models.Model):
     SCHOOL_CHOICES = [
         ('podstawowa', 'Szkoła podstawowa'),
@@ -306,6 +396,10 @@ class NewStudent(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
 
+    class Meta:
+        verbose_name = 'Nowi uczniowie'
+        verbose_name_plural = 'Nowi uczniowie'
+
 
 class LessonCorrection(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default="")
@@ -313,6 +407,10 @@ class LessonCorrection(models.Model):
     attended_students = models.ManyToManyField(User, related_name='attended_students', blank=True)
     attended_teachers = models.ManyToManyField(User, related_name='attended_teachers', blank=True)
     lesson_image = models.ImageField(upload_to='lesson_images/', null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Poprawki lekcji'
+        verbose_name_plural = 'Poprawki lekcji'
 
 
 class Resign(models.Model):
@@ -349,6 +447,10 @@ class Resign(models.Model):
         return f'Resignation - {self.email}'
 
 
+    class Meta:
+        verbose_name = 'Rezygnacje'
+        verbose_name_plural = 'Rezygnacje'
+
 class Availability(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     day = models.DateField()
@@ -372,6 +474,10 @@ class Availability(models.Model):
     def __str__(self):
         return f"{self.user} - {self.day}"
 
+    class Meta:
+        verbose_name = 'Dostępności'
+        verbose_name_plural = 'Dostępności'
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -381,6 +487,10 @@ class BlogCategory(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = 'Kategorie - Blog'
+        verbose_name_plural = 'Kategorie - Blog'
 
 
 class BlogPost(models.Model):
@@ -408,6 +518,10 @@ class BlogPost(models.Model):
     def number_of_likes(self):
         return self.likes
 
+
+    class Meta:
+        verbose_name = 'Posty - Blog'
+        verbose_name_plural = 'Posty - Blog'
 
 class ContentBlock(models.Model):
     TEXT = 'text'

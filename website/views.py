@@ -3,8 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from .models import (User, Room, Topic, Message, Course, Lesson, CourseMessage, PlatformMessage, BlogPost,
-                     BlogCategory, BankInformation)
+from .models import (User, Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, BlogPost,
+                     BlogCategory, BankInformation, LessonStats, TeachersEarning)
 from .forms import (RoomForm, UserForm, MyUserCreationForm, ApplyTeacherForm, ApplyStudentForm, NewStudentForm,
                     NewTeacherForm, PostFormCreate, PostFormEdit, LessonFeedbackForm, LessonCorrectionForm,
                     ResignationForm, ReportForm, RoomMessageForm, BankInformationForm)
@@ -547,56 +547,76 @@ def teacherPage(request):
 @login_required(login_url='schoolweb:login')
 def lessonProfile(request, pk):
     user = get_object_or_404(User, id=pk)
-    lessons = user.post_set.all()
-    lesson_messages = user.coursemessage_set.all()
-    package = user.lessons
-    all_package = user.all_lessons
-    month_earnings = 60 * user.lessons_intermediate + 40 * user.lessons + 20 * user.break_lessons - 50 * user.missed_lessons
-    all_earnings = 60 * user.all_lessons_intermediate + 40 * user.all_lessons + 20 * user.all_break_lessons - 50 * user.all_missed_lessons
+
+    lesson_stats = getattr(user, 'lesson_stats', None)
+
+    if not lesson_stats:
+        lesson_stats = LessonStats.objects.create(user=user)
+
+    month_earnings = (
+        60 * lesson_stats.lessons_intermediate +
+        40 * lesson_stats.lessons +
+        20 * lesson_stats.break_lessons -
+        50 * lesson_stats.missed_lessons
+    )
+    all_earnings = (
+        60 * lesson_stats.all_lessons_intermediate +
+        40 * lesson_stats.all_lessons +
+        20 * lesson_stats.all_break_lessons -
+        50 * lesson_stats.all_missed_lessons
+    )
 
     logged_in_user = request.user
-
     is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
+    is_student = logged_in_user.groups.filter(name='Students').exists()
 
-    if logged_in_user.groups.filter(name='Teachers').exists():
+    # Set templates and determine accessible users
+    if is_teacher:
         navbar_template = 'tutoring-zone/nav-teacher-view.html'
         courses_component = 'tutoring-zone/courses-component-teachers.html'
         courses = Course.objects.filter(teacher=logged_in_user)
         accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
-    elif logged_in_user.groups.filter(name='Students').exists():
+    elif is_student:
         navbar_template = 'tutoring-zone/nav-student-view.html'
         courses_component = 'tutoring-zone/courses-component-students.html'
         courses = Course.objects.filter(students=logged_in_user)
-        accessible_users = (
-            User.objects
-            .filter(
-                Q(groups__name='Students', courses_enrolled__in=courses) |
-                Q(groups__name='Teachers', courses_taught__in=courses)
-            )
-            .distinct()
-        )
+        accessible_users = User.objects.filter(
+            Q(groups__name='Students', courses_enrolled__in=courses) |
+            Q(groups__name='Teachers', courses_taught__in=courses)
+        ).distinct()
+    else:
+        navbar_template = ''
+        courses_component = ''
+        courses = []
+        accessible_users = []
 
+    # Profile accessibility check
     is_accessible_profile = (
-            logged_in_user == user or
-            (is_teacher and user in accessible_users) or
-            (logged_in_user.groups.filter(name='Students').exists() and user in accessible_users)
+        logged_in_user == user or
+        (is_teacher and user in accessible_users) or
+        (is_student and user in accessible_users)
     )
 
     if not is_accessible_profile:
         return render(request, 'tutoring-zone/lesson-no-exists.html')
 
+    # Fetch user's lessons and messages
+    lessons = user.lesson_set.all()
+    lesson_messages = user.coursemessage_set.all()
+
     context = {
         'user': user,
         'lessons': lessons,
         'lesson_messages': lesson_messages,
-        'package': package,
-        'all_package': all_package,
+        'package': lesson_stats.lessons,
+        'all_package': lesson_stats.all_lessons,
         'courses': courses,
         'navbar_template': navbar_template,
         'courses_component': courses_component,
         'month_earnings': month_earnings,
         'all_earnings': all_earnings,
         'is_teacher': is_teacher,
+        'lesson_stats': lesson_stats,
     }
 
     return render(request, 'tutoring-zone/lesson-profile.html', context)
@@ -606,21 +626,19 @@ def lessonProfile(request, pk):
 def bankInformation(request):
     bank_info = BankInformation.objects.filter(user=request.user).first()
 
-    # Check if the "edit" parameter is in the GET request
     is_editing = request.GET.get('edit') == 'true'
 
     if request.method == 'POST':
-        # Process the form if in edit mode
         if not bank_info:
             bank_info = BankInformation(user=request.user)
 
         form = BankInformationForm(request.POST, instance=bank_info)
 
         if form.is_valid():
-            form.save()  # Save the form data
+            form.save()
             return redirect('schoolweb:bank_information')
     else:
-        form = BankInformationForm(instance=bank_info) if is_editing else None  # Only show form if editing
+        form = BankInformationForm(instance=bank_info) if is_editing else None
 
     context = {
         'form': form,
@@ -628,6 +646,17 @@ def bankInformation(request):
         'is_editing': is_editing,
     }
     return render(request, 'tutoring-zone/bank-informations.html', context)
+
+
+@login_required(login_url='login')
+def Teachersearnings(request):
+    user_earnings = TeachersEarning.objects.filter(user=request.user).order_by('-year', '-month')
+
+    context = {
+        'user_earnings': user_earnings
+    }
+
+    return render(request, 'tutoring-zone/earnings-pdf.html', context)
 
 
 @login_required(login_url='login')
@@ -674,19 +703,20 @@ def createLesson(request):
 
             students_in_course = post.course.students.all()
             student_has_lessons = True
+            students_without_lessons = []
 
             for student in students_in_course:
-                if post.course.course_type == 'basic':
-                    if student.lessons <= 0:
-                        student_has_lessons = False
-                        break
-                elif post.course.course_type == 'intermediate':
-                    if student.lessons_intermediate <= 0:
-                        student_has_lessons = False
-                        break
+                if post.course.course_type == 'basic' and student.lesson_stats.lessons <= 0:
+                    student_has_lessons = False
+                    students_without_lessons.append(student)
+                elif post.course.course_type == 'intermediate' and student.lesson_stats.lessons_intermediate <= 0:
+                    student_has_lessons = False
+                    students_without_lessons.append(student)
 
             if not student_has_lessons:
-                messages.error(request, "Jeden lub więcej studentów nie ma dostępnych lekcji w tym kursie.")
+                students_names = ', '.join(
+                    [f"{student.first_name} {student.last_name}" for student in students_without_lessons])
+                messages.error(request, f"Następujący studenci nie mają dostępnych lekcji: {students_names}.")
             elif overlapping_lessons.exists():
                 messages.error(request, "W wybranym terminie istnieje już inna lekcja.")
             elif post.event_datetime <= minimum_datetime:
@@ -695,12 +725,14 @@ def createLesson(request):
                 post.save()
 
                 for student in students_in_course:
+                    lesson_stats = student.lesson_stats
                     if post.course.course_type == 'basic':
-                        student.lessons -= 1
+                        lesson_stats.lessons -= 1
                     elif post.course.course_type == 'intermediate':
-                        student.lessons_intermediate -= 1
-                    student.save()
+                        lesson_stats.lessons_intermediate -= 1
+                    lesson_stats.save()
 
+                messages.success(request, "Lekcja została pomyślnie utworzona.")
                 return redirect('schoolweb:teacherPage')
 
     return render(request, 'tutoring-zone/create-lesson.html', {'form': form, 'current_date': current_date})
@@ -878,22 +910,23 @@ def lessonFeedback(request, pk):
             lesson.save()
 
             if user.groups.filter(name='Teachers').exists():
+                lesson_stats = user.lesson_stats  # Pobierz powiązany obiekt LessonStats
+
                 if lesson.clicked_users.count() > 1:
                     if lesson.course.course_type == 'basic':
-                        user.lessons += 1
-                        user.all_lessons += 1
+                        lesson_stats.lessons += 1
+                        lesson_stats.all_lessons += 1
                     elif lesson.course.course_type == 'intermediate':
-                        user.lessons_intermediate += 1
-                        user.all_lessons_intermediate += 1
-                    user.save()
+                        lesson_stats.lessons_intermediate += 1
+                        lesson_stats.all_lessons_intermediate += 1
                 elif lesson.clicked_users.count() == 1:
-                    user.break_lessons += 1
-                    user.all_break_lessons += 1
-                    user.save()
+                    lesson_stats.break_lessons += 1
+                    lesson_stats.all_break_lessons += 1
                 elif lesson.clicked_users.count() == 0:
-                    user.missed_lessons += 1
-                    user.all_missed_lessons += 1
-                    user.save()
+                    lesson_stats.missed_lessons += 1
+                    lesson_stats.all_missed_lessons += 1
+
+                lesson_stats.save()  # Zapisz zmiany w LessonStats
 
             return redirect('schoolweb:teacherPage')
 

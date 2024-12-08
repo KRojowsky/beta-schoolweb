@@ -1,22 +1,22 @@
 from django.contrib import admin
-from .models import Room, Topic, Message, Course, Lesson, CourseMessage, PlatformMessage, NewStudent, \
-            NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation
+from .models import (Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, NewStudent,
+            NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock,
+                     BankInformation, TeachersEarning)
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
 from django import forms
 from website.models import User
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups',
-                    'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons',
-                    'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
+    list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups')
     list_display_links = ('email',)
-    list_editable = ('phone_number', 'add_info', 'lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons',
-                     'all_break_lessons', 'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')
+    list_editable = ('phone_number', 'add_info')
 
     def display_groups(self, obj):
         return ", ".join([group.name for group in obj.groups.all()])
@@ -25,11 +25,10 @@ class CustomUserAdmin(UserAdmin):
 
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar', 'bio', 'interests')}),
+        ('Personal info',
+         {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar', 'bio', 'interests')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
-        ('Lessons info', {'fields': ('lessons', 'lessons_intermediate', 'break_lessons', 'missed_lessons', 'all_break_lessons',
-                                     'all_missed_lessons', 'all_lessons', 'all_lessons_intermediate')}),
     )
 
     def display_groups(self, obj):
@@ -65,6 +64,49 @@ class ReportAdmin(admin.ModelAdmin):
     list_filter = ['reason', 'created']
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class LessonStatsAdmin(admin.ModelAdmin):
+    list_display = [
+        'user', 'lessons', 'lessons_intermediate',
+        'break_lessons', 'all_break_lessons',
+        'missed_lessons', 'all_missed_lessons',
+        'all_lessons', 'all_lessons_intermediate',
+        'month_earnings',
+        'all_earnings',
+    ]
+
+    readonly_fields = ('month_earnings', 'all_earnings')
+
+    list_editable = [
+        'lessons', 'lessons_intermediate',
+        'break_lessons', 'all_break_lessons',
+        'missed_lessons', 'all_missed_lessons',
+        'all_lessons', 'all_lessons_intermediate'
+    ]
+
+    ordering = ['user']
+    search_fields = ['user__username']
+
+
+class TeachersEarningAdmin(admin.ModelAdmin):
+    list_display = ['user', 'monthly_earnings', 'month', 'year', 'date_added']
+    search_fields = ['user__username', 'user__email']
+    list_filter = ['month', 'year', 'user']
+    ordering = ['user', 'year', 'month']
+
+    # Optionally, you can add validation here to ensure the user can't create duplicate entries
+    def save_model(self, request, obj, form, change):
+        # Ensure no duplicate payout for the same user, month, and year
+        existing_earning = TeachersEarning.objects.filter(
+            user=obj.user, month=obj.month, year=obj.year
+        ).exists()
+
+        if existing_earning:
+            raise ValidationError(f"{obj.user.username} already has earnings for {obj.month}/{obj.year}. Only one record is allowed per month.")
+
+        super().save_model(request, obj, form, change)
+
+
 
 class LessonInfo(admin.ModelAdmin):
     def clicked_users_count(self, obj):
@@ -275,6 +317,8 @@ admin.site.register(Topic)
 admin.site.register(Message, MessageAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson, LessonInfo)
+admin.site.register(LessonStats, LessonStatsAdmin)
+admin.site.register(TeachersEarning, TeachersEarningAdmin)
 admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
 admin.site.register(Resign, ResignationAdmin)

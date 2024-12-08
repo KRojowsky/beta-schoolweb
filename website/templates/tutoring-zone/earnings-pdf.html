@@ -1,0 +1,62 @@
+{% extends 'base-tutoring-zone.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<main class="auth layout">
+    <div class="container">
+        <div class="layout__box">
+            <div class="layout__boxHeader">
+                <div class="layout__boxTitle">
+                    <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                            viewBox="0 0 32 32">
+                            <title>Cofnij</title>
+                            <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
+                            1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                            </path>
+                        </svg>
+                    </a>
+                    <h3>Podsumowanie Dochodów</h3>
+                </div>
+            </div>
+            <div class="layout__body">
+                <h4>Twoje wypłaty</h4>
+
+                {% if user_earnings %}
+                    <ul>
+                        {% for earnings in user_earnings %}
+                            <li>
+                                <button class="earnings-month-toggle" onclick="toggleEarningsDetails({{ earnings.id }})">
+                                    Wypłata {{ earnings.month }} / {{ earnings.year }}
+                                </button>
+                                <div id="earnings-details-{{ earnings.id }}" class="earnings-details" style="display:none;">
+                                    <p>Miesięczne przychody: {{ earnings.monthly_earnings }}</p>
+                                    <p>Data zapisania: {{ earnings.date_added|date:"d M Y H:i" }}</p>
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>Brak danych o przychodach.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function toggleEarningsDetails(earningsId) {
+        var details = document.getElementById('earnings-details-' + earningsId);
+        if (details.style.display === 'none') {
+            details.style.display = 'block';
+        } else {
+            details.style.display = 'none';
+        }
+    }
+</script>
+
+{% endblock content %}
