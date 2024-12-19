@@ -25,6 +25,17 @@ class PlatformMessage(models.Model):
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+class Topic(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    svg_icon = models.FileField(upload_to='icons/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = 'Kategorie - Strefa Wiedzy'
+        verbose_name_plural = 'Kategorie - Strefa Wiedzy'
+
 
 class User(AbstractUser):
     name = models.CharField(max_length=200, null=True)
@@ -33,10 +44,36 @@ class User(AbstractUser):
     interests = models.TextField(null=True, blank=True, default="Brak zainteresowań")
     avatar = models.ImageField(upload_to='profile-pictures/', null=True, blank=True, default='profile-pictures/avatar.svg')
     phone_number = models.CharField(default='N/A', max_length=20)
-    add_info = models.CharField(max_length=100, default="rola/przedmiot")
+    subject = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True)
+    points = models.IntegerField(default=0)
+
+    LEVEL_CHOICES = [
+        ('Podstawa', 'Podstawa'),
+        ('Rozszerzenie', 'Rozszerzenie'),
+    ]
+    level = models.CharField(
+        max_length=50,
+        choices=LEVEL_CHOICES,
+        blank=True,
+        verbose_name="Poziom"
+    )
+
+    referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)  # New field
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    def generate_referral_code(self):
+        """Generate a unique 10-character alphanumeric referral code."""
+        length = 10
+        characters = string.ascii_uppercase + string.digits
+        return ''.join(random.choice(characters) for _ in range(length))
+
+    def save(self, *args, **kwargs):
+        if not self.referral_code:  # Generate referral code if not set
+            self.referral_code = self.generate_referral_code()
+
+        super().save(*args, **kwargs)  # Call the original save method
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
@@ -55,6 +92,9 @@ class LessonStats(models.Model):
 
     all_lessons = models.IntegerField(default=0)
     all_lessons_intermediate = models.IntegerField(default=0)
+
+    month_bonus = models.IntegerField(default=0)
+    all_bonus = models.IntegerField(default=0)
 
     def update_all_lessons(self):
         try:
@@ -76,7 +116,8 @@ class LessonStats(models.Model):
                 60 * self.lessons_intermediate +
                 40 * self.lessons +
                 20 * self.break_lessons -
-                50 * self.missed_lessons
+                50 * self.missed_lessons +
+                self.month_bonus
             )
         return -1
 
@@ -87,7 +128,8 @@ class LessonStats(models.Model):
                 60 * self.all_lessons_intermediate +
                 40 * self.all_lessons +
                 20 * self.all_break_lessons -
-                50 * self.all_missed_lessons
+                50 * self.all_missed_lessons +
+                self.all_bonus
             )
         return -1
 
@@ -107,6 +149,7 @@ class LessonStats(models.Model):
         verbose_name_plural = 'Lekcje - statystyki'
 
 
+
 class BankInformation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='bank_information')
     card_number = models.CharField(max_length=16, unique=True)
@@ -121,18 +164,6 @@ class BankInformation(models.Model):
     class Meta:
         verbose_name = 'Informacje bankowe'
         verbose_name_plural = 'Informacje bankowe'
-
-
-class Topic(models.Model):
-    name = models.CharField(max_length=200, unique=True)
-    svg_icon = models.FileField(upload_to='icons/', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = 'Kategorie - Strefa Wiedzy'
-        verbose_name_plural = 'Kategorie - Strefa Wiedzy'
 
 
 class TeachersEarning(models.Model):
@@ -153,7 +184,7 @@ class TeachersEarning(models.Model):
 
 
 class Room(models.Model):
-    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='hosted_rooms')
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
@@ -164,23 +195,30 @@ class Room(models.Model):
     likes = models.ManyToManyField(User, related_name='liked_rooms', blank=True)
 
     class Meta:
-        ordering = ['-updated', '-created']
+        ordering = ['-created', '-updated']
+        verbose_name = 'Posty - Strefa Wiedzy'
+        verbose_name_plural = 'Posty - Strefa Wiedzy'
 
     def __str__(self):
         return self.name
 
-    def preserve_user_on_delete(self):
-        if self.host and self.host.deleted:
-            self.host = None
-            self.save()
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None  # Sprawdzamy, czy pokój jest nowy
+        super().save(*args, **kwargs)
+        if is_new and self.host:
+            self.host.points += 10  # Dodanie 10 punktów za nowy pokój
+            self.host.save()
 
-    class Meta:
-        verbose_name = 'Posty - Strefa Wiedzy'
-        verbose_name_plural = 'Posty - Strefa Wiedzy'
+    def delete(self, *args, **kwargs):
+        host = self.host
+        super().delete(*args, **kwargs)
+        if host and host.points >= 10:  # Sprawdzenie, czy użytkownik ma co najmniej 10 punktów
+            host.points -= 10  # Odjęcie 10 punktów
+            host.save()
 
 
 class Message(models.Model):
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='messages')
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True)
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
@@ -191,9 +229,57 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['-updated', '-created']
+        verbose_name = 'Komentarze - Strefa Wiedzy'
+        verbose_name_plural = 'Komentarze - Strefa Wiedzy'
 
     def __str__(self):
         return self.body[0:50]
+
+    def save(self, *args, **kwargs):
+        is_new = self.pk is None  # Check if the message is new
+        super().save(*args, **kwargs)
+
+        if is_new and self.user:
+            # Add 5 points for a new message
+            self.user.points += 5
+            self.user.save()
+
+            # Check if the user has at least 1000 points before performing actions
+            if self.user.points >= 1000:
+                # Deduct 1000 points from the user
+                self.user.points -= 1000
+                self.user.save()
+
+                # Check if the user is in the 'Students' group
+                if self.user.groups.filter(name='Students').exists():
+                    # Get or create the LessonStats object for the student
+                    lesson_stats, created = LessonStats.objects.get_or_create(user=self.user)
+
+                    # Check user's level and update the respective field
+                    user_level = self.user.level
+                    if user_level == 'Podstawa':  # If level is 'Podstawa'
+                        lesson_stats.lessons += 1
+                    elif user_level == 'Rozszerzenie':  # If level is 'Rozszerzenie'
+                        lesson_stats.lessons_intermediate += 1
+                    lesson_stats.save()
+
+                # Check if the user is in the 'Teachers' group
+                elif self.user.groups.filter(name='Teachers').exists():
+                    # Get or create the LessonStats object for the teacher
+                    lesson_stats, created = LessonStats.objects.get_or_create(user=self.user)
+
+                    # Add 50 zł bonus to both month_bonus and all_bonus for the teacher
+                    lesson_stats.month_bonus += 50  # Add to monthly bonus
+                    lesson_stats.all_bonus += 50    # Add to total bonus
+                    lesson_stats.save()
+
+    def delete(self, *args, **kwargs):
+        user = self.user
+        super().delete(*args, **kwargs)
+        if user:
+            # Subtract 5 points when the message is deleted
+            user.points -= 5
+            user.save()
 
     def toggle_like(self, user):
         if user in self.likes.all():
@@ -201,11 +287,6 @@ class Message(models.Model):
         else:
             self.likes.add(user)
         self.save()
-
-
-    class Meta:
-        verbose_name = 'Komentarze - Strefa Wiedzy'
-        verbose_name_plural = 'Komentarze - Strefa Wiedzy'
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -331,74 +412,6 @@ class CourseMessage(models.Model):
     class Meta:
         verbose_name = 'Komentarze - Strefa Korepetycji'
         verbose_name_plural = 'Komentarze - Strefa Korepetycji'
-
-
-class NewTeacher(models.Model):
-    SCHOOL_CHOICES = [
-        ('podstawowa', 'Szkoła podstawowa'),
-        ('średnia', 'Szkoła średnia'),
-        ('maturalna', 'Klasa maturalna'),
-        ('praktyki', 'Praktyki'),
-        ('licencjat', 'Licencjat'),
-        ('magister', 'Magister'),
-        ('inżynier', 'Inżynier'),
-        ('doktor', 'Doktor'),
-    ]
-
-    LANGUAGE = [
-        ('tak', 'Tak'),
-        ('nie', 'Nie'),
-    ]
-
-    first_name = models.CharField(max_length=30, null=False, default='')
-    last_name = models.CharField(max_length=30, null=False, default='')
-    phone_regex = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$',
-        message="Numer telefonu musi być w formacie: '999 999 999'. Maksymalnie 15 cyfr."
-    )
-    phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, null=True)
-    school = models.CharField(choices=SCHOOL_CHOICES, max_length=20, null=True)
-    subject = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
-    age_language = models.CharField(choices=LANGUAGE, max_length=20, null=True)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
-
-
-    class Meta:
-        verbose_name = 'Nowi korepetytorzy'
-        verbose_name_plural = 'Nowi korepetytorzy'
-
-class NewStudent(models.Model):
-    SCHOOL_CHOICES = [
-        ('podstawowa', 'Szkoła podstawowa'),
-        ('średnia', 'Szkoła średnia'),
-        ('maturalna', 'Klasa maturalna'),
-        ('wyższa', 'Szkoła wyższa'),
-    ]
-
-    LEVEL_CHOICES = [
-        ('rozwijające', 'Rozwijające'),
-        ('korygujące', 'Korygujące'),
-    ]
-
-    first_name = models.CharField(max_length=30, null=False, default='')
-    last_name = models.CharField(max_length=30, null=False, default='')
-    phone_regex = RegexValidator(
-        regex=r'^\+?1?\d{9,15}$',
-        message="Numer telefonu musi byc w formacie: '999 999 999'. Maksymalnie 15 cyfr."
-    )
-    phone_number = models.CharField(validators=[phone_regex], max_length=15, blank=True, null=True)
-    subject = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
-    school = models.CharField(choices=SCHOOL_CHOICES, max_length=20, null=True)
-    level = models.CharField(choices=LEVEL_CHOICES, max_length=20, null=True)
-
-    def __str__(self):
-        return f'{self.first_name} {self.last_name}'
-
-    class Meta:
-        verbose_name = 'Nowi uczniowie'
-        verbose_name_plural = 'Nowi uczniowie'
 
 
 class LessonCorrection(models.Model):

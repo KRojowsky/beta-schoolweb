@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import (Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, NewStudent,
-            NewTeacher, LessonCorrection, Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock,
-                     BankInformation, TeachersEarning)
+from .models import (Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, LessonCorrection,
+                     Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation, TeachersEarning)
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
@@ -14,28 +13,40 @@ from django.core.exceptions import ValidationError
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class CustomUserAdmin(UserAdmin):
-    list_display = ('email', 'first_name', 'last_name', 'username', 'add_info', 'phone_number', 'display_groups')
+    # Pola wyświetlane na liście użytkowników w panelu administracyjnym
+    list_display = ('email', 'first_name', 'last_name', 'username', 'display_groups', 'phone_number', 'subject', 'level', 'points', 'referral_code')
     list_display_links = ('email',)
-    list_editable = ('phone_number', 'add_info')
+    list_editable = ('phone_number', 'points')  # Umożliwiamy edytowanie pola 'phone_number'
 
+    # Metoda do wyświetlania grup użytkownika w panelu
     def display_groups(self, obj):
         return ", ".join([group.name for group in obj.groups.all()])
-
     display_groups.short_description = 'Groups'
 
+    # Sekcje na formularzu edycji użytkownika w panelu administracyjnym
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Personal info',
-         {'fields': ('first_name', 'last_name', 'username', 'add_info', 'phone_number', 'avatar', 'bio', 'interests')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'phone_number', 'avatar', 'bio', 'interests', 'subject', 'level')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 
-    def display_groups(self, obj):
-        return ", ".join([group.name for group in obj.groups.all()])
+    # Opcje formularza edycji użytkownika
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2'),
+        }),
+        ('Personal info', {
+            'classes': ('wide',),
+            'fields': ('first_name', 'last_name', 'username', 'phone_number', 'subject', 'level'),
+        }),
+    )
 
-    display_groups.short_description = 'Groups'
+    def referral_code(self, obj):
+        return obj.referral_code
 
+    referral_code.short_description = 'Referral Code'
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class PlatformMessageAdmin(admin.ModelAdmin):
@@ -71,8 +82,7 @@ class LessonStatsAdmin(admin.ModelAdmin):
         'break_lessons', 'all_break_lessons',
         'missed_lessons', 'all_missed_lessons',
         'all_lessons', 'all_lessons_intermediate',
-        'month_earnings',
-        'all_earnings',
+        'month_bonus', 'all_bonus', 'month_earnings', 'all_earnings',
     ]
 
     readonly_fields = ('month_earnings', 'all_earnings')
@@ -310,8 +320,6 @@ admin.site.register(PlatformMessage, PlatformMessageAdmin)
 admin.site.register(Availability, AvailabilityAdmin)
 admin.site.register(LessonCorrection, LessonCorrectionAdmin)
 admin.site.register(User, CustomUserAdmin)
-admin.site.register(NewStudent)
-admin.site.register(NewTeacher)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Topic)
 admin.site.register(Message, MessageAdmin)

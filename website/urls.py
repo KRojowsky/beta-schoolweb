@@ -44,18 +44,14 @@ urlpatterns = [
     path('aktywnosc/', views.activityPage, name="activity"),
 
     # TUTORING ZONE
-    path('zaczynaj/', views.lessonsHome, name="lessons-home"),
-
-    path('uczen-zgloszenie/', views.newStudent, name='newStudent'),
-    path('uczen-rejestracja/', views.applyStudent, name="applyStudent"),
-
-    path('korepetytor-zgloszenie/', views.newTeacher, name='newTeacher'),
-    path('korepetytor-rejestracja/', views.applyTeacher, name="applyTeacher"),
+    path('rejestracja-strefa-korepetycji/', views.applyUser, name="applyUser"),
+    path('dolacz-strefa-korepetycji', views.WriterToTutoringZone, name="WriterToTutoringZone"),
 
     path('tworzenie-konta/', views.coursesLoader, name="coursesLoader"),
 
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
     path('strefa-korepetycji-uczen/', views.studentPage, name="studentPage"),
+
 
     path('profil-strefa-korepetycji/<str:pk>/', views.lessonProfile, name="lesson-profile"),
     path('informacje-bankowe/', views.bankInformation, name='bank_information'),

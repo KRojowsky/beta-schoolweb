@@ -491,11 +491,12 @@ a {
     box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
-.roomListRoom__header__container {
+.roomListRoom__topic-container {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #000;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
 }
 
 .roomListRoom__header {
@@ -552,6 +553,24 @@ a {
     color: #696969;
     background: #F0F0F0;
     border: 1px solid #DBDBDB;
+}
+
+.roomListRoom__points {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 15px;
+    color: #696969;
+    font-weight: 500;
+    padding: 3px;
+}
+
+.star-icon {
+    width: 16px;
+    height: 16px;
+    fill: gold;
+    vertical-align: middle;
+    margin-top:-3px;
 }
 
 .roomListRoom__content {
@@ -953,6 +972,15 @@ a {
     justify-content: space-between;
 }
 
+.thread__points {
+    font-size: 14px;
+}
+
+.star-icon {
+    fill: gold !important;
+    margin-top:-6px;
+}
+
 .thread__top svg {
     fill: #696969;
 }
@@ -1275,7 +1303,7 @@ a {
 
 .layout__box {
     width: 100%;
-    max-width: 500px;
+    max-width: 650px;
     margin: 0 auto;
     background: #FFF;
     border-radius: 10px;
@@ -1510,6 +1538,25 @@ a {
         width: 100%;
         margin: 10px 0;
     }
+}
+
+.profile__points-container {
+    display: flex;
+    align-items: center;
+}
+
+.star-icon {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0; /* Zapewnia, że gwiazdka nie będzie zmieniała swojego rozmiaru */
+}
+
+
+.profile__bonus, .profile__points {
+    font-size: 24px;
+    color: #FF9900;
+    margin-left: 10px;
+    font-weight:900;
 }
 
 .profile__about {

@@ -23,6 +23,19 @@
           {% endif %}
         </div>
         <div class="profile__about">
+          <h3>Punkty</h3>
+          <div class="profile__points">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill='gold' class="star-icon">
+                  <path d="M12 .587l3.668 7.568L24 9.764l-6 5.847L19.336 24 12 19.941 4.664 24 6 15.611 0 9.764l8.332-1.609L12 .587z"/>
+              </svg>
+              {{ user.points }} pkt.
+          </div>
+          {% if request.user == user %}
+          <span>Punkty możesz wymienić na bonusy dołączając do Strefy Korepetycji.</span>
+          {% endif %}
+        </div>
+
+        <div class="profile__about">
           <h3>O mnie</h3>
           <p>{{user.bio}}</p>
         </div>

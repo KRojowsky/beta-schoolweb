@@ -1,0 +1,76 @@
+{% extends 'base-tutoring-zone.html' %}
+
+{% block navbar %}
+  {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<main class="auth layout">
+  <div class="container">
+    <div class="layout__box">
+      <div class="layout__boxHeader">
+        <div class="layout__boxTitle">
+          <h3 id="form-title">Uzupełnij brakujące dane</h3>
+        </div>
+      </div>
+      <div class="layout__body">
+        <h2 class="auth__tagline" id="form-tagline">
+          Wybierz, czy chcesz zostać korepetytorem, czy uczniem, oraz uzupełnij brakujące dane, aby móc korzystać ze <i>Strefy Korepetycji</i>.
+        </h2>
+
+        <form class="form" method="POST">
+          {% csrf_token %}
+
+          <!-- User Type -->
+          <div class="form__group">
+            <label for="{{ form.user_type.id_for_label }}">{{ form.user_type.label }}</label>
+            {{ form.user_type }}
+            {% if form.user_type.errors %}
+              <div class="form__error">{{ form.user_type.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Phone Number -->
+          <div class="form__group">
+            <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
+            {{ form.phone_number }}
+            {% if form.phone_number.errors %}
+              <div class="form__error">{{ form.phone_number.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Subject -->
+          <div class="form__group">
+            <label for="{{ form.subject.id_for_label }}">{{ form.subject.label }}</label>
+            {{ form.subject }}
+            {% if form.subject.errors %}
+              <div class="form__error">{{ form.subject.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Level -->
+          <div class="form__group">
+            <label for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
+            {{ form.level }}
+            {% if form.level.errors %}
+              <div class="form__error">{{ form.level.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Submit Button -->
+          <div class="container">
+            <div class="center-button">
+              <button class="btn btn--link" type="submit">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                  <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 12v-2c0-4.418 3.582-8 8-8s8 3.582 8 8v2h-16zM26 30h-20v-16h20v16z"></path>
+                </svg>
+                <span>Zapisz</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

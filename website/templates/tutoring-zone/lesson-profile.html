@@ -30,6 +30,27 @@
             <a href="{% url 'schoolweb:earnings_pdf' %}" class="btn btn--main btn--pill">Plik PDF z dochodami</a>
           {% endif %}
         </div>
+
+        <div class="profile__about">
+            <h3>Punkty w tym miesiącu</h3>
+            <div class="profile__points-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gold" class="star-icon">
+                    <path d="M12 .587l3.668 7.568L24 9.764l-6 5.847L19.336 24 12 19.941 4.664 24 6 15.611 0 9.764l8.332-1.609L12 .587z"/>
+                </svg>
+                <div class="profile__points">{{ user.points }} pkt.</div>
+            </div>
+        </div>
+
+        {% if request.user == user and is_teacher %}
+            <div class="profile__about">
+                <h3>Twój obecny miesięczny bonus:</h3>
+                <div class="profile__bonus">
+                    {{ user.lesson_stats.month_bonus }} zł
+                </div>
+               <span>Ta sekcja NIE będzie widoczna przez ucznia</span>
+            </div>
+        {% endif %}
+
         <div class="profile__about">
           <h3>O mnie</h3>
           <p>{{user.bio}}</p>
@@ -78,6 +99,14 @@
           </div>
         </div>
         {% endif %}
+
+       <div class="profile__about">
+          <h3>Kod poleceń</h3>
+          <p>{{ user.referral_code }}</p>
+          {% if request.user == user %}
+          <span>Ta sekcja NIE będzie widoczna przez nikogo</span>
+          {% endif %}
+      </div>
 
       {% if request.user == user %}
       <div class="profile__about">
@@ -141,93 +170,120 @@
 <script>
   var monthEarnings = {{ month_earnings }};
   var allEarnings = {{ all_earnings }};
+  var monthBonus = {{ lesson_stats.month_bonus }};  // Bonus miesięczny
+  var allBonus = {{ lesson_stats.all_bonus }};  // Bonus ogólny
+
+  // Obliczanie ilości bonusów
+  var monthBonusQuantity = monthBonus / 50;  // Ilość bonusów na miesiąc
+  var allBonusQuantity = allBonus / 50;  // Ilość bonusów ogólnych
 
   var monthEarningsChart = new Chart(document.getElementById('monthEarningsChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Miesiąc'],
-    datasets: [{
-      label: 'Miesięczne Przychody',
-      data: [monthEarnings],
-      backgroundColor: 'rgba(46, 204, 113, 0.5)',
-    }],
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 5000,
-        ticks: {
-          callback: function (value, index, values) {
-            return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+    type: 'bar',
+    data: {
+      labels: ['Miesiąc'],
+      datasets: [{
+        label: 'Miesięczne Przychody',
+        data: [monthEarnings],
+        backgroundColor: 'rgba(46, 204, 113, 0.5)',
+      }],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5000,
+          ticks: {
+            callback: function (value, index, values) {
+              return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+            },
           },
         },
       },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            var label = context.dataset.label || '';
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              var totalLessons = {{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }};
+              var tooltipText = label + context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
 
-            if (label) {
-              label += ': ';
+              return tooltipText;
+            },
+            afterLabel: function (context) {
+              // Używamy afterLabel, aby dodać dodatkowe informacje poniżej wartości
+              var bonusText = 'Bonus: ' + monthBonusQuantity + ' (Miesięczny bonus: ' + monthBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ')';
+              var lessonsInfo = 'Przeprowadzonych lekcji: ' + ({{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }}) +
+                ' | Opuszczonych lekcji przez ucznia: {{ lesson_stats.break_lessons }} | Opuszczonych lekcji przez nauczyciela: {{ lesson_stats.missed_lessons }}';
+
+              return [bonusText, lessonsInfo];
             }
-            var totalLessons = {{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }};
-            label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessons + ' - przeprowadzonych ' + {{lesson_stats.break_lessons}} + ' - opuszczonych przez ucznia ' + {{lesson_stats.missed_lessons}} + ' - opuszczonych przez korepetytora)';
-            return label;
           },
+          displayColors: false,  // Wyłącza kolorowanie elementów w tooltipie
+          bodyFont: { size: 14 }, // Dostosowanie czcionki w tooltipie
         },
       },
     },
-  },
-});
+  });
 
-var allEarningsChart = new Chart(document.getElementById('allEarningsChart'), {
-  type: 'bar',
-  data: {
-    labels: ['Ogólnie'],
-    datasets: [{
-      label: 'Ogólne Przychody',
-      data: [allEarnings],
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    }],
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true,
-        max: 10000,
-        ticks: {
-          callback: function (value, index, values) {
-            return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+  var allEarningsChart = new Chart(document.getElementById('allEarningsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Ogólnie'],
+      datasets: [{
+        label: 'Ogólne Przychody',
+        data: [allEarnings],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      }],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 10000,
+          ticks: {
+            callback: function (value, index, values) {
+              return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+            },
           },
         },
       },
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        callbacks: {
-          label: function (context) {
-            var label = context.dataset.label || '';
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              var totalLessonsMonth = {{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }};
+              var tooltipText = label + context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
 
-            if (label) {
-              label += ': ';
+              return tooltipText;
+            },
+            afterLabel: function (context) {
+              // Używamy afterLabel, aby dodać dodatkowe informacje poniżej wartości
+              var bonusText = 'Bonus: ' + allBonusQuantity + ' (Ogólny bonus: ' + allBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ')';
+              var lessonsInfo = 'Przeprowadzonych lekcji: ' + ({{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }}) +
+                ' | Opuszczonych lekcji przez ucznia: {{ lesson_stats.all_break_lessons }} | Opuszczonych lekcji przez nauczyciela: {{ lesson_stats.all_missed_lessons }}';
+
+              return [bonusText, lessonsInfo];
             }
-          var totalLessonsMonth = {{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }};
-          label += context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' }) + ' (' + totalLessonsMonth  + ' - przeprowadzonych ' + {{lesson_stats.all_break_lessons}} + ' - opuszczonych przez ucznia ' + {{lesson_stats.all_missed_lessons}} + ' - opuszczonych przez korepetytora)';
-          return label;
           },
+          displayColors: false,  // Wyłącza kolorowanie elementów w tooltipie
+          bodyFont: { size: 14 }, // Dostosowanie czcionki w tooltipie
         },
       },
     },
-  },
-});
+  });
 </script>
+
 {% endblock content %}
