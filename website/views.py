@@ -504,14 +504,44 @@ def applyUser(request):
     if request.method == 'POST':
         form = ApplyUserForm(request.POST)
         if form.is_valid():
-            # Zapisz użytkownika bez commitowania
             user = form.save(commit=False)
             user.phone_number = form.cleaned_data.get('phone_number')
             user.subject = form.cleaned_data.get('subject')
-            user.level = form.cleaned_data.get('level')  # Upewnij się, że level jest zapisywany
+            user.level = form.cleaned_data.get('level')
+
+            referral_code_input = form.cleaned_data.get('referral_code_input')
+            role = form.cleaned_data.get('role')
+
+            # Obsługa kodu polecenia
+            if referral_code_input:
+                referred_user = User.objects.filter(referral_code=referral_code_input).first()
+
+                if referred_user:
+                    if role == 'student' and referred_user.groups.filter(name="Students").exists():
+                        user.referred_by = referral_code_input
+                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                        if user.level == "Podstawa":
+                            lesson_stats.lessons += 1
+                        elif user.level == "Rozszerzenie":
+                            lesson_stats.lessons_intermediate += 1
+                        lesson_stats.save()
+                    elif role == 'teacher' and referred_user.groups.filter(name="Teachers").exists():
+                        user.referred_by = referral_code_input
+                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                        lesson_stats.month_referral_bonus += 50  # Dodanie do miesięcznego bonusu
+                        lesson_stats.all_referral_bonus += 50  # Dodanie do całkowitego bonusu
+                        lesson_stats.save()
+                    else:
+                        form.add_error(
+                            'referral_code_input',
+                            'Kod polecenia jest nieprawidłowy lub należy do użytkownika spoza wymaganej grupy.'
+                        )
+                        return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
+
+            # Zapisanie użytkownika
             user.save()
 
-            # Logowanie
+            # Logowanie użytkownika
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             user = authenticate(request, username=email, password=password)
@@ -519,21 +549,19 @@ def applyUser(request):
             if user is not None:
                 login(request, user)
 
-                # Dodaj do grupy w zależności od roli
-                role = form.cleaned_data.get('role')
+                # Dodanie użytkownika do odpowiedniej grupy
                 group_name = 'NewStudents' if role == 'student' else 'NewTeachers'
                 try:
                     group = Group.objects.get(name=group_name)
                     user.groups.add(group)
                 except Group.DoesNotExist:
-                    form.add_error(None, 'Nie znaleziono odpowiedniej grupy')
+                    form.add_error(None, 'Nie znaleziono odpowiedniej grupy.')
                     return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
 
-                # Przekierowanie
                 return redirect('schoolweb:coursesLoader')
 
             else:
-                form.add_error(None, 'Błąd logowania, sprawdź dane')
+                form.add_error(None, 'Błąd logowania, sprawdź dane.')
 
     else:
         form = ApplyUserForm()

@@ -116,6 +116,16 @@
             {% endif %}
           </div>
 
+          <div class="form__group">
+              <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
+              {{ form.referral_code_input }}
+              {% if form.referral_code_input.errors %}
+                  <div class="form__error">
+                      {{ form.referral_code_input.errors }}
+                  </div>
+              {% endif %}
+          </div>
+
           <!-- Password Field 1 -->
           <div class="form__group">
             <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>

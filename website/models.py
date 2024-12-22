@@ -59,6 +59,7 @@ class User(AbstractUser):
     )
 
     referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)  # New field
+    referred_by = models.CharField(max_length=10, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -96,6 +97,9 @@ class LessonStats(models.Model):
     month_bonus = models.IntegerField(default=0)
     all_bonus = models.IntegerField(default=0)
 
+    month_referral_bonus = models.IntegerField(default=0)
+    all_referral_bonus = models.IntegerField(default=0)
+
     def update_all_lessons(self):
         try:
             original_instance = LessonStats.objects.get(pk=self.pk)
@@ -117,7 +121,7 @@ class LessonStats(models.Model):
                 40 * self.lessons +
                 20 * self.break_lessons -
                 50 * self.missed_lessons +
-                self.month_bonus
+                self.month_bonus + self.month_referral_bonus
             )
         return -1
 
@@ -129,7 +133,7 @@ class LessonStats(models.Model):
                 40 * self.all_lessons +
                 20 * self.all_break_lessons -
                 50 * self.all_missed_lessons +
-                self.all_bonus
+                self.all_bonus + self.all_referral_bonus
             )
         return -1
 

@@ -14,7 +14,8 @@ from django.core.exceptions import ValidationError
 
 class CustomUserAdmin(UserAdmin):
     # Pola wyświetlane na liście użytkowników w panelu administracyjnym
-    list_display = ('email', 'first_name', 'last_name', 'username', 'display_groups', 'phone_number', 'subject', 'level', 'points', 'referral_code')
+    list_display = ('email', 'first_name', 'last_name', 'username', 'display_groups', 'phone_number', 'subject',
+                    'level', 'points', 'referral_code', 'referred_by')
     list_display_links = ('email',)
     list_editable = ('phone_number', 'points')  # Umożliwiamy edytowanie pola 'phone_number'
 
@@ -82,7 +83,7 @@ class LessonStatsAdmin(admin.ModelAdmin):
         'break_lessons', 'all_break_lessons',
         'missed_lessons', 'all_missed_lessons',
         'all_lessons', 'all_lessons_intermediate',
-        'month_bonus', 'all_bonus', 'month_earnings', 'all_earnings',
+        'month_bonus', 'all_bonus', 'month_referral_bonus', 'all_referral_bonus', 'month_earnings', 'all_earnings',
     ]
 
     readonly_fields = ('month_earnings', 'all_earnings')

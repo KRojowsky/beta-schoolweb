@@ -151,11 +151,17 @@ class ApplyUserForm(UserCreationForm):
     level = forms.ChoiceField(choices=User.LEVEL_CHOICES, required=True, label="Poziom zajęć", initial="podstawa")
     terms_and_privacy = forms.BooleanField(required=True, label="Akceptuję regulamin i politykę prywatności")
     age_confirmation = forms.BooleanField(required=True, label="Potwierdzam ukończenie 18 lat")
+    referral_code_input = forms.CharField(
+        max_length=10,
+        required=False,
+        label="Kod polecenia",
+        help_text="Jeśli masz kod polecenia, wpisz go tutaj. Uczniowie muszą podać kod innego ucznia, nauczyciele - kod innego nauczyciela."
+    )
 
     class Meta:
         model = User
         fields = ['role', 'first_name', 'last_name', 'username', 'email', 'phone_number', 'subject', 'level',
-                  'password1', 'password2']
+                  'referral_code_input', 'password1', 'password2']
 
 
 class LessonFeedbackForm(forms.ModelForm):
