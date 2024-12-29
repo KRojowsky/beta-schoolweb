@@ -402,6 +402,47 @@ a {
     }
 }
 
+.notification {
+  position: relative;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Warning notification styles */
+.notification.notification--warning {
+  border-color: #ffc107;
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* Success notification styles */
+.notification.notification--success {
+  border-color: #28a745;
+  background-color: #d4edda;
+  color: #155724;
+}
+
+/* Close button styles */
+.notification__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  line-height: 20px;
+  cursor: pointer;
+  color: inherit;
+}
+
+.notification__close:hover {
+  color: #000;
+}
+
 .roomList__header {
     display: flex;
     justify-content: space-between;
@@ -421,6 +462,31 @@ a {
     font-size: 13px;
 }
 
+/* Styl dla formularza filtracji */
+.level-label {
+    font-size: 14px;
+    font-weight: bold;
+    display: inline-block;
+    color: #333;
+}
+
+.level-select {
+    padding: 6px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    width: 150px;
+    max-width: 100%;
+    transition: border-color 0.3s ease;
+    margin-bottom:10px;
+}
+
+.level-select:focus {
+    border-color: #BB00FF;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TOPICS-COMPONENT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .topics a{
@@ -726,6 +792,70 @@ a {
     word-wrap: break-word;
 }
 
+.students-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-top: 50px;
+    align-items: center;
+}
+
+.student-card {
+    position: relative;
+    background: #FFF;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+    width: 100%;
+    max-width: 900px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.student-avatar img {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+}
+
+.student-info {
+    margin-bottom:20px;
+}
+
+.student-info h2 {
+    font-size: 1.4em;
+    color: #333;
+    margin-top: 30px;
+}
+
+.student-info p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.student-card__badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #4caf50;
+    color: #ffffff;
+    font-size: 0.9em;
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.student-card__action {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BUTTONS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .btn {
@@ -978,7 +1108,7 @@ a {
 
 .star-icon {
     fill: gold !important;
-    margin-top:-6px;
+    margin-top:-4px;
 }
 
 .thread__top svg {
@@ -1545,10 +1675,16 @@ a {
     align-items: center;
 }
 
-.star-icon {
+.profile__points-container svg, .profile__points svg{
     width: 24px;
     height: 24px;
-    flex-shrink: 0; /* Zapewnia, że gwiazdka nie będzie zmieniała swojego rozmiaru */
+    flex-shrink: 0;
+}
+
+.star-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
 }
 
 

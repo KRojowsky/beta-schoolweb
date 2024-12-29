@@ -48,7 +48,7 @@
             <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}">
                 <div>
                     <img src="{% static 'img/icons/5.svg' %}"/>
-                    {{course.student}}
+                    {{course.name}}
                 </div>
                 <span>{{course.lesson_set.all.count}}</span>
             </a>

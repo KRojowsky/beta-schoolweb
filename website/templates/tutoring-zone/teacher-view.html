@@ -43,6 +43,9 @@
           Utwórz lekcję
         </a>
       </div>
+      <a class="btn btn--main" style="margin-bottom:10px;" href="{% url 'schoolweb:new_students' %}" title="Zdobądź ucznia">
+            Zdobądź ucznia
+      </a>
        {% if courses.count == 0 %}
         <div class="no-courses-info">
           <h2 class="welcome-title">Witaj w SchoolWeb!</h2>

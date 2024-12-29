@@ -28,11 +28,32 @@
           <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-lesson' %}">Ostatnie aktywności</a>
         </div>
       </div>
+
+      {% if new_student %}
+        {% if not new_student.is_selected %}
+          <div id="notification" class="notification notification--warning">
+            <button class="notification__close" onclick="closeNotification()">×</button>
+            <h3>Trwa szukanie korepetytora</h3>
+            <p>Prosimy o cierpliwość, obecnie szukamy dla Ciebie odpowiedniego korepetytora. Powiadomimy Cię, gdy proces zostanie zakończony.</p>
+          </div>
+        {% else %}
+          <div id="notification-success" class="notification notification--success">
+            <button class="notification__close" onclick="closeNotification('notification-success')">×</button>
+            <h3>Znaleziono korepetytora</h3>
+            <p>Twój korepetytor został już przypisany i utworzono kurs, na którym możesz umawiać się na zajęcia.</p>
+          </div>
+        {% endif %}
+      {% endif %}
+
       <div class="roomList__header">
         <div>
           <h2>Twoje lekcje</h2>
           <p>{{post_count}} lekcji w tym kursie</p>
         </div>
+
+        <a class="btn btn--main" href="{% url 'schoolweb:find_tutor' %}" title="Znajdź korepetycje">
+          Znajdź korepetycje
+        </a>
       </div>
 
       {% if courses.count == 0 %}
@@ -83,4 +104,14 @@
     {% include 'tutoring-zone/activity-component-lessons.html' %}
   </div>
 </main>
+
+<script>
+ function closeNotification(notificationId = 'notification') {
+  const notification = document.getElementById(notificationId);
+  if (notification) {
+    notification.style.display = 'none';
+  }
+}
+
+</script>
 {% endblock %}

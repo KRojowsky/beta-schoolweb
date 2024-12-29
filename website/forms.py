@@ -1,5 +1,6 @@
 from django.forms import ModelForm, ImageField
-from .models import (Room, Lesson, User, Topic, Message, Course, LessonCorrection, Resign, Availability, Report, BankInformation)
+from .models import (Room, Lesson, User, Topic, Message, Course, LessonCorrection, Resign, Availability, Report,
+                     BankInformation, NewStudents)
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -28,13 +29,14 @@ class MyUserCreationForm(UserCreationForm):
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
-class RoomForm(ModelForm):
+class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = '__all__'
         exclude = ['host', 'participants']
 
-    image = ImageField(required=False)
+    # Dodane pole wyboru poziomu
+    level = forms.ChoiceField(choices=Room.LEVEL_CHOICES, widget=forms.Select, required=True)
 
 
 class ReportForm(forms.ModelForm):
@@ -79,6 +81,8 @@ class PostFormCreate(forms.ModelForm):
 
         if user:
             self.fields['course'].queryset = Course.objects.filter(teacher=user)
+            # Nadpisz pole 'course' aby wyświetlało 'name' kursu
+            self.fields['course'].label_from_instance = lambda obj: f"{obj.name}"  # Wyświetlanie nazwy kursu
 
     def clean_event_datetime(self):
         event_datetime = self.cleaned_data['event_datetime']
@@ -113,6 +117,16 @@ class PostFormEdit(forms.ModelForm):
             raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
 
         return event_datetime
+
+
+class NewStudentForm(forms.ModelForm):
+    class Meta:
+        model = NewStudents
+        fields = ['subject', 'level']
+        widgets = {
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'level': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 
 class RoomMessageForm(forms.ModelForm):

@@ -80,6 +80,29 @@ class User(AbstractUser):
         return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
 
 
+class NewStudents(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Użytkownik")
+    email = models.EmailField(unique=True, null=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    subject = models.ForeignKey(
+        'Topic', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Przedmiot"
+    )
+    level = models.CharField(
+        max_length=50,
+        choices=[('Podstawa', 'Podstawa'), ('Rozszerzenie', 'Rozszerzenie')],
+        verbose_name="Poziom"
+    )
+    is_selected = models.BooleanField(default=False, verbose_name="Czy wybrany?")
+    is_new = models.BooleanField(default=True, verbose_name="Czy nowy?")
+
+    # Nowe pole, które przechowuje przypisane kursy
+    courses = models.ManyToManyField('Course', blank=True, related_name='students_in_course', verbose_name="Kursy")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.subject})"
+
+
 class LessonStats(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="lesson_stats")
     lessons = models.IntegerField(default=0)
@@ -188,6 +211,11 @@ class TeachersEarning(models.Model):
 
 
 class Room(models.Model):
+    LEVEL_CHOICES = [
+        ('basic', 'Podstawowy'),
+        ('advanced', 'Rozszerzony'),
+    ]
+
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='hosted_rooms')
     topic = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True)
     name = models.CharField(max_length=200)
@@ -197,6 +225,7 @@ class Room(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='room-images/', null=True, blank=True)
     likes = models.ManyToManyField(User, related_name='liked_rooms', blank=True)
+    level = models.CharField(max_length=10, choices=LEVEL_CHOICES, default='basic')  # Dodane pole
 
     class Meta:
         ordering = ['-created', '-updated']
@@ -304,7 +333,7 @@ class Course(models.Model):
     name = models.CharField(max_length=200)
     student = models.CharField(max_length=200, default="")
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
-    students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)
+    students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)  # Uczniowie przypisani do kursu
     courseCreated = models.DateTimeField(auto_now_add=True)
     course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES, default='basic')
 

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import (Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, LessonCorrection,
-                     Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation, TeachersEarning)
+                     Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation,
+                     TeachersEarning, NewStudents)
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
@@ -293,6 +294,26 @@ class CourseAdmin(admin.ModelAdmin):
 class BankInformationAdmin(admin.ModelAdmin):
     list_display = ('user', 'card_number', 'cvv', 'cardholder_name', 'expiration_date')
 
+
+class NewStudentsAdmin(admin.ModelAdmin):
+    list_display = ('first_name', 'last_name', 'subject', 'level', 'is_selected', 'get_courses')
+
+    # Dodajemy metodę, żeby wyświetlić kursy przypisane do ucznia
+    def get_courses(self, obj):
+        return ", ".join([course.name for course in obj.courses.all()])
+
+    get_courses.short_description = 'Kursy'
+
+
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('name', 'teacher', 'course_type', 'courseCreated', 'get_students')
+
+    # Dodajemy metodę, żeby wyświetlić uczniów przypisanych do kursu
+    def get_students(self, obj):
+        return ", ".join([str(student) for student in obj.students.all()])
+
+    get_students.short_description = 'Uczniowie'
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class ContentBlockInline(admin.TabularInline):
@@ -332,3 +353,4 @@ admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
 admin.site.register(Resign, ResignationAdmin)
 admin.site.register(BankInformation, BankInformationAdmin)
+admin.site.register(NewStudents, NewStudentsAdmin)

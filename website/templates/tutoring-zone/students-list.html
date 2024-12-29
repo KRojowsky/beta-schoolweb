@@ -1,0 +1,53 @@
+{% extends 'base-tutoring-zone.html' %}
+{% load static %}
+
+{% block navbar %}
+  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% endblock navbar %}
+
+{% block content %}
+<main class="layout">
+  <div class="layout__boxHeader">
+    <div class="layout__boxTitle">
+        <a href="javascript:window.history.back()">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <title>Cofnij</title>
+                <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
+                1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
+                </path>
+            </svg>
+        </a>
+      <h3>Lista nowych uczniów</h3>
+    </div>
+  </div>
+  <div class="layout__body">
+    {% if students %}
+      <div class="students-list">
+        {% for student in students %}
+        <div class="student-card">
+          {% if student.is_new %}
+          <div class="student-card__badge">Nowy uczeń</div>
+          {% endif %}
+          <div class="student-avatar">
+            <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie posta" class="student-avatar">
+          </div>
+          <div class="student-info">
+            <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+            <p><strong>Przedmiot:</strong> {{ student.subject }}</p>
+            <p><strong>Poziom:</strong> {{ student.level }}</p>
+            <p><strong>Kod polecenia:</strong> {{ student.referred_by|default:"Brak" }}</p>
+          </div>
+          <form method="POST" action="{% url 'schoolweb:new_students' %}">
+            {% csrf_token %}
+            <input type="hidden" name="student_id" value="{{ student.id }}">
+            <button type="submit" class="student-card__action btn btn--main">Zostań korepetytorem</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Brak nowych uczniów do wyświetlenia.</p>
+    {% endif %}
+  </div>
+</main>
+{% endblock content %}

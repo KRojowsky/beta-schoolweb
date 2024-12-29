@@ -48,6 +48,7 @@ urlpatterns = [
     path('dolacz-strefa-korepetycji', views.WriterToTutoringZone, name="WriterToTutoringZone"),
 
     path('tworzenie-konta/', views.coursesLoader, name="coursesLoader"),
+    path('zdobadz-ucznia/', views.newStudent, name='new_students'),
 
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
     path('strefa-korepetycji-uczen/', views.studentPage, name="studentPage"),
@@ -61,6 +62,7 @@ urlpatterns = [
     path('kursy-korepetytor/', views.courses_teachersPage, name="courses-teachers"),
 
     path('utworz-lekcje/', views.createLesson, name='create-lesson'),
+    path('znajdz-korepetycje/', views.findTutor, name='find_tutor'),
     path('aktywnosci-strefa-korepetycji/', views.activity_lessonPage, name="activity-lesson"),
 
     path('lekcja/<str:pk>/', views.lesson, name="lesson"),
