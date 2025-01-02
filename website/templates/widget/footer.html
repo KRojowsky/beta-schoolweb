@@ -3,22 +3,25 @@
         <div class="footer-column">
             <h4>Obsługa klienta</h4>
             <ul>
-                <li><a href="{% url 'schoolweb:faq' %}">FAQ</a></li>
-                <li><a href="{% url 'schoolweb:contact' %}">Skontaktuj się z nami</a></li>
+                <li><a href="{% url 'schoolweb:faq' %}" title="Przeczytaj najczęściej zadawane pytania">FAQ</a></li>
+                <li><a href="{% url 'schoolweb:contact' %}" title="Skontaktuj się z nami">Skontaktuj się z nami</a></li>
             </ul>
         </div>
+
         <div class="footer-column">
             <h4>Informacje</h4>
             <ul>
-                <li><a href="{% url 'schoolweb:statute' %}">Regulamin</a></li>
-                <li><a href="#">Polityka prywatności</a></li>
+                <li><a href="{% url 'schoolweb:statute' %}" title="Zobacz nasz regulamin">Regulamin</a></li>
+                <li><a href="#" title="Przeczytaj naszą politykę prywatności">Polityka prywatności</a></li>
             </ul>
         </div>
+
         <div class="footer-column">
             <h4>Znajdź nas</h4>
-            <a href="https://www.facebook.com/profile.php?id=61553842207855" target="_blank" class="fa fa-facebook"></a>
-            <a href="https://www.instagram.com/schoolweb_polska/" target="_blank" class="fa fa-instagram"></a>
+            <a href="https://www.facebook.com/profile.php?id=61553842207855" target="_blank" class="fa fa-facebook" aria-label="Facebook"></a>
+            <a href="https://www.instagram.com/schoolweb_polska/" target="_blank" class="fa fa-instagram" aria-label="Instagram"></a>
         </div>
     </div>
+
     <p>&copy; 2024 SchoolWeb. Wszelkie prawa zastrzeżone.</p>
 </footer>

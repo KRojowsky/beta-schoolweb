@@ -35,7 +35,6 @@
             <h2>{{ student.first_name }} {{ student.last_name }}</h2>
             <p><strong>Przedmiot:</strong> {{ student.subject }}</p>
             <p><strong>Poziom:</strong> {{ student.level }}</p>
-            <p><strong>Kod polecenia:</strong> {{ student.referred_by|default:"Brak" }}</p>
           </div>
           <form method="POST" action="{% url 'schoolweb:new_students' %}">
             {% csrf_token %}

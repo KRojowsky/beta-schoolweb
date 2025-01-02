@@ -203,6 +203,12 @@
                 </div>
 
                 <div class="likes-container">
+                    <div class="likes-info">
+                        <img src="{% static 'img/filled.png' %}" class="heart-icon">
+                        <span class="likes-count" data-message-id="{{ message.id }}" onclick="showLikedUsers('{{ message.id }}')">
+                            {{ message.likes.count }}
+                        </span>
+                    </div>
                     {% if request.user.is_authenticated %}
                         <button class="like-button"
                                 data-message-id="{{ message.id }}"
@@ -211,9 +217,6 @@
                             <i class="fa fa-thumbs-up"></i> Lubię to!
                         </button>
                     {% endif %}
-                    <span class="likes-count" data-message-id="{{ message.id }}" onclick="showLikedUsers('{{ message.id }}')">
-                        {{ message.likes.count }}
-                    </span>
                 </div>
               </div>
               {% endfor %}
@@ -418,32 +421,32 @@ document.addEventListener('DOMContentLoaded', function () {
     likeButtons.forEach(button => {
       button.addEventListener('click', async function () {
         const messageId = this.dataset.messageId;
-        const isLiked = this.dataset.liked === 'true';
+        const isLiked = this.dataset.liked === 'true';  // sprawdzenie, czy już polubiono
+        const likesCountElement = this.closest('.likes-container').querySelector('.likes-count'); // liczba polubień
 
         try {
           const response = await fetch(`/toggle-like/${messageId}/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-CSRFToken': '{{ csrf_token }}',
+              'X-CSRFToken': '{{ csrf_token }}',  // CSRF Token dla ochrony
             },
             credentials: 'same-origin',
           });
 
           if (response.ok) {
             const data = await response.json();
-            const likesCountElement = this.nextElementSibling;
 
-             if (isLiked) {
+            if (isLiked) {
               this.dataset.liked = 'false';
               this.innerHTML = '<i class="fa fa-thumbs-up"></i> Lubię to!';
               this.style.color = '';
-              likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
+              likesCountElement.textContent = data.likes_count; // zaktualizowana liczba polubień
             } else {
               this.dataset.liked = 'true';
               this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#BB00FF;"></i> Lubię to!';
               this.style.color = '#BB00FF';
-              likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
+              likesCountElement.textContent = data.likes_count; // zaktualizowana liczba polubień
             }
           } else {
             console.error('Failed to toggle like');

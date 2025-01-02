@@ -1,9 +1,12 @@
 document.querySelector('.chat-icon').addEventListener('click', function() {
     document.getElementById('chatPopup').style.display = 'block';
+    document.querySelector('#chatInput').focus();
 });
 
 function closeChatPopup() {
-    document.getElementById('chatPopup').style.display = 'none';
+    const chatPopup = document.getElementById('chatPopup');
+    chatPopup.style.display = 'none';
+    document.querySelector('.chat-icon').focus();
 }
 
 function addUserMessage(messageText) {
@@ -27,30 +30,41 @@ document.addEventListener('DOMContentLoaded', function() {
             checkUserMessage(messageText);
         }
     });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            closeChatPopup();
+        }
+    });
 });
+
+let cachedResponses = null;
+
+async function fetchResponses() {
+    if (!cachedResponses) {
+        const response = await fetch('/website/static/json/responses.json');
+        if (!response.ok) throw new Error('Wystąpiły problemy z siecią...');
+        cachedResponses = await response.json();
+    }
+    return cachedResponses;
+}
 
 async function checkUserMessage(messageText) {
     const normalizedMessage = normalizeText(messageText);
+
     try {
-        const response = await fetch('/website/static/json/responses.json');
-        if (!response.ok) throw new Error('Wystąpiły problemy z siecią...');
+        const data = await fetchResponses();
+        const normalizedQuestions = data.questions.map(item => ({
+            ...item,
+            question: item.question.map(normalizeText)
+        }));
 
-        const data = await response.json();
-        const { questions } = data;
-        let matchedQuestion = null;
-
-        questions.forEach(item => {
-            item.question.forEach(q => {
-                const normalizedQuestion = normalizeText(q);
-                if (normalizedMessage.includes(normalizedQuestion)) {
-                    matchedQuestion = item;
-                }
-            });
-        });
+        const matchedQuestion = normalizedQuestions.find(item =>
+            item.question.some(q => normalizedMessage.includes(q))
+        );
 
         if (matchedQuestion) {
-            const { answers } = matchedQuestion;
-            const randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+            const randomAnswer = matchedQuestion.answers[Math.floor(Math.random() * matchedQuestion.answers.length)];
             sendMessageFromBot(randomAnswer);
         } else {
             sendMessageFromBot("Niestety nie znam jeszcze odpowiedzi na to pytanie...&#x1F97A;");
@@ -90,7 +104,7 @@ function sendMessageFromBot(messageText) {
     messageDiv.className = 'message-bot';
     messageDiv.innerHTML = `
         <div class="chatbot-img-container">
-            <img src="${staticImagePath}" alt="ikona chatbota" class="chatbot-img">
+            <img src="${staticImagePath}" alt="ikona chatbota" class="chatbot-img" loading="lazy">
         </div>
         <div class="message-text">
             <p>${messageText}</p>

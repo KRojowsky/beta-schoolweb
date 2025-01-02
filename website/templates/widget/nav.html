@@ -1,6 +1,7 @@
 {% load static %}
 <nav>
     <div class="nav-container">
+        <!-- Link do strony głównej -->
         <a class="nav-brand" href="{% url 'schoolweb:home' %}" title="Wróć do strony głównej">
             <img src="{% static 'img/widget/logo.png' %}" alt="Logo SchoolWeb">
             <div class="nav-brand-name">
@@ -8,16 +9,22 @@
                 <span class="title-word title-word-2">Web</span>
             </div>
         </a>
+
+        <!-- Linki nawigacyjne -->
         <ul class="nav-links">
             <li><a href="{% url target_url %}" class="upper-btn" title="Korepetycje">STREFA KOREPETYCJI</a></li>
             <li><a href="{% url 'schoolweb:knowledge_zone' %}" class="upper-btn" title="Forum">STREFA WIEDZY</a></li>
         </ul>
+
+        <!-- Ikona hamburgera dla menu mobilnego -->
         <div class="hamburger-menu">
             <div class="bar"></div>
             <div class="bar"></div>
             <div class="bar"></div>
         </div>
     </div>
+
+    <!-- Dodatkowe opcje nawigacyjne -->
     <div class="additional-nav">
         <ul class="nav-links">
             <li><a href="{% url 'schoolweb:home' %}#jak-zaczac" class="nav-option">Jak zacząć?</a></li>
@@ -28,9 +35,7 @@
                 <a href="{% url 'schoolweb:blog-post-list' %}" class="nav-option">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil"
                          viewBox="0 0 16 16" role="img" aria-label="Blog icon">
-                        <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-9.646 9.646a.5.5 0 0
-                        1-.168.11l-4 1.5a.5.5 0 0 1-.651-.651l1.5-4a.5.5 0 0 1 .11-.168l9.646-9.646zM11.207 2L2
-                        11.207V14h2.793L14 4.793 11.207 2z"/>
+                        <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708l-9.646 9.646a.5.5 0 0 1-.168.11l-4 1.5a.5.5 0 0 1-.651-.651l1.5-4a.5.5 0 0 1 .11-.168l9.646-9.646zM11.207 2L2 11.207V14h2.793L14 4.793 11.207 2z"/>
                     </svg>
                     Blog
                 </a>
@@ -40,7 +45,6 @@
         </ul>
     </div>
 
-    <!-- Mobile Menu -->
     <div class="mobile-menu scroll">
         <ul>
             <li><a href="{% url target_url %}" class="upper-btn" title="Korepetycje">STREFA KOREPETYCJI</a></li>
@@ -49,8 +53,7 @@
             <li><a href="{% url 'schoolweb:home' %}#ceny">Ceny</a></li>
             <li><a href="{% url 'schoolweb:home' %}#opinie">Opinie</a></li>
             <li><a href="{% url 'schoolweb:become-tutor' %}">Zostań korepetytorem</a></li>
-            <li><a onclick="openModal()">SchoolWeb Store</a></li>
-            <li><a href="{% url 'schoolweb:blog-post-list' %}" class="nav-option">Blog</a></li>
+            <li><a href="{% url 'schoolweb:blog-post-list' %}">Blog</a></li>
             <li><a href="{% url 'schoolweb:subjects' %}">Przedmioty</a></li>
             <li><a href="{% url 'schoolweb:home' %}#kontakt">Kontakt</a></li>
         </ul>

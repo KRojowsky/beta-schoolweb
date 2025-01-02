@@ -9,12 +9,9 @@ z każdego miejsca na świecie.">
 {% block title %}SchoolWeb | Zostań korepetytorem{% endblock title %}
 
 {% block content %}
-<script src="{% static 'js/calculator.js' %}" defer></script>
-<script src="{% static 'js/faq.js' %}" defer></script>
-
 <div class="hero main-container">
     <div class="item">
-        <a href="{% url 'schoolweb:lessons-home' %}">
+        <a href="{% url target_url %}">
             <h2 class="sub-hero-heading small">Zostań korepetytorem</h2>
             <div class="image-container">
                 <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="Zostań korepetytorem">
@@ -35,7 +32,7 @@ z każdego miejsca na świecie.">
         <a href="#dlaczego-schoolweb">
             <h2 class="sub-hero-heading small">Dlaczego SchoolWeb?</h2>
             <div class="image-container">
-                <img src="{% static 'img/widget/logo.png' %}" alt="Dlaczego SchoolWeb?">
+                <img src="{% static 'img/widget/become_tutor_faq/tutor-6.png' %}" alt="Dlaczego SchoolWeb?">
             </div>
         </a>
     </div>
@@ -80,7 +77,7 @@ z każdego miejsca na świecie.">
                 to nie tylko miejsce nauki, to także przestrzeń, gdzie Twoje umiejętności mogą zabłysnąć,
                 a Twoja pasja do nauczania znaleźć pełne wyrazu.
             </p>
-            <a href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out center-link">ZOSTAŃ KOREPETYTOREM</a>
+            <a href="{% url target_url %}" class="hvr-buzz-out center-link">ZOSTAŃ KOREPETYTOREM</a>
         </div>
     </div>
 </section>
@@ -99,10 +96,10 @@ z każdego miejsca na świecie.">
             <div class="calculator-container">
                 <label for="lessonsPerWeek">Liczba zajęć tygodniowo:</label>
                 <input type="number" id="lessonsPerWeek" min="0" placeholder="Wpisz liczbę zajęć"/>
-                <button onclick="calculateEarnings()">Oblicz zarobki</button>
+                <button onclick="calculateEarnings()">Oblicz</button>
                 <p id="monthlyEarnings" class="result-text"></p>
-                <p id="benefits">*Nauczając przedmiotów na poziomie rozszerzonym zarobki są
-                    zdecydowanie wyższe.</p>
+                <p id="benefits"><i>*Nauczając przedmiotów na poziomie rozszerzonym zarobki są
+                    zdecydowanie wyższe.</i></p>
             </div>
         </div>
         <div class="sub-hero-image">
@@ -144,7 +141,7 @@ z każdego miejsca na świecie.">
                     wiedząc, że jesteś w bezpiecznym środowisku.
                 </li>
             </ul>
-            <a id="howtostart" href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
+            <a id="howtostart" href="{% url target_url %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
         </div>
     </div>
 </section>
@@ -218,7 +215,7 @@ z każdego miejsca na świecie.">
                     wsparcie administracji pozwolą Twoim umiejętnościom stale ewoluować.
                 </li>
             </ul>
-            <a href="{% url 'schoolweb:newTeacher' %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
+            <a href="{% url target_url %}" class="hvr-buzz-out">ZOSTAŃ KOREPETYTOREM</a>
         </div>
         <div class="sub-hero-image">
             <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
@@ -252,7 +249,7 @@ z każdego miejsca na świecie.">
                 inspirującym procesie edukacyjnym, kształtując umiejętności i rozwijając samodyscyplinę.
                 Dołącz już teraz, abyśmy mogli razem odkrywać potencjał Twojego dziecka!
             </p>
-            <a href="{% url 'schoolweb:newStudent' %}" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
+            <a href="{% url 'schoolweb:applyUser' %}" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
         </div>
         <div class="sub-hero-image">
             <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="Dlaczego warto zostać Korepetytorem?">
@@ -260,4 +257,6 @@ z każdego miejsca na świecie.">
     </div>
 </section>
 
+<script src="{% static 'js/calculator.js' %}" defer></script>
+<script src="{% static 'js/faq.js' %}" defer></script>
 {% endblock content %}

@@ -81,8 +81,8 @@ class User(AbstractUser):
 
 
 class NewStudents(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Użytkownik")
-    email = models.EmailField(unique=True, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Użytkownik")
+    email = models.EmailField(null=True, blank=True)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     subject = models.ForeignKey(

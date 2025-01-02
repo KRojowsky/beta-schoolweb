@@ -1,14 +1,11 @@
 {% extends 'base-widget.html' %}
 {% load static %}
 {% block content %}
-<script src="{% static 'js/widget-slider.js' %}" defer></script>
-<script src="{% static 'js/contact-form.js' %}" defer></script>
-
 <section class="hero hero-main">
     <h1 class="hero-heading">Twórz z nami <span>najlepszą platformę edukacyjną</span></h1>
     <div class="hero-container">
         <p class="hero-subtitle">
-            <span>✔</span> Prywatne lub grupowe zajęcia od  <u>xx.xx zł</u>.
+            <span>✔</span> Prywatne i grupowe zajęcia.
             <br><span>✔</span> Zdolni oraz zaangażowani korepetytorzy.
             <br><span>✔</span> Darmowe materiały edukacyjne.
             <br><span>✔</span> Szybki kontakt z administracją platformy.
@@ -124,7 +121,7 @@
                 możliwości platformy</span>. Zachęcamy do regularnych odwiedzin – nasz blog to nie tylko dodatkowe źródło
                 wiedzy, ale także miejsce, gdzie uczniowie, rodzice i nauczyciele mogą poszerzać swoje horyzonty.
             </p>
-            <a href="{% url 'schoolweb:blog-post-list' %}" class="hvr-buzz-out">Odwiedź blog</a>
+            <a href="{% url 'schoolweb:blog-post-list' %}" class="hvr-buzz-out">Odwiedź bloga</a>
         </div>
     </div>
 </section>
@@ -333,7 +330,7 @@
 <div id="opinie" class="opinions">
     <div class="testimonial">
         <h2 class="sub-hero-heading"><span>Opinie</span> naszych użytkowników</h2>
-        <div class="slider-wrapper">
+        <div class="slider-wrapper" aria-live="polite">
             <button id="prev-slide" class="slide-button material-symbols-rounded">chevron_left</button>
             <div class="image-list">
                 <img src="{% static 'img/widget/opinion1.png' %}" class="image-item" alt="Opinia 1">
@@ -358,10 +355,17 @@
     <form id="contact-form" method="post" action="{% url 'schoolweb:user-message' %}" data-url="{% url 'schoolweb:user-message' %}">
         {% csrf_token %}
         <input type="email" name="email" placeholder="E-mail" required>
-        <input type="text" name="phone_number" placeholder="Numer telefonu" pattern="[0-9]{9}" title="Numer telefonu musi składać się z 9 cyfr." required>
-        <textarea name="message" placeholder="Napisz wiadomość . . ." required></textarea>
-        <div id="success-message">Wiadomość wysłana!</div>
+        <input type="text" name="phone_number" placeholder="Numer telefonu" pattern="[0-9]{9}" title="Numer telefonu musi składać się z 9 cyfr." inputmode="tel" required>
+        <textarea name="message" placeholder="Napisz wiadomość . . ." required style="resize: none;"></textarea>
+
+        <div id="success-message">Wiadomość została wysłana!</div>
+        <div id="error-message"></div>
+
         <button type="submit">Wyślij</button>
     </form>
 </section>
+
+
+<script src="{% static 'js/widget-slider.js' %}" defer></script>
+<script src="{% static 'js/contact-form.js' %}" defer></script>
 {% endblock content %}

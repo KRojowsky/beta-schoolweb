@@ -26,56 +26,57 @@ from datetime import date
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
+def get_target_url(user):
+    if user.is_authenticated:
+        if user.groups.exists():
+            group = user.groups.first().name
+            return {
+                'Teachers': 'schoolweb:teacherPage',
+                'Students': 'schoolweb:studentPage',
+                'NewStudents': 'schoolweb:coursesLoader',
+                'NewTeachers': 'schoolweb:coursesLoader',
+                'Writer': 'schoolweb:applyUser'
+            }.get(group, 'schoolweb:applyUser')
+    return 'schoolweb:applyUser'
+
 def home(request):
-    user_group = None
-
-    if request.user.is_authenticated:
-        if request.user.groups.exists():
-            user_group = request.user.groups.first().name
-
-    if user_group == 'Teachers':
-        target_url = 'schoolweb:teacherPage'
-    elif user_group == 'Students':
-        target_url = 'schoolweb:studentPage'
-    elif user_group in ['NewStudents', 'NewTeachers']:
-        target_url = 'schoolweb:coursesLoader'
-    elif user_group == 'Writer':
-        target_url = 'schoolweb:applyUser'
-    else:
-        target_url = 'schoolweb:applyUser'
-
+    target_url = get_target_url(request.user)
     return render(request, 'widget/main-view.html', {'target_url': target_url})
 
-
 def become_tutor(request):
-    return render(request, 'widget/become-tutor.html')
-
+    target_url = get_target_url(request.user)
+    return render(request, 'widget/become-tutor.html', {'target_url': target_url})
 
 def faq(request):
-    return render(request, 'widget/faq.html')
-
+    target_url = get_target_url(request.user)
+    return render(request, 'widget/faq.html', {'target_url': target_url})
 
 def statute(request):
-    return render(request, 'widget/statute.html')
-
+    target_url = get_target_url(request.user)
+    return render(request, 'widget/statute.html', {'target_url': target_url})
 
 def contact(request):
-    return render(request, 'widget/contact.html')
-
+    target_url = get_target_url(request.user)
+    return render(request, 'widget/contact.html', {'target_url': target_url})
 
 def subjects(request):
-    return render(request, 'widget/subjects.html')
-
+    target_url = get_target_url(request.user)
+    return render(request, 'widget/subjects.html', {'target_url': target_url})
 
 # SENDING EMAIL VIA PLATFORM CONTACT FORM
-
 def user_message(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        phone_number = request.POST.get('phone_number')
-        message = request.POST.get('message')
+        email = request.POST['email']
+        phone_number = request.POST['phone_number']
+        message = request.POST['message']
 
-        PlatformMessage.objects.create(email=email, phone_number=phone_number, message=message)
+        try:
+            PlatformMessage.objects.create(email=email, phone_number=phone_number, message=message)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': 'Wystąpił problem podczas wysyłania wiadomości.'},
+                                status=500)
+
+        return JsonResponse({'status': 'success', 'message': 'Wiadomość została wysłana!'})
 
     return render(request, 'base-widget.html')
 
@@ -84,28 +85,20 @@ def user_message(request):
 
 
 def loginPage(request):
-    page = 'login'
-
     if request.method == 'POST':
-        email = request.POST.get('email').lower()
-        password = request.POST.get('password')
+        email = request.POST.get('email', '').lower()
+        password = request.POST.get('password', '')
+        next_url = request.POST.get('next', request.GET.get('next', reverse('schoolweb:knowledge_zone')))
 
-        next_url = request.POST.get('next') or reverse('schoolweb:knowledge_zone')
+        user = authenticate(request, username=email, password=password)
 
-        user = User.objects.filter(email=email).first()
-
-        if user is None:
-            messages.error(request, 'Użytkownik nie istnieje')
+        if user is not None:
+            login(request, user)
+            return redirect(next_url)
         else:
-            user = authenticate(request, username=email, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect(next_url)
-            else:
-                messages.error(request, 'Błędny Email lub Hasło')
+            messages.error(request, 'Błędny Email lub Hasło')
 
-    context = {'page': page}
-    return render(request, 'knowledge-zone/login_register.html', context)
+    return render(request, 'knowledge-zone/login_register.html', {'page': 'login'})
 
 
 @login_required(login_url='schoolweb:login')
@@ -613,7 +606,7 @@ def newStudent(request):
 
             # Tworzymy nowy kurs
             new_course = Course.objects.create(
-                name=f"{student.first_name} {student.last_name}",  # Imię i nazwisko ucznia
+                name=f"{student.first_name} {student.last_name} ({student.subject})",  # Imię i nazwisko ucznia
                 student=f"{student.subject} {student.level}",  # Przedmiot i poziom kursu
                 teacher=teacher,  # Przypisanie nauczyciela
                 course_type=course_type,  # Typ kursu
@@ -1272,11 +1265,8 @@ def studentPage(request):
     post_count = len(lessons)
     lesson_messages = CourseMessage.objects.filter(Q(room__in=lessons))
 
-    # Pobieranie danych z NewStudents
-    try:
-        new_student = NewStudents.objects.get(email=student.email)
-    except NewStudents.DoesNotExist:
-        new_student = None
+    new_students = NewStudents.objects.filter(email=student.email)
+    new_student = new_students.exists()
 
     context = {
         'lessons': lessons,
