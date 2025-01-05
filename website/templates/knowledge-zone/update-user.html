@@ -23,21 +23,43 @@
                 </div>
             </div>
             <div class="layout__body">
-               <form class="form" action="" method="POST" enctype="multipart/form-data">
+                <form class="form" action="" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
 
-                    {% for field in form %}
                     <div class="form__group">
-                        <label for="{{ field.id_for_label }}">
-                            {% if field.label == 'Username' %}
-                                Nazwa użytkownika
-                            {% else %}
-                                {{ field.label }}
-                            {% endif %}
-                        </label>
-                        {{ field }}
+                        <label for="id_avatar">Aktualne zdjęcie profilowe</label>
+                        <div class="image-preview">
+                            <img src="{{ form.avatar.value.url }}" alt="Aktualne zdjęcie" class="image-preview__img">
+                            <div class="image-clear-wrapper">
+                                <input type="checkbox" name="image_clear" id="id_image_clear" class="image-clear-checkbox">
+                                <label for="id_image_clear" class="clear-image-btn">Usuń zdjęcie</label>
+                            </div>
+                        </div>
                     </div>
-                    {% endfor %}
+                    <div class="form__group">
+                        <label for="id_avatar">Dodaj zdjęcie profilowe</label>
+                        <input type="file" name="avatar" id="id_avatar" accept="image/*">
+                    </div>
+
+                    <div class="form__group">
+                        <label for="{{ form.username.id_for_label }}">Nazwa użytkownika (maks. 10 znaków)</label>
+                        {{ form.username }}
+                    </div>
+
+                    <div class="form__group">
+                        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="form__group">
+                        <label for="{{ form.bio.id_for_label }}">{{ form.bio.label }}</label>
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="form__group">
+                        <label for="{{ form.interests.id_for_label }}">{{ form.interests.label }}</label>
+                        {{ form.interests }}
+                    </div>
 
                     {% if messages %}
                     <ul class="messages">
@@ -55,6 +77,5 @@
             </div>
         </div>
     </div>
-  </div>
 </main>
 {% endblock content %}

@@ -11,6 +11,14 @@
     {% include 'knowledge-zone/topics-knowledge-zone.html' %}
     <div class="roomList">
       <div class="profile">
+        {% if messages %}
+                {% for message in messages %}
+                    <div class="notification notification--{{ message.tags }} show">
+                        <span>{{ message }}</span>
+                        <button class="notification__close">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
         <div class="profile__avatar">
           <div class="avatar avatar--large active">
             <img src="{{user.avatar.url}}" />

@@ -10,7 +10,7 @@
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <a href="{{request.META.HTTP_REFERER}}">
+          <a href="{{ request.META.HTTP_REFERER }}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Wróć</title>
               <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
@@ -26,23 +26,37 @@
             {% csrf_token %}
             <div class="form__group">
                 <label for="room_name">Treść komentarza</label>
-                {{form.body}}
+                {{ form.body }}
             </div>
 
             <div class="form__group">
-                <label for="room_name">Zdjęcie</label>
-                {{form.image}}
+                <label for="room_image">Obraz</label>
+                {% if form.image.value %}
+                    <div class="image-preview">
+                        <img src="{{ form.image.value.url }}" alt="Aktualny obraz" class="image-preview__img">
+                        <div class="image-clear-wrapper">
+                            <input type="checkbox" name="image_clear" id="id_image_clear" class="image-clear-checkbox">
+                        </div>
+                    </div>
+                {% else %}
+                    {{ form.image }}
+                {% endif %}
+            </div>
+
+            <div class="form__group">
+                <label for="id_avatar">Zdjęcie</label>
+                <input type="file" name="avatar" id="id_avatar" accept="image/*">
             </div>
 
             <div class="form__group">
                 <label for="room_name">Plik</label>
-                {{form.file}}
+                {{ form.file }}
             </div>
 
-             <div class="form__action">
-                <a class="btn btn--link" href="{{request.META.HTTP_REFERER}}">Anuluj</a>
+            <div class="form__action">
+                <a class="btn btn--link" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
                 <button class="btn btn--link" type="submit">Zatwierdź</button>
-             </div>
+            </div>
         </form>
       </div>
     </div>

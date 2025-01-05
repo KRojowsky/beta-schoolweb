@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q, F
+from django.db import transaction
 from django.contrib.auth import authenticate, login, logout
 from .models import (User, Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, BlogPost,
                      BlogCategory, BankInformation, LessonStats, TeachersEarning, NewStudents)
@@ -22,6 +23,7 @@ from .models import Availability
 from django.core.paginator import Paginator
 from django.contrib.auth.models import Group
 from datetime import date
+from django.core.exceptions import PermissionDenied
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
@@ -39,29 +41,36 @@ def get_target_url(user):
             }.get(group, 'schoolweb:applyUser')
     return 'schoolweb:applyUser'
 
+
 def home(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/main-view.html', {'target_url': target_url})
+
 
 def become_tutor(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/become-tutor.html', {'target_url': target_url})
 
+
 def faq(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/faq.html', {'target_url': target_url})
+
 
 def statute(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/statute.html', {'target_url': target_url})
 
+
 def contact(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/contact.html', {'target_url': target_url})
 
+
 def subjects(request):
     target_url = get_target_url(request.user)
     return render(request, 'widget/subjects.html', {'target_url': target_url})
+
 
 # SENDING EMAIL VIA PLATFORM CONTACT FORM
 def user_message(request):
@@ -114,57 +123,40 @@ def registerPage(request):
     if request.method == 'POST':
         form = MyUserCreationForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username').lower()
+            username = form.cleaned_data['username'].lower()
 
-            if check_user_exists_in_group(username):
-                messages.error(request, 'Użytkownik już istnieje w grupie.')
+            if User.objects.filter(username=username).exists():
+                messages.error(request, 'Użytkownik o podanej nazwie już istnieje.')
                 return redirect('schoolweb:registerPage')
-
-            user = form.save(commit=False)
-            user.username = username
-            user.save()
 
             try:
-                writers_group = Group.objects.get(name='Writers')
-                user.groups.add(writers_group)
-            except Group.DoesNotExist:
-                messages.error(request, 'Grupa "Writers" nie istnieje.')
-                return redirect('schoolweb:registerPage')
+                with transaction.atomic():
+                    user = form.save(commit=False)
+                    user.username = username
+                    user.save()
+
+                    writers_group = Group.objects.get(name='Writers')
+                    user.groups.add(writers_group)
+
+                login(request, user)
+                messages.success(request, 'Rejestracja zakończona pomyślnie!')
+                return redirect('schoolweb:knowledge_zone')
+
             except Exception as e:
-                messages.error(request, f'Wystąpił błąd: {str(e)}')
+                messages.error(request, f'Wystąpił błąd podczas rejestracji: {str(e)}')
                 return redirect('schoolweb:registerPage')
-
-            login(request, user)
-            return redirect('schoolweb:knowledge_zone')
         else:
-            error_messages = [error for errors in form.errors.values() for error in errors]
-            for error in error_messages:
-                messages.error(request, error)
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
 
-    context = {'form': form}
-    return render(request, 'knowledge-zone/login_register.html', context)
-
-
-# CHECKING WHILE REGISTER IF USER EXISTS IN GROUP
-def check_user_exists_in_group(username):
-    try:
-        user = User.objects.get(username=username)
-        return user.groups.exists()
-    except User.DoesNotExist:
-        return False
+    return render(request, 'knowledge-zone/login_register.html', {'form': form})
 
 
 def knowledge_zone(request):
-    user_in_migrates = False
-
-    if request.user.is_authenticated:
-        user_in_migrates = request.user.groups.filter(name='Migrates').exists()
-
-    # Pobranie parametrów zapytania
     q = request.GET.get('q', '').strip()
     level_filter = request.GET.get('level', '').strip()
 
-    # Filtrujemy pokoje na podstawie zapytania oraz poziomu
     rooms = Room.objects.all()
 
     if q:
@@ -181,7 +173,6 @@ def knowledge_zone(request):
     room_count = rooms.count()
     room_messages = Message.objects.order_by('-created')[:12]
 
-    # Określamy URL przekierowania w zależności od grupy użytkownika
     if request.user.is_authenticated:
         if request.user.groups.filter(name='NewTeachers').exists() or request.user.groups.filter(name='NewStudents').exists():
             user_redirect_url = reverse('schoolweb:coursesLoader')
@@ -201,19 +192,258 @@ def knowledge_zone(request):
         'topics': topics,
         'room_count': room_count,
         'room_messages': room_messages,
-        'user_in_migrates': user_in_migrates,
         'user_redirect_url': user_redirect_url,
-        'current_q': q,  # Dodanie aktualnej wartości `q` do szablonu
-        'current_level': level_filter,  # Dodanie aktualnego poziomu do szablonu
+        'current_q': q,
+        'current_level': level_filter,
     }
 
     return render(request, 'knowledge-zone/knowledge-zone.html', context)
 
 
-import logging
+def room(request, pk):
+    room = get_object_or_404(Room, pk=pk)
+    room_messages = room.message_set.select_related('user').all().order_by('created')
+    participants = room.participants.all()
 
-logger = logging.getLogger(__name__)
+    if request.method == 'POST':
+        body = request.POST.get('body', '').strip()
+        image = request.FILES.get('image')
+        file = request.FILES.get('file')
 
+        if body or image or file:
+            Message.objects.create(
+                user=request.user,
+                room=room,
+                body=body,
+                image=image,
+                file=file
+            )
+            room.participants.add(request.user)
+
+            return redirect(reverse('schoolweb:room', kwargs={'pk': room.id}))
+
+    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
+    return render(request, 'knowledge-zone/room.html', context)
+
+
+@login_required(login_url='schoolweb:login')
+def createRoom(request):
+    form = RoomForm(request.POST or None, request.FILES or None)
+    topics = Topic.objects.all()
+
+    if request.method == 'POST' and form.is_valid():
+        with transaction.atomic():
+            room = form.save(commit=False)
+            room.host = request.user
+
+            if 'image' in request.FILES:
+                room.image = request.FILES['image']
+
+            room.save()
+            messages.success(request, 'Post został pomyślnie utworzony!')
+
+            user_points = request.user.points
+
+            if user_points >= 1000:
+                request.user.points -= 1000
+                request.user.save()
+
+                lesson_stats, created = LessonStats.objects.get_or_create(user=request.user)
+
+                if request.user.groups.filter(name='Teachers').exists():
+                    lesson_stats.month_bonus += 50
+                    lesson_stats.all_bonus += 50
+
+                elif request.user.groups.filter(name='Students').exists():
+                    if request.user.level == 'Podstawa':
+                        lesson_stats.lessons += 1
+                    elif request.user.level == 'Rozszerzenie':
+                        lesson_stats.lessons_intermediate += 1
+
+                lesson_stats.save()
+
+            return redirect('schoolweb:knowledge_zone')
+
+    context = {'form': form, 'topics': topics}
+    return render(request, 'knowledge-zone/room_form.html', context)
+
+
+@login_required(login_url='schoolweb:login')
+def updateRoom(request, pk):
+    room = get_object_or_404(Room, id=pk)
+
+    if request.user != room.host:
+        messages.error(request, 'Nie masz uprawnień do edycji tego postu.')
+        return redirect('schoolweb:knowledge_zone')
+
+    current_likes = room.likes.all()
+
+    if request.method == 'POST':
+        form = RoomForm(request.POST, request.FILES, instance=room)
+        if form.is_valid():
+            updated_room = form.save(commit=False)
+
+            if 'image_clear' in request.POST:
+                updated_room.image = None
+
+            updated_room.likes.set(current_likes)
+            updated_room.save()
+            messages.success(request, 'Post został pomyślnie zaktualizowany!')
+            return redirect('schoolweb:room', pk=room.id)
+        else:
+            messages.error(request, 'Wystąpił błąd podczas aktualizacji postu.')
+    else:
+        form = RoomForm(instance=room)
+
+    topics = Topic.objects.all()
+    context = {'form': form, 'topics': topics}
+    return render(request, 'knowledge-zone/room_form.html', context)
+
+
+@login_required(login_url='schoolweb:login')
+def reportRoom(request, pk):
+    room = get_object_or_404(Room, id=pk)
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.room = room
+            report.reporter = request.user
+            report.save()
+            messages.success(request, 'Dziękujemy za zgłoszenie! Zajmiemy się sprawą wkrótce.')
+            return redirect('schoolweb:knowledge_zone')
+        else:
+            messages.error(request, 'Wystąpił błąd podczas wysyłania zgłoszenia. Spróbuj ponownie.')
+    else:
+        form = ReportForm()
+
+    return render(request, 'knowledge-zone/report-room.html', {'form': form, 'room': room})
+
+
+@login_required(login_url='schoolweb:login')
+def deleteRoom(request, pk):
+    room = get_object_or_404(Room, id=pk)
+
+    if request.user != room.host:
+        messages.error(request, 'Nie masz uprawnień do usunięcia tego pokoju.')
+        return redirect('schoolweb:knowledge_zone')
+
+    if request.method == 'POST':
+        try:
+            room.delete()
+            messages.success(request, 'Post został pomyślnie usunięty.')
+        except Exception as e:
+            messages.error(request, f'Wystąpił błąd podczas usuwania pokoju: {str(e)}')
+        return redirect('schoolweb:knowledge_zone')
+
+    return render(request, 'knowledge-zone/delete.html', {'obj': room})
+
+
+@login_required(login_url='schoolweb:login')
+def deleteMessage(request, pk):
+    message = get_object_or_404(Message, id=pk)
+
+    if request.user != message.user:
+        raise PermissionDenied('Operacja wzbroniona.')
+
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER', '/')
+        request.session['lesson_url'] = lesson_url
+
+    if request.method == 'POST':
+        try:
+            message.delete()
+            messages.success(request, 'Wiadomość została usunięta.')
+        except Exception as e:
+            messages.error(request, f'Wystąpił błąd podczas usuwania wiadomości: {str(e)}')
+        return redirect(request.session.get('lesson_url', '/'))
+
+    return render(request, 'knowledge-zone/delete.html', {'obj': message})
+
+
+@login_required(login_url='schoolweb:login')
+def editRoomMessage(request, pk):
+    message = get_object_or_404(Message, pk=pk)
+
+    if request.user != message.user:
+        messages.error(request, 'Nie możesz edytować tej wiadomości.')
+        return redirect('schoolweb:room', pk=message.room.pk)
+
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER', '/')
+        request.session['lesson_url'] = lesson_url
+
+    if request.method == 'POST':
+        form = RoomMessageForm(request.POST, request.FILES, instance=message)
+        if form.is_valid():
+            try:
+                form.save()
+                messages.success(request, 'Wiadomość została zaktualizowana.')
+            except Exception as e:
+                messages.error(request, f'Wystąpił błąd podczas aktualizacji wiadomości: {str(e)}')
+            return redirect(request.session.get('lesson_url', '/'))
+    else:
+        form = RoomMessageForm(instance=message)
+
+    return render(request, 'knowledge-zone/edit-message.html', {'form': form, 'message': message})
+
+
+@login_required(login_url='schoolweb:login')
+def userProfile(request, pk):
+    user = get_object_or_404(User, id=pk)
+    rooms = user.hosted_rooms.all()
+    room_messages = user.messages.all()
+    topics = Topic.objects.all()
+
+    context = {
+        'user': user,
+        'rooms': rooms,
+        'room_messages': room_messages,
+        'topics': topics,
+    }
+
+    return render(request, 'knowledge-zone/profile.html', context)
+
+
+@login_required(login_url='schoolweb:login')
+def updateUser(request):
+    user = request.user
+    form = UserForm(instance=user)
+
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            if 'image_clear' in request.POST:
+                user.avatar = 'profile-pictures/avatar.svg'
+                user.save()
+            form.save()
+            messages.success(request, "Twój profil został zaktualizowany.")
+            return redirect('schoolweb:user-profile', pk=user.id)
+
+    error_messages = [error for field, errors in form.errors.items() for error in errors]
+    for error in error_messages:
+        messages.error(request, error)
+
+    return render(request, 'knowledge-zone/update-user.html', {'form': form})
+
+
+def activityPage(request):
+    try:
+        room_messages = Message.objects.all()[:12]
+    except Exception as e:
+        room_messages = []
+
+    return render(request, 'knowledge-zone/activity.html', {'room_messages': room_messages})
+
+
+def topicsPage(request):
+    q = request.GET.get('q', '')
+    topics = Topic.objects.filter(Q(name__icontains=q))
+
+    return render(request, 'knowledge-zone/topics.html', {'topics': topics})
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 @login_required
 def WriterToTutoringZone(request):
@@ -264,249 +494,6 @@ def WriterToTutoringZone(request):
         form = WriterDataForm(instance=request.user)
 
     return render(request, 'tutoring-zone/writer-to-tutoring-zone.html', {'form': form})
-
-
-def room(request, pk):
-    try:
-        room = Room.objects.get(id=pk)
-    except Room.DoesNotExist:
-        return redirect('schoolweb:knowledge_zone')
-
-    room_messages = room.message_set.all().order_by('created')
-    participants = room.participants.all()
-
-    if request.method == 'POST':
-        body = request.POST.get('body', '').strip()
-        image = request.FILES.get('image')
-        file = request.FILES.get('file')
-
-        if body or image or file:
-            message = Message.objects.create(
-                user=request.user,
-                room=room,
-                body=body,
-                image=image,
-                file=file
-            )
-            room.participants.add(request.user)
-
-            return redirect('schoolweb:room', pk=room.id)
-
-    context = {'room': room, 'room_messages': room_messages, 'participants': participants}
-    return render(request, 'knowledge-zone/room.html', context)
-
-
-@login_required(login_url='schoolweb:login')
-def createRoom(request):
-    form = RoomForm(request.POST or None, request.FILES or None)
-    topics = Topic.objects.all()
-
-    if request.method == 'POST':
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user  # Automatycznie przypisujemy hosta jako aktualnego użytkownika
-
-            # Zapisujemy obrazek, jeśli jest przesłany
-            if 'image' in request.FILES:
-                room.image.save(request.FILES['image'].name, request.FILES['image'])
-
-            room.save()
-
-            # Logika związana z użytkownikami w grupach
-            if request.user.groups.filter(name='Teachers').exists() and request.user.points >= 1000:
-                request.user.points -= 1000
-                request.user.save()
-
-                lesson_stats, created = LessonStats.objects.get_or_create(user=request.user)
-                lesson_stats.month_bonus += 50
-                lesson_stats.all_bonus += 50
-                lesson_stats.save()
-
-            elif request.user.groups.filter(name='Students').exists() and request.user.points >= 1000:
-                request.user.points -= 1000
-                request.user.save()
-                user_level = request.user.level
-
-                lesson_stats, created = LessonStats.objects.get_or_create(user=request.user)
-
-                if user_level == 'Podstawa':
-                    lesson_stats.lessons += 1
-                elif user_level == 'Rozszerzenie':
-                    lesson_stats.lessons_intermediate += 1
-                lesson_stats.save()
-
-            return redirect('schoolweb:knowledge_zone')
-
-    context = {'form': form, 'topics': topics}
-    return render(request, 'knowledge-zone/room_form.html', context)
-
-
-@login_required(login_url='schoolweb:login')
-def updateRoom(request, pk):
-    room = get_object_or_404(Room, id=pk)
-
-    if request.user != room.host:
-        return HttpResponse('Operacja wzbroniona.')
-
-    current_likes = room.likes.all()
-
-    if request.method == 'POST':
-        form = RoomForm(request.POST, request.FILES, instance=room)
-        if form.is_valid():
-            updated_room = form.save(commit=False)
-            updated_room.likes.set(current_likes)
-            updated_room.save()
-            return redirect('schoolweb:room', pk=room.id)
-    else:
-        form = RoomForm(instance=room)
-
-    topics = Topic.objects.all()
-    context = {'form': form, 'topics': topics}
-    return render(request, 'knowledge-zone/room_form.html', context)
-
-
-@login_required(login_url='schoolweb:login')
-def reportRoom(request, pk):
-    room = get_object_or_404(Room, id=pk)
-    if request.method == 'POST':
-        form = ReportForm(request.POST)
-        if form.is_valid():
-            report = form.save(commit=False)
-            report.room = room
-            report.reporter = request.user
-            report.save()
-            return redirect('schoolweb:knowledge_zone')
-    else:
-        form = ReportForm()
-    return render(request, 'knowledge-zone/report-room.html', {'form': form, 'room': room})
-
-
-@login_required(login_url='schoolweb:login')
-def deleteRoom(request, pk):
-    room = get_object_or_404(Room, id=pk)
-
-    if request.user != room.host:
-        return HttpResponse('Operacja wzbroniona.')
-
-    if request.method == 'POST':
-        room.delete()
-        return redirect('schoolweb:knowledge_zone')
-
-    return render(request, 'knowledge-zone/delete.html', {'obj': room})
-
-
-@login_required(login_url='schoolweb:login')
-def deleteMessage(request, pk):
-    message = get_object_or_404(Message, id=pk)
-
-    if request.user != message.user:
-        return HttpResponse('Operacja wzbroniona.')
-
-    if request.method == 'GET':
-        lesson_url = request.META.get('HTTP_REFERER')
-        request.session['lesson_url'] = lesson_url
-
-    if request.method == 'POST':
-        message.delete()
-
-        lesson_url = request.session.get('lesson_url', '/')
-        return redirect(lesson_url)
-
-    return render(request, 'knowledge-zone/delete.html', {'obj': message})
-
-
-@login_required(login_url='schoolweb:login')
-def editRoomMessage(request, pk):
-    message = get_object_or_404(Message, pk=pk)
-
-    # Check if the user is the author of the message
-    if request.user != message.user:
-        return redirect('room', pk=message.room.pk)
-
-    if request.method == 'GET':
-        lesson_url = request.META.get('HTTP_REFERER')
-        request.session['lesson_url'] = lesson_url
-
-    if request.method == 'POST':
-        form = RoomMessageForm(request.POST, request.FILES, instance=message)
-        if form.is_valid():
-            form.save()  # The points deduction and stats update will now happen in the model's save method
-
-            # Redirect back to the lesson URL after saving
-            lesson_url = request.session.get('lesson_url', '/')
-            return redirect(lesson_url)
-    else:
-        form = RoomMessageForm(instance=message)
-
-    return render(request, 'knowledge-zone/edit-message.html', {'form': form, 'message': message})
-
-
-def userProfile(request, pk):
-    user = get_object_or_404(User, id=pk)
-    rooms = user.hosted_rooms.all()  # Zamiast user.room_set.all()
-    room_messages = user.messages.all()  # Zamiast user.message_set.all()
-    topics = Topic.objects.all()
-
-    # Determine the redirect URL based on user group
-    if request.user.is_authenticated:
-        if request.user.groups.filter(name='NewTeachers').exists() or request.user.groups.filter(name='NewStudents').exists():
-            user_redirect_url = reverse('schoolweb:coursesLoader')
-        elif request.user.groups.filter(name='Teachers').exists():
-            user_redirect_url = reverse('schoolweb:teacherPage')
-        elif request.user.groups.filter(name='Students').exists():
-            user_redirect_url = reverse('schoolweb:studentPage')
-        elif request.user.groups.filter(name='Writers').exists():
-            user_redirect_url = reverse('schoolweb:WriterToTutoringZone')
-        else:
-            user_redirect_url = reverse('schoolweb:applyUser')
-    else:
-        user_redirect_url = reverse('schoolweb:applyUser')
-
-    context = {
-        'user': user,
-        'rooms': rooms,
-        'room_messages': room_messages,
-        'topics': topics,
-        'user_redirect_url': user_redirect_url,  # Pass the full URL to the template
-    }
-    return render(request, 'knowledge-zone/profile.html', context)
-
-
-@login_required(login_url='schoolweb:login')
-def updateUser(request):
-    user = request.user
-    form = UserForm(instance=user)
-
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('schoolweb:user-profile', pk=user.id)
-
-    error_messages = [error for field, errors in form.errors.items() for error in errors]
-    for error in error_messages:
-        messages.error(request, error)
-
-    return render(request, 'knowledge-zone/update-user.html', {'form': form})
-
-
-def activityPage(request):
-    try:
-        room_messages = Message.objects.all()[:12]
-    except Exception as e:
-        room_messages = []
-
-    return render(request, 'knowledge-zone/activity.html', {'room_messages': room_messages})
-
-
-def topicsPage(request):
-    q = request.GET.get('q', '')
-    topics = Topic.objects.filter(Q(name__icontains=q))
-
-    return render(request, 'knowledge-zone/topics.html', {'topics': topics})
-
-
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 def applyUser(request):

@@ -28,21 +28,23 @@
             </div>
             {% endif %}
             {% elif not message.user %}
-            <a class="roomListRoom__author">
+             <a class="roomListRoom__author">
                 <div class="avatar avatar--small">
-                    <img src="{% static 'img/profile-pictures/avatar.svg' %}"/>
+                    <img src="{% static 'img/profile-pictures/avatar.svg' %}" class="user-avatar"/>
                 </div>
                 <div class="user-info">
-                    <p class="deleted-user">Usunięty użytkownik</p>
-                    <span class="deleted-data">{{ message.created|timesince }} temu</span>
+                    <p>
+                        Usunięty użytkownik
+                        <span>{{ message.created|timesince }} temu</span>
+                    </p>
                 </div>
-            </a>
+             </a>
             {% endif %}
         </div>
         <div class="activities__boxContent">
             {% if message.room.id %}
                 <p title="Zobacz post">
-                    Odpisał/a na: <a href="{% url 'schoolweb:room' message.room.id %}" class="lesson-link">
+                    Odpisał/a na: <a href="{% url 'schoolweb:room' message.room.id %}">
                     {{ message.room.name|truncatechars:60 }}</a>
                 </p>
                 {% if message.body %}

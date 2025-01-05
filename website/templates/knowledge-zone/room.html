@@ -55,6 +55,16 @@
             {% endif %}
         </div>
       </div>
+      {% if messages %}
+        <div class="notifications" style="margin:0 10px;">
+            {% for message in messages %}
+            <div class="notification notification--{{ message.tags }} show">
+                <span>{{ message }}</span>
+                <button class="notification__close">&times;</button>
+            </div>
+            {% endfor %}
+        </div>
+      {% endif %}
       <div class="room__box scroll">
         <div class="room__header scroll">
           <div class="room__info">

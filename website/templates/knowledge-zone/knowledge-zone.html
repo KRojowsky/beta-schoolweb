@@ -8,6 +8,7 @@
 <main class="layout layout--3">
     <div class="container">
         {% include 'knowledge-zone/topics-knowledge-zone.html' %}
+
         <div class="roomList">
             <div class="mobile-menu">
                 <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET" class="header__search">
@@ -32,6 +33,16 @@
                     <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity' %}">Aktywności</a>
                 </div>
             </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="notification notification--{{ message.tags }} show">
+                        <span>{{ message }}</span>
+                        <button class="notification__close">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
             <div class="roomList__header">
                 <div>
                     <h2>Tablica tematów</h2>
@@ -42,18 +53,15 @@
                         <title>Dodaj</title>
                         <path d="M16.943 0.943h-1.885v14.115h-14.115v1.885h14.115v14.115h1.885v-14.115h14.115v-1.885h-14.115v-14.115z"></path>
                     </svg>
-                    Utwórz Post
+                    Utwórz post
                 </a>
             </div>
-            <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET" style="margin-top: 20px;">
-                <!-- Ukryte pole dla zachowania parametru 'q' -->
+            <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET">
                 <input type="hidden" name="q" value="{{ current_q }}">
-
-                <!-- Wybór poziomu -->
                 <select name="level" id="level" onchange="this.form.submit()" class="level-select">
                     <option value="">Wszystkie</option>
-                    <option value="basic" {% if current_level == 'basic' %}selected{% endif %}>Podstawowy</option>
-                    <option value="advanced" {% if current_level == 'advanced' %}selected{% endif %}>Rozszerzony</option>
+                    <option value="basic" {% if current_level == 'basic' %}selected{% endif %}>Podstawa</option>
+                    <option value="advanced" {% if current_level == 'advanced' %}selected{% endif %}>Rozszerzenie</option>
                 </select>
             </form>
             {% include 'knowledge-zone/feed-knowledge-zone.html' %}

@@ -10,22 +10,23 @@ from website.models import User
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class PlatformMessageAdmin(admin.ModelAdmin):
+    list_display = ('email', 'phone_number', 'message', 'created')
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class CustomUserAdmin(UserAdmin):
-    # Pola wyświetlane na liście użytkowników w panelu administracyjnym
     list_display = ('email', 'first_name', 'last_name', 'username', 'display_groups', 'phone_number', 'subject',
                     'level', 'points', 'referral_code', 'referred_by')
     list_display_links = ('email',)
-    list_editable = ('phone_number', 'points')  # Umożliwiamy edytowanie pola 'phone_number'
+    list_editable = ('phone_number', 'points')
 
-    # Metoda do wyświetlania grup użytkownika w panelu
     def display_groups(self, obj):
         return ", ".join([group.name for group in obj.groups.all()])
     display_groups.short_description = 'Groups'
 
-    # Sekcje na formularzu edycji użytkownika w panelu administracyjnym
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name', 'username', 'phone_number', 'avatar', 'bio', 'interests', 'subject', 'level')}),
@@ -33,7 +34,6 @@ class CustomUserAdmin(UserAdmin):
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
     )
 
-    # Opcje formularza edycji użytkownika
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
@@ -49,13 +49,8 @@ class CustomUserAdmin(UserAdmin):
         return obj.referral_code
 
     referral_code.short_description = 'Referral Code'
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class PlatformMessageAdmin(admin.ModelAdmin):
-    list_display = ('email', 'phone_number', 'message', 'created')
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 
 class RoomAdmin(admin.ModelAdmin):
     list_display = ('name', 'host_name', 'created', 'total_likes')

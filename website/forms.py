@@ -11,7 +11,6 @@ from datetime import timedelta, datetime
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
-
 class MyUserCreationForm(UserCreationForm):
     usable_password = None
     username = forms.CharField(
@@ -25,18 +24,22 @@ class MyUserCreationForm(UserCreationForm):
         model = User
         fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2']
 
-
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-
-
 class RoomForm(forms.ModelForm):
     class Meta:
         model = Room
         fields = '__all__'
         exclude = ['host', 'participants']
 
-    # Dodane pole wyboru poziomu
     level = forms.ChoiceField(choices=Room.LEVEL_CHOICES, widget=forms.Select, required=True)
+
+
+class RoomMessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ['body', 'image', 'file']
+
+    body = forms.CharField(widget=forms.Textarea, required=False)
 
 
 class ReportForm(forms.ModelForm):
@@ -53,12 +56,11 @@ class UserForm(forms.ModelForm):
     username = forms.CharField(
         validators=[MaxLengthValidator(limit_value=10, message="Nazwa użytkownika nie może przekraczać 10 znaków.")]
     )
-
     class Meta:
         model = User
         labels = {
             'avatar': 'Zdjęcie profilowe',
-            'username': 'Nazwa użytkownika(maks. 10 znaków)',
+            'username': 'Nazwa użytkownika (maks. 10 znaków)',
             'email': 'Email',
             'bio': 'Bio',
             'interests': 'Zainteresowania'
@@ -66,74 +68,6 @@ class UserForm(forms.ModelForm):
         fields = ['avatar', 'username', 'email', 'bio', 'interests']
 
     bio = forms.CharField(widget=forms.Textarea, required=False)
-
-
-class PostFormCreate(forms.ModelForm):
-    event_datetime = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
-        label='Data',
-        input_formats=['%Y-%m-%dT%H:%M'],
-    )
-
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(PostFormCreate, self).__init__(*args, **kwargs)
-
-        if user:
-            self.fields['course'].queryset = Course.objects.filter(teacher=user)
-            # Nadpisz pole 'course' aby wyświetlało 'name' kursu
-            self.fields['course'].label_from_instance = lambda obj: f"{obj.name}"  # Wyświetlanie nazwy kursu
-
-    def clean_event_datetime(self):
-        event_datetime = self.cleaned_data['event_datetime']
-        minimum_datetime = timezone.now() + timedelta(minutes=15)
-
-        if event_datetime <= minimum_datetime:
-            raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
-
-        return event_datetime
-
-    class Meta:
-        model = Lesson
-        fields = ['title', 'description', 'course', 'event_datetime']
-
-
-class PostFormEdit(forms.ModelForm):
-    event_datetime = forms.DateTimeField(
-        widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
-        label='Data',
-        input_formats=['%Y-%m-%dT%H:%M'],
-    )
-
-    class Meta:
-        model = Lesson
-        fields = ['title', 'description', 'event_datetime']
-
-    def clean_event_datetime(self):
-        event_datetime = self.cleaned_data['event_datetime']
-        minimum_datetime = timezone.now() + timedelta(minutes=15)
-
-        if event_datetime <= minimum_datetime:
-            raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
-
-        return event_datetime
-
-
-class NewStudentForm(forms.ModelForm):
-    class Meta:
-        model = NewStudents
-        fields = ['subject', 'level']
-        widgets = {
-            'subject': forms.Select(attrs={'class': 'form-control'}),
-            'level': forms.Select(attrs={'class': 'form-control'}),
-        }
-
-
-class RoomMessageForm(forms.ModelForm):
-    class Meta:
-        model = Message
-        fields = ['body', 'image', 'file']
-
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 class WriterDataForm(forms.ModelForm):
@@ -176,6 +110,56 @@ class ApplyUserForm(UserCreationForm):
         model = User
         fields = ['role', 'first_name', 'last_name', 'username', 'email', 'phone_number', 'subject', 'level',
                   'referral_code_input', 'password1', 'password2']
+
+
+class PostFormCreate(forms.ModelForm):
+    event_datetime = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+        label='Data',
+        input_formats=['%Y-%m-%dT%H:%M'],
+    )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(PostFormCreate, self).__init__(*args, **kwargs)
+
+        if user:
+            self.fields['course'].queryset = Course.objects.filter(teacher=user)
+            self.fields['course'].label_from_instance = lambda obj: f"{obj.name}"
+
+    def clean_event_datetime(self):
+        event_datetime = self.cleaned_data['event_datetime']
+        minimum_datetime = timezone.now() + timedelta(minutes=15)
+
+        if event_datetime <= minimum_datetime:
+            raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
+
+        return event_datetime
+
+    class Meta:
+        model = Lesson
+        fields = ['title', 'description', 'course', 'event_datetime']
+
+
+class PostFormEdit(forms.ModelForm):
+    event_datetime = forms.DateTimeField(
+        widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
+        label='Data',
+        input_formats=['%Y-%m-%dT%H:%M'],
+    )
+
+    class Meta:
+        model = Lesson
+        fields = ['title', 'description', 'event_datetime']
+
+    def clean_event_datetime(self):
+        event_datetime = self.cleaned_data['event_datetime']
+        minimum_datetime = timezone.now() + timedelta(minutes=15)
+
+        if event_datetime <= minimum_datetime:
+            raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
+
+        return event_datetime
 
 
 class LessonFeedbackForm(forms.ModelForm):
@@ -321,3 +305,13 @@ class AvailabilityForm(forms.ModelForm):
         tomorrow = timezone.now() + timezone.timedelta(days=1)
         seven_days_later = tomorrow + timezone.timedelta(days=7)
         self.fields['day'].widget = forms.DateInput(attrs={'type': 'date', 'min': tomorrow.date(), 'max': seven_days_later.date()})
+
+
+class NewStudentForm(forms.ModelForm):
+    class Meta:
+        model = NewStudents
+        fields = ['subject', 'level']
+        widgets = {
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'level': forms.Select(attrs={'class': 'form-control'}),
+        }
