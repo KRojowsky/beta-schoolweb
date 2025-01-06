@@ -37,7 +37,7 @@ def get_target_url(user):
                 'Students': 'schoolweb:studentPage',
                 'NewStudents': 'schoolweb:coursesLoader',
                 'NewTeachers': 'schoolweb:coursesLoader',
-                'Writer': 'schoolweb:applyUser'
+                'Writers': 'schoolweb:WriterToTutoringZone'
             }.get(group, 'schoolweb:applyUser')
     return 'schoolweb:applyUser'
 
@@ -369,13 +369,11 @@ def editRoomMessage(request, pk):
         messages.error(request, 'Nie możesz edytować tej wiadomości.')
         return redirect('schoolweb:room', pk=message.room.pk)
 
-    if request.method == 'GET':
-        lesson_url = request.META.get('HTTP_REFERER', '/')
-        request.session['lesson_url'] = lesson_url
-
     if request.method == 'POST':
         form = RoomMessageForm(request.POST, request.FILES, instance=message)
         if form.is_valid():
+            if form.cleaned_data.get('image_clear'):
+                message.image.delete(save=False)
             try:
                 form.save()
                 messages.success(request, 'Wiadomość została zaktualizowana.')
@@ -445,50 +443,70 @@ def topicsPage(request):
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
-@login_required
+@login_required(login_url='schoolweb:login')
 def WriterToTutoringZone(request):
-    # Upewnijmy się, że użytkownik jest w grupie 'Writers'
     if not request.user.groups.filter(name='Writers').exists():
         return redirect('schoolweb:knowledge_zone')
 
     if request.method == 'POST':
         form = WriterDataForm(request.POST, instance=request.user)
         if form.is_valid():
-            # Zapisujemy dane użytkownika
             user = form.save(commit=False)
-
-            # Pobieramy wybraną rolę
             user_type = form.cleaned_data['user_type']
+            referral_code_input = form.cleaned_data.get('referral_code_input')
 
-            # Pobieramy odpowiednią grupę
+            if referral_code_input:
+                referred_user = User.objects.filter(referral_code=referral_code_input).first()
+
+                if referred_user:
+                    if user_type == 'student' and referred_user.groups.filter(name="Students").exists():
+                        user.referred_by = referral_code_input
+                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                        if referred_user.level == "Podstawa":
+                            lesson_stats.lessons += 1
+                        elif referred_user.level == "Rozszerzenie":
+                            lesson_stats.lessons_intermediate += 1
+                        lesson_stats.save()
+
+                        NewStudents.objects.get_or_create(
+                            email=user.email,
+                            defaults={
+                                'first_name': user.first_name,
+                                'last_name': user.last_name,
+                                'subject': user.subject,
+                                'level': user.level,
+                                'is_selected': False,
+                                'is_new': True
+                            }
+                        )
+                    elif user_type == 'teacher' and referred_user.groups.filter(name="Teachers").exists():
+                        user.referred_by = referral_code_input
+                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                        lesson_stats.month_referral_bonus += 50
+                        lesson_stats.all_referral_bonus += 50
+                        lesson_stats.save()
+                    else:
+                        form.add_error(
+                            'referral_code_input',
+                            'Kod polecenia jest nieprawidłowy lub należy do użytkownika spoza wymaganej grupy.'
+                        )
+                        return render(request, 'tutoring-zone/writer-to-tutoring-zone.html', {'form': form})
+                else:
+                    form.add_error('referral_code_input', 'Kod polecenia nie istnieje.')
+                    return render(request, 'tutoring-zone/writer-to-tutoring-zone.html', {'form': form})
+
+            new_group = None
             if user_type == 'teacher':
                 new_group = Group.objects.get(name='NewTeachers')
             elif user_type == 'student':
                 new_group = Group.objects.get(name='NewStudents')
-            else:
-                new_group = None
 
-            # Usuwamy użytkownika z obecnych grup i przypisujemy do nowej
-            if new_group:
-                user.groups.clear()
-                user.groups.add(new_group)
+            if new_group and not request.user.groups.filter(id=new_group.id).exists():
+                request.user.groups.clear()
+                request.user.groups.add(new_group)
 
-            # Zapisujemy zmiany w użytkowniku
             user.save()
 
-            # Jeśli wybrano rolę 'student', tworzona jest instancja w `NewStudents`
-            if user_type == 'student':
-                NewStudents.objects.create(
-                    email=user.email,
-                    first_name=user.first_name,
-                    last_name=user.last_name,
-                    subject=user.subject,
-                    level=user.level,
-                    is_selected=False,
-                    is_new=True
-                )
-
-            # Przekierowanie do kursów
             return redirect('schoolweb:coursesLoader')
     else:
         form = WriterDataForm(instance=request.user)
@@ -508,7 +526,6 @@ def applyUser(request):
             referral_code_input = form.cleaned_data.get('referral_code_input')
             role = form.cleaned_data.get('role')
 
-            # Obsługa kodu polecenia
             if referral_code_input:
                 referred_user = User.objects.filter(referral_code=referral_code_input).first()
 
@@ -516,16 +533,29 @@ def applyUser(request):
                     if role == 'student' and referred_user.groups.filter(name="Students").exists():
                         user.referred_by = referral_code_input
                         lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
-                        if user.level == "Podstawa":
+
+                        if referred_user.level == "Podstawa":
                             lesson_stats.lessons += 1
-                        elif user.level == "Rozszerzenie":
+                        elif referred_user.level == "Rozszerzenie":
                             lesson_stats.lessons_intermediate += 1
                         lesson_stats.save()
+
+                        NewStudents.objects.get_or_create(
+                            email=user.email,
+                            defaults={
+                                'first_name': user.first_name,
+                                'last_name': user.last_name,
+                                'subject': user.subject,
+                                'level': user.level,
+                                'is_selected': False,
+                                'is_new': True
+                            }
+                        )
                     elif role == 'teacher' and referred_user.groups.filter(name="Teachers").exists():
                         user.referred_by = referral_code_input
                         lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
-                        lesson_stats.month_referral_bonus += 50  # Dodanie do miesięcznego bonusu
-                        lesson_stats.all_referral_bonus += 50  # Dodanie do całkowitego bonusu
+                        lesson_stats.month_referral_bonus += 50
+                        lesson_stats.all_referral_bonus += 50
                         lesson_stats.save()
                     else:
                         form.add_error(
@@ -533,21 +563,12 @@ def applyUser(request):
                             'Kod polecenia jest nieprawidłowy lub należy do użytkownika spoza wymaganej grupy.'
                         )
                         return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
+                else:
+                    form.add_error('referral_code_input', 'Kod polecenia nie istnieje.')
+                    return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
 
-            # Zapisanie użytkownika
             user.save()
 
-            NewStudents.objects.create(
-                email=user.email,
-                first_name=user.first_name,
-                last_name=user.last_name,
-                subject=user.subject,
-                level=user.level,
-                is_selected=False,
-                is_new=True
-            )
-
-            # Logowanie użytkownika
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
             user = authenticate(request, username=email, password=password)
@@ -555,7 +576,6 @@ def applyUser(request):
             if user is not None:
                 login(request, user)
 
-                # Dodanie użytkownika do odpowiedniej grupy
                 group_name = 'NewStudents' if role == 'student' else 'NewTeachers'
                 try:
                     group = Group.objects.get(name=group_name)
@@ -565,9 +585,10 @@ def applyUser(request):
                     return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
 
                 return redirect('schoolweb:coursesLoader')
-
             else:
                 form.add_error(None, 'Błąd logowania, sprawdź dane.')
+        else:
+            form.add_error(None, 'Formularz jest niepoprawny.')
 
     else:
         form = ApplyUserForm()
@@ -575,7 +596,7 @@ def applyUser(request):
     return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
 
 
-@login_required
+@login_required(login_url='schoolweb:login')
 def newStudent(request):
     if request.method == 'POST':
         student_id = request.POST.get('student_id')

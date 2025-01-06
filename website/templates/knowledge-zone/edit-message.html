@@ -36,17 +36,13 @@
                         <img src="{{ form.image.value.url }}" alt="Aktualny obraz" class="image-preview__img">
                         <div class="image-clear-wrapper">
                             <input type="checkbox" name="image_clear" id="id_image_clear" class="image-clear-checkbox">
+                            <label for="id_image_clear" class="clear-image-btn" id="clear_image_btn">Usuń obraz</label>
                         </div>
                     </div>
                 {% else %}
                     {{ form.image }}
                 {% endif %}
-            </div>
-
-            <div class="form__group">
-                <label for="id_avatar">Zdjęcie</label>
-                <input type="file" name="avatar" id="id_avatar" accept="image/*">
-            </div>
+              </div>
 
             <div class="form__group">
                 <label for="room_name">Plik</label>

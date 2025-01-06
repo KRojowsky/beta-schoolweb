@@ -7,9 +7,7 @@
     {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
   {% endif %}
 {% endblock navbar %}
-
 {% load static %}
-
 {% block content %}
 <main class="auth layout">
   <div class="container">
@@ -27,69 +25,52 @@
         </h2>
 
         <form class="form" action="" method="POST">
+          <label>Wybierz rolę</label>
           {% csrf_token %}
 
-          <!-- Role Selection -->
-          <div class="form__group">
-            <label for="role-selection">Wybierz rolę</label>
-            <select name="role" id="role-selection" class="form-control" onchange="updateFormContent()">
-              <option value="student" {% if user_type == 'student' %}selected{% endif %}>Uczeń</option>
-              <option value="teacher" {% if user_type == 'teacher' %}selected{% endif %}>Korepetytor</option>
-            </select>
+          <div class="form__group role-selection">
+            <input type="hidden" name="role" id="role-input" value="{% if user_type == 'teacher' %}teacher{% else %}student{% endif %}">
+            <button type="button" class="role-btn {% if user_type == 'student' %}selected{% endif %}" data-role="student" onclick="selectRole(this)">Uczeń</button>
+            <button type="button" class="role-btn {% if user_type == 'teacher' %}selected{% endif %}" data-role="teacher" onclick="selectRole(this)">Korepetytor</button>
           </div>
 
-          <!-- First Name Field -->
           <div class="form__group">
             <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
             {{ form.first_name }}
             {% if form.first_name.errors %}
-              <div class="form__error">
-                {{ form.first_name.errors }}
-              </div>
+              <div class="form__error">{{ form.first_name.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Last Name Field -->
           <div class="form__group">
             <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
             {{ form.last_name }}
             {% if form.last_name.errors %}
-              <div class="form__error">
-                {{ form.last_name.errors }}
-              </div>
+              <div class="form__error">{{ form.last_name.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Username Field -->
           <div class="form__group">
             <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
             {{ form.username }}
             {% if form.username.errors %}
-              <div class="form__error">
-                {{ form.username.errors }}
-              </div>
+              <div class="form__error">{{ form.username.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Email Field -->
           <div class="form__group">
             <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
             {{ form.email }}
             {% if form.email.errors %}
-              <div class="form__error">
-                {{ form.email.errors }}
-              </div>
+              <div class="form__error">{{ form.email.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Phone Number Field -->
           <div class="form__group">
             <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
             {{ form.phone_number }}
             {% if form.phone_number.errors %}
-              <div class="form__error">
-                {{ form.phone_number.errors }}
-              </div>
+              <div class="form__error">{{ form.phone_number.errors }}</div>
             {% endif %}
           </div>
 
@@ -99,98 +80,65 @@
             </label>
             {{ form.subject }}
             {% if form.subject.errors %}
-              <div class="form__error">
-                {{ form.subject.errors }}
-              </div>
+              <div class="form__error">{{ form.subject.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Level Field -->
           <div class="form__group">
             <label for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
             {{ form.level }}
             {% if form.level.errors %}
-              <div class="form__error">
-                {{ form.level.errors }}
-              </div>
+              <div class="form__error">{{ form.level.errors }}</div>
             {% endif %}
           </div>
 
           <div class="form__group">
-              <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
-              {{ form.referral_code_input }}
-              {% if form.referral_code_input.errors %}
-                  <div class="form__error">
-                      {{ form.referral_code_input.errors }}
-                  </div>
-              {% endif %}
+            <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
+            {{ form.referral_code_input }}
+            {% if form.referral_code_input.errors %}
+              <div class="form__error">{{ form.referral_code_input.errors }}</div>
+            {% endif %}
           </div>
 
-          <!-- Password Field 1 -->
           <div class="form__group">
             <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
             <div class="password-container">
-              <input type="password" name="password1" id="{{ form.password1.id_for_label }}" class="form-control" value="">
-              <span class="toggle-password" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}', '{{ form.password1.id_for_label }}-icon', '{{ form.password1.id_for_label }}-path')" title="Pokaż/ukryj hasło">
-                <svg id="{{ form.password1.id_for_label }}-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
-                  <path id="{{ form.password1.id_for_label }}-path" d="M12 5C7 5 3 9 3 12c0 3 4 7 9 7s9-4 9-7c0-3-4-7-9-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" class="closed" />
-                </svg>
-              </span>
+              {{ form.password1 }}
               {% if form.password1.errors %}
                 <div class="form__error">{{ form.password1.errors }}</div>
               {% endif %}
             </div>
           </div>
 
-          <!-- Password Field 2 -->
           <div class="form__group">
             <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
             <div class="password-container">
-              <input type="password" name="password2" id="{{ form.password2.id_for_label }}" class="form-control" value="">
-              <span class="toggle-password" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}', '{{ form.password2.id_for_label }}-icon', '{{ form.password2.id_for_label }}-path')" title="Pokaż/ukryj hasło">
-                <svg id="{{ form.password2.id_for_label }}-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="icon">
-                  <path id="{{ form.password2.id_for_label }}-path" d="M12 5C7 5 3 9 3 12c0 3 4 7 9 7s9-4 9-7c0-3-4-7-9-7zm0 10c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" class="closed" />
-                </svg>
-              </span>
+              {{ form.password2 }}
               {% if form.password2.errors %}
                 <div class="form__error">{{ form.password2.errors }}</div>
               {% endif %}
             </div>
           </div>
 
-          <!-- Terms and Privacy Checkbox -->
           <div class="form__group">
-              <label for="{{ form.terms_and_privacy.id_for_label }}">
-                {{ form.terms_and_privacy }}
-                {{ form.terms_and_privacy.label }}
-              </label>
-              {% if form.terms_and_privacy.errors %}
-                  <div class="form__error">
-                      {{ form.terms_and_privacy.errors }}
-                  </div>
-              {% endif %}
+            <label for="{{ form.terms_and_privacy.id_for_label }}">
+              {{ form.terms_and_privacy }}
+              {{ form.terms_and_privacy.label }}
+            </label>
+            {% if form.terms_and_privacy.errors %}
+              <div class="form__error">{{ form.terms_and_privacy.errors }}</div>
+            {% endif %}
           </div>
 
-          <!-- Age Confirmation Checkbox -->
           <div class="form__group">
-              <label for="{{ form.age_confirmation.id_for_label }}">
-                {{ form.age_confirmation }}
-                {{ form.age_confirmation.label }}
-              </label>
-              {% if form.age_confirmation.errors %}
-                  <div class="form__error">
-                      {{ form.age_confirmation.errors }}
-                  </div>
-              {% endif %}
+            <label for="{{ form.age_confirmation.id_for_label }}">
+              {{ form.age_confirmation }}
+              {{ form.age_confirmation.label }}
+            </label>
+            {% if form.age_confirmation.errors %}
+              <div class="form__error">{{ form.age_confirmation.errors }}</div>
+            {% endif %}
           </div>
-
-          {% if messages %}
-            <ul class="messages">
-              {% for message in messages %}
-              <li>{{ message }}</li>
-              {% endfor %}
-            </ul>
-          {% endif %}
 
           <div class="container">
             <div class="center-button">
@@ -206,28 +154,7 @@
       </div>
     </div>
   </div>
-  <script src="{% static 'js/password-visibility.js' %}"></script>
 </main>
-
-<script>
-  function updateFormContent() {
-    var role = document.getElementById('role-selection').value;
-    var formTitle = document.getElementById('form-title');
-    var formTagline = document.getElementById('form-tagline');
-    var subjectLabel = document.querySelector("label[for='{{ form.subject.id_for_label }}']");
-
-    if (role === 'teacher') {
-      formTitle.innerText = 'Rejestracja Korepetytora';
-      formTagline.innerHTML = 'Utwórz konto korepetytora, aby móc w pełni korzystać ze <i>Strefy Korepetycji</i>';
-      subjectLabel.innerHTML = 'Wybierz przedmiot, z którego chcesz udzielać korepetycji';
-    } else {
-      formTitle.innerText = 'Rejestracja Ucznia';
-      formTagline.innerHTML = 'Utwórz konto ucznia, aby móc w pełni korzystać ze <i>Strefy Korepetycji</i>';
-      subjectLabel.innerHTML = 'Wybierz przedmiot, z którego chcesz otrzymywać korepetycje';
-    }
-  }
-
-  // Call the function once on page load to adjust visibility based on the selected role
-  window.onload = updateFormContent;
-</script>
-{% endblock %}
+<script src="{% static 'js/apply-user-tutoring-zone.js' %}"></script>
+<script src="{% static 'js/password-visibility.js' %}"></script>
+{% endblock content %}

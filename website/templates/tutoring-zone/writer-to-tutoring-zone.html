@@ -1,9 +1,9 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-  {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
+  {% include 'knowledge-zone/nav-no-search.html' %}
 {% endblock navbar %}
-
+{% load static %}
 {% block content %}
 <main class="auth layout">
   <div class="container">
@@ -14,23 +14,28 @@
         </div>
       </div>
       <div class="layout__body">
-        <h2 class="auth__tagline" id="form-tagline">
-          Wybierz, czy chcesz zostać korepetytorem, czy uczniem, oraz uzupełnij brakujące dane, aby móc korzystać ze <i>Strefy Korepetycji</i>.
+        <h2 class="auth__tagline">
+          Wybierz, czy chcesz zostać korepetytorem, czy uczniem. Uzupełnij brakujące dane, aby móc korzystać ze <i>Strefy Korepetycji</i>.
         </h2>
 
         <form class="form" method="POST">
           {% csrf_token %}
 
-          <!-- User Type -->
           <div class="form__group">
-            <label for="{{ form.user_type.id_for_label }}">{{ form.user_type.label }}</label>
-            {{ form.user_type }}
+            <label>Wybierz rolę</label>
+            <div class="role-selection">
+              <button type="button" id="teacher-btn" class="role-btn" data-role="teacher">
+                Korepetytor
+              </button>
+              <button type="button" id="student-btn" class="role-btn" data-role="student">
+                Uczeń
+              </button>
+            </div>
             {% if form.user_type.errors %}
               <div class="form__error">{{ form.user_type.errors }}</div>
             {% endif %}
           </div>
 
-          <!-- Phone Number -->
           <div class="form__group">
             <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
             {{ form.phone_number }}
@@ -39,7 +44,6 @@
             {% endif %}
           </div>
 
-          <!-- Subject -->
           <div class="form__group">
             <label for="{{ form.subject.id_for_label }}">{{ form.subject.label }}</label>
             {{ form.subject }}
@@ -48,7 +52,6 @@
             {% endif %}
           </div>
 
-          <!-- Level -->
           <div class="form__group">
             <label for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
             {{ form.level }}
@@ -57,9 +60,20 @@
             {% endif %}
           </div>
 
-          <!-- Submit Button -->
+          <div class="form__group">
+            <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
+            {{ form.referral_code_input }}
+            {% if form.referral_code_input.errors %}
+              <div class="form__error">{{ form.referral_code_input.errors }}</div>
+            {% endif %}
+            <small>{{ form.referral_code_input.help_text }}</small>
+          </div>
+
           <div class="container">
             <div class="center-button">
+              <button type="button" class="btn btn--link btn--cancel" onclick="window.history.back();">
+                Anuluj
+              </button>
               <button class="btn btn--link" type="submit">
                 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                   <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 12v-2c0-4.418 3.582-8 8-8s8 3.582 8 8v2h-16zM26 30h-20v-16h20v16z"></path>
@@ -73,4 +87,5 @@
     </div>
   </div>
 </main>
+<script src="{% static 'js/writer-to-tutoring-zone.js' %}"></script>
 {% endblock content %}

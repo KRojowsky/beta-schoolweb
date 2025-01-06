@@ -35,6 +35,8 @@ class RoomForm(forms.ModelForm):
 
 
 class RoomMessageForm(forms.ModelForm):
+    image_clear = forms.BooleanField(required=False, initial=False)
+
     class Meta:
         model = Message
         fields = ['body', 'image', 'file']
@@ -70,15 +72,31 @@ class UserForm(forms.ModelForm):
     bio = forms.CharField(widget=forms.Textarea, required=False)
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
 class WriterDataForm(forms.ModelForm):
     user_type = forms.ChoiceField(
         choices=[('teacher', 'Korepetytor'), ('student', 'Uczeń')],
         label="Wybierz rolę"
     )
+    referral_code_input = forms.CharField(
+        max_length=10,
+        required=False,
+        label="Kod polecenia",
+    )
 
     class Meta:
         model = User
         fields = ['phone_number', 'level', 'subject']
+        labels = {
+            'phone_number': 'Numer telefonu',
+            'subject': 'Przedmiot',
+        }
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number')
+        if not phone_number or phone_number == 'N/A':
+            raise forms.ValidationError("Numer telefonu jest wymagany.")
+        return phone_number
 
     def clean_user_type(self):
         user_type = self.cleaned_data.get('user_type')
@@ -103,7 +121,6 @@ class ApplyUserForm(UserCreationForm):
         max_length=10,
         required=False,
         label="Kod polecenia",
-        help_text="Jeśli masz kod polecenia, wpisz go tutaj. Uczniowie muszą podać kod innego ucznia, nauczyciele - kod innego nauczyciela."
     )
 
     class Meta:
