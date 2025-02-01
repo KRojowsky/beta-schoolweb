@@ -44,18 +44,16 @@
             <label for="room_event_datetime">Data:</label>
             <input type="datetime-local" id="room_event_datetime" name="event_datetime" min="{{ current_date }}">
             {% for error in form.event_datetime.errors %}
-              <div class="alert alert-danger" style="color: red;">{{ error }}</div>
+              <div class="alert alert-danger">{{ error }}</div>
             {% endfor %}
           </div>
 
           {% if messages %}
-            <div class="messages" style="color: red; margin-bottom: 15px; margin-top: 15px; text-align: center; font-size: 16px; border: 1px solid red; border-radius: 7px; padding: 5px;">
-              {% for message in messages %}
-                <div class="{% if message.tags %}alert alert-danger{% endif %}">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            </div>
+            <ul class="messages">
+                {% for message in messages %}
+                <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
           {% endif %}
 
           <div class="form__action">

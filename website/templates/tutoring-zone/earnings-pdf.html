@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% include 'tutoring-zone/nav-teacher-view.html' %}
 {% endblock navbar %}
 
 {% block content %}
@@ -11,31 +11,27 @@
         <div class="layout__box">
             <div class="layout__boxHeader">
                 <div class="layout__boxTitle">
-                    <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                            viewBox="0 0 32 32">
+                    <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}" class="back-link">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                             <title>Cofnij</title>
-                            <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
-                            1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-                            </path>
+                            <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
                         </svg>
                     </a>
                     <h3>Podsumowanie Dochodów</h3>
                 </div>
             </div>
             <div class="layout__body">
-                <h4>Twoje wypłaty</h4>
-
                 {% if user_earnings %}
-                    <ul>
+                    <ul class="earnings-list">
                         {% for earnings in user_earnings %}
-                            <li>
+                            <li class="earnings-item">
                                 <button class="earnings-month-toggle" onclick="toggleEarningsDetails({{ earnings.id }})">
-                                    Wypłata {{ earnings.month }} / {{ earnings.year }}
+                                    Wypłata za miesiąc: {{ earnings.month }} / {{ earnings.year }}
                                 </button>
                                 <div id="earnings-details-{{ earnings.id }}" class="earnings-details" style="display:none;">
-                                    <p>Miesięczne przychody: {{ earnings.monthly_earnings }}</p>
-                                    <p>Data zapisania: {{ earnings.date_added|date:"d M Y H:i" }}</p>
+                                    <p><strong>Miesięczne przychody:</strong> {{ earnings.monthly_earnings }}</p>
+                                    <p><strong>Data zapisania:</strong> {{ earnings.date_added|date:"d M Y H:i" }}</p>
+                                    <a href="{% url 'schoolweb:generate-pdf' month=earnings.month year=earnings.year %}" class="download-link">Pobierz PDF z lekcjami</a>
                                 </div>
                             </li>
                         {% endfor %}

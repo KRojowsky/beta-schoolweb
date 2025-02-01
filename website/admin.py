@@ -9,6 +9,7 @@ from django import forms
 from website.models import User
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -94,6 +95,31 @@ class LessonStatsAdmin(admin.ModelAdmin):
     ordering = ['user']
     search_fields = ['user__username']
 
+    actions = ['generate_teacher_earnings']
+
+    def generate_teacher_earnings(self, request, queryset):
+        """
+        Custom admin action to manually generate monthly earnings for selected users
+        """
+        for lesson_stat in queryset:
+            # Calculate the earnings for this user and month
+            month_earnings = lesson_stat.month_earnings
+
+            # Get or create TeachersEarning instance for this user for the current month/year
+            earning, created = TeachersEarning.objects.get_or_create(
+                user=lesson_stat.user,
+                month=now().month,
+                year=now().year
+            )
+
+            # Store the calculated earnings
+            earning.monthly_earnings = month_earnings
+            earning.save()
+
+        self.message_user(request, "Earnings have been generated for the selected teachers.")
+
+    generate_teacher_earnings.short_description = "Generate Monthly Earnings"
+
 
 class TeachersEarningAdmin(admin.ModelAdmin):
     list_display = ['user', 'monthly_earnings', 'month', 'year', 'date_added']
@@ -122,7 +148,7 @@ class LessonInfo(admin.ModelAdmin):
     clicked_users_count.short_description = 'Clicked Users Count'
 
     list_display = ['title', 'host', 'postUpdated', 'postCreated', 'event_datetime', 'clicked_users_count',
-                    'feedback', 'points', 'schoolweb_rating', 'get_attended_students', 'get_attended_teachers']
+                    'feedback', 'points', 'schoolweb_rating', 'get_attended_students', 'get_attended_teachers', 'payment']
     list_filter = ['host', 'course', 'postCreated', 'postUpdated', 'event_datetime']
     search_fields = ['host', 'title', 'course__name', 'feedback']
     ordering = ['-postCreated', '-postUpdated']

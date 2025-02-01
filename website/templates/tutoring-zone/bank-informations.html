@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+{% include 'tutoring-zone/nav-teacher-view.html' %}
 {% endblock navbar %}
 
 {% block content %}
@@ -26,7 +26,6 @@
             <div class="layout__body">
 
                 {% if is_editing %}
-                    <!-- Show form for editing bank information -->
                     <form class="form" action="" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
 
@@ -40,13 +39,12 @@
                         {% endfor %}
 
                         <div class="form__action">
-                            <a class="btn btn--link" href="{% url 'schoolweb:bank_information' %}">Anuluj</a>
+                            <a class="btn btn--link" href="{% url 'schoolweb:bank-information' %}">Anuluj</a>
                             <button class="btn btn--link" type="submit">Zapisz</button>
                         </div>
                     </form>
 
                 {% else %}
-                    <!-- Show saved bank information in a styled format -->
                     {% if bank_info %}
                         <div class="bank-info-card">
                             <p><strong>Numer karty</strong> {{ bank_info.card_number }}</p>
@@ -59,8 +57,6 @@
                             <p>Brak zapisanych informacji o koncie bankowym.</p>
                         </div>
                     {% endif %}
-
-                    <!-- Edit button -->
                     <a href="?edit=true" class="btn btn--link">Edytuj</a>
                 {% endif %}
 

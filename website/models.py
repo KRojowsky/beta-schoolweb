@@ -54,6 +54,7 @@ class User(AbstractUser):
     level = models.CharField( max_length=50, choices=LEVEL_CHOICES, blank=True, verbose_name="Poziom" )
     referral_code = models.CharField(max_length=10, unique=True, blank=True, null=True)
     referred_by = models.CharField(max_length=10, blank=True, null=True)
+    add_info = models.CharField(max_length=255, blank=True, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -106,12 +107,32 @@ class Room(models.Model):
         is_new = self.pk is None
         with transaction.atomic():
             super().save(*args, **kwargs)
-            if is_new and self.host:
-                self.host.points += 10
-                self.host.save(update_fields=['points'])
-                if self.host.points >= 1000:
-                    self.host.points -= 1000
-                    self.host.save(update_fields=['points'])
+            if is_new:
+                self._update_user_points_and_stats()
+
+
+    def _update_user_points_and_stats(self):
+        if not self.host:
+            return
+
+        self.host.points += 10
+        self.host.save(update_fields=['points'])
+
+        if self.host.points >= 1000:
+            self.host.points -= 1000
+            self.host.save(update_fields=['points'])
+
+            lesson_stats, _ = LessonStats.objects.get_or_create(user=self.host)
+            if self.host.groups.filter(name='Students').exists():
+                if self.host.level == 'Podstawa':
+                    lesson_stats.lessons += 1
+                elif self.host.level == 'Rozszerzenie':
+                    lesson_stats.lessons_intermediate += 1
+            elif self.host.groups.filter(name='Teachers').exists():
+                lesson_stats.month_bonus += 50
+                lesson_stats.all_bonus += 50
+
+            lesson_stats.save()
 
     def delete(self, *args, **kwargs):
         with transaction.atomic():
@@ -184,33 +205,6 @@ class Message(models.Model):
             self.likes.add(user)
         self.save()
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-class Course(models.Model):
-    COURSE_TYPE_CHOICES = (
-        ('basic', 'Podstawowy'),
-        ('intermediate', 'Rozszerzony'),
-    )
-
-    name = models.CharField(max_length=200)
-    student = models.CharField(max_length=200, default="")
-    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
-    students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)  # Uczniowie przypisani do kursu
-    courseCreated = models.DateTimeField(auto_now_add=True)
-    course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES, default='basic')
-
-    def get_lessons_with_feedback_count(self):
-        return self.lesson_set.filter(feedback__isnull=False).count()
-
-    class Meta:
-        ordering = ['-courseCreated']
-
-    def __str__(self):
-        return self.student
-
-    class Meta:
-        verbose_name = 'Kursy - Strefa Korepetycji'
-        verbose_name_plural = 'Kursy - Strefa Korepetycji'
-
 
 class Report(models.Model):
     REPORT_REASONS = [
@@ -237,6 +231,161 @@ class Report(models.Model):
         verbose_name = 'Zgłoszenia - Strefa Wiedzy'
         verbose_name_plural = 'Zgłoszenia - Strefa Wiedzy'
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class NewStudents(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Użytkownik")
+    email = models.EmailField(null=True, blank=True)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    subject = models.ForeignKey('Topic', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Przedmiot")
+    level = models.CharField(
+        max_length=50,
+        choices=[('Podstawa', 'Podstawa'), ('Rozszerzenie', 'Rozszerzenie')],
+        verbose_name="Poziom"
+    )
+    is_selected = models.BooleanField(default=False, verbose_name="Czy wybrany?")
+    is_new = models.BooleanField(default=True, verbose_name="Czy nowy?")
+    courses = models.ManyToManyField('Course', blank=True, related_name='students_in_course', verbose_name="Kursy")
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.subject})"
+
+    class Meta:
+        verbose_name = 'Nowi uczniowie - Strefa Korepetycji'
+        verbose_name_plural = 'Nowi uczniowie - Strefa Korepetycji'
+
+
+class Course(models.Model):
+    COURSE_TYPE_CHOICES = (
+        ('basic', 'Podstawowy'),
+        ('intermediate', 'Rozszerzony'),
+    )
+
+    name = models.CharField(max_length=200)
+    student = models.CharField(max_length=200, default="")
+    teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
+    students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)
+    courseCreated = models.DateTimeField(auto_now_add=True)
+    course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES, default='basic')
+
+    def get_lessons_with_feedback_count(self):
+        return self.lesson_set.filter(feedback__isnull=False).count()
+
+    def __str__(self):
+        return self.student
+
+    class Meta:
+        ordering = ['-courseCreated']
+        verbose_name = 'Kursy - Strefa Korepetycji'
+        verbose_name_plural = 'Kursy - Strefa Korepetycji'
+
+
+class LessonStats(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="lesson_stats")
+    lessons = models.IntegerField(default=0)
+    lessons_intermediate = models.IntegerField(default=0)
+
+    break_lessons = models.IntegerField(default=0)
+    all_break_lessons = models.IntegerField(default=0)
+
+    missed_lessons = models.IntegerField(default=0)
+    all_missed_lessons = models.IntegerField(default=0)
+
+    all_lessons = models.IntegerField(default=0)
+    all_lessons_intermediate = models.IntegerField(default=0)
+
+    month_bonus = models.IntegerField(default=0)
+    all_bonus = models.IntegerField(default=0)
+
+    month_referral_bonus = models.IntegerField(default=0)
+    all_referral_bonus = models.IntegerField(default=0)
+
+    def update_all_lessons(self):
+        try:
+            original_instance = LessonStats.objects.get(pk=self.pk)
+            original_lessons = original_instance.lessons
+        except LessonStats.DoesNotExist:
+            original_lessons = 0
+
+        if original_lessons != 0 and self.lessons == 0:
+            if self.all_lessons > 0:
+                self.all_lessons += 1
+        elif original_lessons > self.lessons:
+            self.all_lessons += 1
+
+    @property
+    def month_earnings(self):
+        if self.user.groups.filter(name='Teachers').exists():
+            return (
+                60 * self.lessons_intermediate +
+                40 * self.lessons +
+                20 * self.break_lessons -
+                50 * self.missed_lessons +
+                self.month_bonus + self.month_referral_bonus
+            )
+        return -1
+
+    @property
+    def all_earnings(self):
+        if self.user.groups.filter(name='Teachers').exists():
+            return (
+                60 * self.all_lessons_intermediate +
+                40 * self.all_lessons +
+                20 * self.all_break_lessons -
+                50 * self.all_missed_lessons +
+                self.all_bonus + self.all_referral_bonus
+            )
+        return -1
+
+    def save(self, *args, **kwargs):
+        self.update_all_lessons()
+        super(LessonStats, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return (
+            f"LessonStats for {self.user} | "
+            f"Monthly Earnings: {self.month_earnings} | "
+            f"Total Earnings: {self.all_earnings}"
+        )
+
+    class Meta:
+        verbose_name = 'Lekcje - statystyki'
+        verbose_name_plural = 'Lekcje - statystyki'
+
+
+class BankInformation(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='bank_information')
+    card_number = models.CharField(max_length=16, unique=True)
+    cvv = models.CharField(max_length=3)
+    cardholder_name = models.CharField(max_length=100)
+    expiration_date = models.DateField()
+
+    def __str__(self):
+        return f'{self.cardholder_name} - {self.card_number}'
+
+
+    class Meta:
+        verbose_name = 'Informacje bankowe'
+        verbose_name_plural = 'Informacje bankowe'
+
+
+class TeachersEarning(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='earnings')
+    monthly_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    date_added = models.DateTimeField(auto_now_add=True)
+    month = models.PositiveIntegerField(default=datetime.now().month)
+    year = models.PositiveIntegerField(default=datetime.now().year)
+
+    class Meta:
+        verbose_name = 'Wypłata'
+        verbose_name_plural = 'Wypłaty'
+        unique_together = ('user', 'month', 'year')
+
+    def __str__(self):
+        return f"Earnings for {self.user.username} | Monthly: {self.monthly_earnings} | {self.month}/{self.year}"
+
+
 class Lesson(models.Model):
     host = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     course = models.ForeignKey(Course, on_delete=models.SET_NULL, null=True)
@@ -254,17 +403,21 @@ class Lesson(models.Model):
     attended_students = models.ManyToManyField(User, related_name='attended_students_lessons', blank=True)
     attended_teachers = models.ManyToManyField(User, related_name='attended_teachers_lessons', blank=True)
     feedback_submitted = models.BooleanField(default=False)
-    invite_code = models.CharField(max_length=10, unique=True, blank=True)  # Nowe pole na kod zaproszenia
+    invite_code = models.CharField(max_length=10, unique=True, blank=True)
+    payment = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        # Generowanie unikalnego invite_code
+        """ Generowanie unikalnego invite_code """
         if not self.invite_code:
             self.invite_code = self.generate_invite_code()
         super().save(*args, **kwargs)
 
     def generate_invite_code(self):
         """Generuje unikalny kod zaproszenia."""
-        return ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        while Lesson.objects.filter(invite_code=code).exists():
+            code = ''.join(random.choices(string.ascii_letters + string.digits, k=8))
+        return code
 
     def add_click(self, user):
         if user not in self.clicked_users.all():
@@ -276,13 +429,11 @@ class Lesson(models.Model):
         self.feedback = feedback_text
         self.save()
 
-    class Meta:
-        ordering = ['-postUpdated', '-postCreated']
-
     def __str__(self):
         return self.title
 
     class Meta:
+        ordering = ['-postUpdated', '-postCreated']
         verbose_name = 'Lekcje - Strefa Korepetycji'
         verbose_name_plural = 'Lekcje - Strefa Korepetycji'
 
@@ -299,14 +450,11 @@ class CourseMessage(models.Model):
 
     class Meta:
         ordering = ['-messageUpdated', '-messageCreated']
-
-    def __str__(self):
-        return self.body[0:50]
-
-    class Meta:
         verbose_name = 'Komentarze - Strefa Korepetycji'
         verbose_name_plural = 'Komentarze - Strefa Korepetycji'
 
+    def __str__(self):
+        return self.body[0:50]
 
 class LessonCorrection(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default="")
@@ -384,136 +532,6 @@ class Availability(models.Model):
     class Meta:
         verbose_name = 'Dostępności'
         verbose_name_plural = 'Dostępności'
-
-
-
-class NewStudents(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Użytkownik")
-    email = models.EmailField(null=True, blank=True)
-    first_name = models.CharField(max_length=200)
-    last_name = models.CharField(max_length=200)
-    subject = models.ForeignKey(
-        'Topic', on_delete=models.SET_NULL, null=True, blank=True, verbose_name="Przedmiot"
-    )
-    level = models.CharField(
-        max_length=50,
-        choices=[('Podstawa', 'Podstawa'), ('Rozszerzenie', 'Rozszerzenie')],
-        verbose_name="Poziom"
-    )
-    is_selected = models.BooleanField(default=False, verbose_name="Czy wybrany?")
-    is_new = models.BooleanField(default=True, verbose_name="Czy nowy?")
-
-    # Nowe pole, które przechowuje przypisane kursy
-    courses = models.ManyToManyField('Course', blank=True, related_name='students_in_course', verbose_name="Kursy")
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name} ({self.subject})"
-
-
-class LessonStats(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="lesson_stats")
-    lessons = models.IntegerField(default=0)
-    lessons_intermediate = models.IntegerField(default=0)
-
-    break_lessons = models.IntegerField(default=0)
-    all_break_lessons = models.IntegerField(default=0)
-
-    missed_lessons = models.IntegerField(default=0)
-    all_missed_lessons = models.IntegerField(default=0)
-
-    all_lessons = models.IntegerField(default=0)
-    all_lessons_intermediate = models.IntegerField(default=0)
-
-    month_bonus = models.IntegerField(default=0)
-    all_bonus = models.IntegerField(default=0)
-
-    month_referral_bonus = models.IntegerField(default=0)
-    all_referral_bonus = models.IntegerField(default=0)
-
-    def update_all_lessons(self):
-        try:
-            original_instance = LessonStats.objects.get(pk=self.pk)
-            original_lessons = original_instance.lessons
-        except LessonStats.DoesNotExist:
-            original_lessons = 0
-
-        if original_lessons != 0 and self.lessons == 0:
-            if self.all_lessons > 0:
-                self.all_lessons += 1
-        elif original_lessons > self.lessons:
-            self.all_lessons += 1
-
-    @property
-    def month_earnings(self):
-        if self.user.groups.filter(name='Teachers').exists():
-            return (
-                60 * self.lessons_intermediate +
-                40 * self.lessons +
-                20 * self.break_lessons -
-                50 * self.missed_lessons +
-                self.month_bonus + self.month_referral_bonus
-            )
-        return -1
-
-    @property
-    def all_earnings(self):
-        if self.user.groups.filter(name='Teachers').exists():
-            return (
-                60 * self.all_lessons_intermediate +
-                40 * self.all_lessons +
-                20 * self.all_break_lessons -
-                50 * self.all_missed_lessons +
-                self.all_bonus + self.all_referral_bonus
-            )
-        return -1
-
-    def save(self, *args, **kwargs):
-        self.update_all_lessons()
-        super(LessonStats, self).save(*args, **kwargs)
-
-    def __str__(self):
-        return (
-            f"LessonStats for {self.user} | "
-            f"Monthly Earnings: {self.month_earnings} | "
-            f"Total Earnings: {self.all_earnings}"
-        )
-
-    class Meta:
-        verbose_name = 'Lekcje - statystyki'
-        verbose_name_plural = 'Lekcje - statystyki'
-
-
-
-class BankInformation(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='bank_information')
-    card_number = models.CharField(max_length=16, unique=True)
-    cvv = models.CharField(max_length=3)
-    cardholder_name = models.CharField(max_length=100)
-    expiration_date = models.DateField()
-
-    def __str__(self):
-        return f'{self.cardholder_name} - {self.card_number}'
-
-
-    class Meta:
-        verbose_name = 'Informacje bankowe'
-        verbose_name_plural = 'Informacje bankowe'
-
-
-class TeachersEarning(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='earnings')
-    monthly_earnings = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    date_added = models.DateTimeField(auto_now_add=True)
-    month = models.PositiveIntegerField(default=datetime.now().month)
-    year = models.PositiveIntegerField(default=datetime.now().year)
-
-    class Meta:
-        verbose_name = 'Wypłata'
-        verbose_name_plural = 'Wypłaty'
-        unique_together = ('user', 'month', 'year')  # Ensures one payout per user per month/year combination
-
-    def __str__(self):
-        return f"Earnings for {self.user.username} | Monthly: {self.monthly_earnings} | {self.month}/{self.year}"
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

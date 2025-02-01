@@ -11,12 +11,14 @@ from datetime import timedelta, datetime
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
+def validate_username_length(value):
+    if len(value) > 10:
+        raise ValidationError(_("Nazwa użytkownika nie może przekraczać 10 znaków."))
+
 class MyUserCreationForm(UserCreationForm):
-    usable_password = None
     username = forms.CharField(
-        max_length=10,
         label=_("Nazwa użytkownika (maks. 10 znaków)"),
-        validators=[MaxLengthValidator(limit_value=10, message=_("Nazwa użytkownika nie może przekraczać 10 znaków."))],
+        validators=[validate_username_length],
         help_text=_("Maksymalnie 10 znaków."),
     )
 
@@ -115,12 +117,18 @@ class ApplyUserForm(UserCreationForm):
     phone_number = forms.CharField(max_length=20, required=True, label="Numer telefonu")
     subject = forms.ModelChoiceField(queryset=Topic.objects.all(), label="Wybierz przedmiot", required=False)
     level = forms.ChoiceField(choices=User.LEVEL_CHOICES, required=True, label="Poziom zajęć", initial="podstawa")
-    terms_and_privacy = forms.BooleanField(required=True, label="Akceptuję regulamin i politykę prywatności")
-    age_confirmation = forms.BooleanField(required=True, label="Potwierdzam ukończenie 18 lat")
+    terms_and_privacy = forms.BooleanField(required=True)
+    age_confirmation = forms.BooleanField(required=True, label="Potwierdzam ukończenie 18 lat lub zgoda na założenie konta jest wyrażona w moim imieniu przez rodzica/opiekuna prawnego.")
     referral_code_input = forms.CharField(
         max_length=10,
         required=False,
         label="Kod polecenia",
+    )
+
+    username = forms.CharField(
+        max_length=10,
+        label="Nazwa użytkownika (maks. 10 znaków)",
+        validators=[MaxLengthValidator(10, message="Nazwa użytkownika nie może mieć więcej niż 10 znaków.")],
     )
 
     class Meta:
@@ -129,7 +137,56 @@ class ApplyUserForm(UserCreationForm):
                   'referral_code_input', 'password1', 'password2']
 
 
-class PostFormCreate(forms.ModelForm):
+
+class BankInformationForm(forms.ModelForm):
+    expiration_month = forms.ChoiceField(label='Miesiąc', choices=[(i, f'{i:02}') for i in range(1, 13)])
+    expiration_year = forms.ChoiceField(label='Rok', choices=[(year, year) for year in range(datetime.now().year, datetime.now().year + 6)])
+
+    class Meta:
+        model = BankInformation
+        fields = ['card_number', 'cvv', 'cardholder_name', 'expiration_month', 'expiration_year']
+        labels = {
+            'card_number': 'Numer karty',
+            'cvv': 'CVV',
+            'cardholder_name': 'Imię i nazwisko',
+        }
+        widgets = {
+            'card_number': forms.TextInput(attrs={'maxlength': '16', 'placeholder': '16-cyfrowy numer karty'}),
+            'cvv': forms.TextInput(attrs={'maxlength': '3', 'placeholder': 'CVV'}),
+            'cardholder_name': forms.TextInput(attrs={'placeholder': 'Imię i nazwisko właściciela'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        month = cleaned_data.get('expiration_month')
+        year = cleaned_data.get('expiration_year')
+
+        if month and year:
+            cleaned_data['expiration_date'] = f'{year}-{month}-01'
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        expiration_month = self.cleaned_data.get('expiration_month')
+        expiration_year = self.cleaned_data.get('expiration_year')
+        instance.expiration_date = f'{expiration_year}-{expiration_month}-01'
+        if commit:
+            instance.save()
+        return instance
+
+
+class ResignationForm(forms.ModelForm):
+    course_info = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nazwa kursu, imie i nazwisko ucznia/ów, numeru telefonu/ów, przedmiot, częstotliwość zajęć, dodatkowe informacje itd.'}))
+    rating = forms.ChoiceField(choices=Resign.RATING_CHOICES, label='Ocena platformy SchoolWeb', required=True)
+    consider_return = forms.ChoiceField(choices=Resign.RETURN_OPTIONS, label='Czy rozważasz powrót na SchoolWeb', required=True)
+    reason_details = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Podaj dodatkowe informacje dotyczące powodu rezygnacji/przerwy'}),required=False)
+
+    class Meta:
+        model = Resign
+        fields = ['email', 'reason', 'start_date', 'end_date', 'course_info', 'rating', 'consider_return', 'reason_details']
+
+
+class LessonFormCreate(forms.ModelForm):
     event_datetime = forms.DateTimeField(
         widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         label='Data',
@@ -138,7 +195,7 @@ class PostFormCreate(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
-        super(PostFormCreate, self).__init__(*args, **kwargs)
+        super(LessonFormCreate, self).__init__(*args, **kwargs)
 
         if user:
             self.fields['course'].queryset = Course.objects.filter(teacher=user)
@@ -158,7 +215,7 @@ class PostFormCreate(forms.ModelForm):
         fields = ['title', 'description', 'course', 'event_datetime']
 
 
-class PostFormEdit(forms.ModelForm):
+class LessonFormEdit(forms.ModelForm):
     event_datetime = forms.DateTimeField(
         widget=forms.TextInput(attrs={'type': 'datetime-local', 'class': 'form-control'}),
         label='Data',
@@ -177,6 +234,16 @@ class PostFormEdit(forms.ModelForm):
             raise ValidationError("Wybierz datę i godzinę co najmniej 15 minut od teraźniejszego czasu.")
 
         return event_datetime
+
+
+class NewStudentForm(forms.ModelForm):
+    class Meta:
+        model = NewStudents
+        fields = ['subject', 'level']
+        widgets = {
+            'subject': forms.Select(attrs={'class': 'form-control'}),
+            'level': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 
 class LessonFeedbackForm(forms.ModelForm):
@@ -214,47 +281,6 @@ class LessonFeedbackForm(forms.ModelForm):
         required=False,
         initial="-",
     )
-
-
-class BankInformationForm(forms.ModelForm):
-    expiration_month = forms.ChoiceField(label='Miesiąc', choices=[])
-    expiration_year = forms.ChoiceField(label='Rok', choices=[])
-
-    class Meta:
-        model = BankInformation
-        fields = ['card_number', 'cvv', 'cardholder_name', 'expiration_month', 'expiration_year']
-        labels = {
-            'card_number': 'Numer karty',
-            'cvv': 'CVV',
-            'cardholder_name': 'Imię i nazwisko',
-        }
-        widgets = {
-            'card_number': forms.TextInput(attrs={
-                'maxlength': '16',
-                'placeholder': '16-cyfrowy numer karty',
-            }),
-            'cvv': forms.TextInput(attrs={
-                'maxlength': '3',
-                'placeholder': 'CVV',
-            }),
-            'cardholder_name': forms.TextInput(attrs={'placeholder': 'Imię i nazwisko właściciela'}),
-        }
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        current_year = datetime.now().year
-        self.fields['expiration_month'].choices = [(i, f'{i:02}') for i in range(1, 13)]  # Months 1 to 12
-        self.fields['expiration_year'].choices = [(year, year) for year in range(current_year, current_year + 6)]  # Current year to 5 years ahead
-
-    def clean(self):
-        cleaned_data = super().clean()
-        month = cleaned_data.get('expiration_month')
-        year = cleaned_data.get('expiration_year')
-
-        if month and year:
-            # Create the expiration date with the first day of the month
-            cleaned_data['expiration_date'] = f'{year}-{month}-01'  # Format YYYY-MM-DD
-        return cleaned_data
 
 
 class LessonCorrectionForm(forms.ModelForm):
@@ -299,17 +325,6 @@ class LessonCorrectionForm(forms.ModelForm):
     )
 
 
-class ResignationForm(forms.ModelForm):
-    course_info = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nazwa kursu, imie i nazwisko ucznia/ów, numeru telefonu/ów, przedmiot, częstotliwość zajęć, dodatkowe informacje itd.'}))
-    rating = forms.ChoiceField(choices=Resign.RATING_CHOICES, label='Ocena platformy SchoolWeb', required=True)
-    consider_return = forms.ChoiceField(choices=Resign.RETURN_OPTIONS, label='Czy rozważasz powrót na SchoolWeb', required=True)
-    reason_details = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Podaj dodatkowe informacje dotyczące powodu rezygnacji/przerwy'}),required=False)
-
-    class Meta:
-        model = Resign
-        fields = ['email', 'reason', 'start_date', 'end_date', 'course_info', 'rating', 'consider_return', 'reason_details']
-
-
 class AvailabilityForm(forms.ModelForm):
     class Meta:
         model = Availability
@@ -322,13 +337,3 @@ class AvailabilityForm(forms.ModelForm):
         tomorrow = timezone.now() + timezone.timedelta(days=1)
         seven_days_later = tomorrow + timezone.timedelta(days=7)
         self.fields['day'].widget = forms.DateInput(attrs={'type': 'date', 'min': tomorrow.date(), 'max': seven_days_later.date()})
-
-
-class NewStudentForm(forms.ModelForm):
-    class Meta:
-        model = NewStudents
-        fields = ['subject', 'level']
-        widgets = {
-            'subject': forms.Select(attrs={'class': 'form-control'}),
-            'level': forms.Select(attrs={'class': 'form-control'}),
-        }

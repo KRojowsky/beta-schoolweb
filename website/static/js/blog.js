@@ -1,4 +1,3 @@
-// Change theme (light/dark)
 document.addEventListener("DOMContentLoaded", function() {
     const toggleButton = document.getElementById("theme-toggle-btn");
     const currentTheme = localStorage.getItem("theme") || "light";
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-// Categories and filters
 document.addEventListener('DOMContentLoaded', function() {
     const categoryMenuBtn = document.getElementById('category-menu-btn');
     const filterMenuBtn = document.getElementById('filter-menu-btn');
@@ -56,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Likes
 document.getElementById('like-button').addEventListener('click', function(event) {
     event.preventDefault();
     fetch(likePostUrl, {

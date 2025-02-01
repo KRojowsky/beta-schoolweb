@@ -623,6 +623,7 @@ a {
 
 .roomListRoom {
     margin-bottom: 25px;
+    margin-top: 10px;
     background: #FFF;
     border-radius: 5px;
     padding: 20px;
@@ -1728,89 +1729,6 @@ a {
 }
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LESSONS-HOME~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
-
-.home-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    padding: 0 20px;
-}
-
-.registration-container {
-    display: flex;
-    justify-content: center;
-    align-items: stretch;
-    flex-wrap: wrap;
-    gap: 25px;
-    margin-bottom: 30px;
-}
-
-.teacher_register, .student_register {
-    flex: 1;
-    padding: 20px;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    background: #FFF;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-}
-
-.teacher_register a, .student_register a {
-    text-transform: uppercase;
-    padding: 7px 14px;
-}
-
-.teacher_logo h2, .student_logo h2{
-    font-size: 25px;
-    color: #BB00FF;
-    text-transform: uppercase;
-}
-
-.normal-text {
-    font-size: 16px;
-    line-height: 1.5;
-    border-radius: 10px;
-    color: #333;
-    text-align: left;
-    padding: 20px 0;
-}
-
-.mobile-text {
-    display: none;
-}
-
-@media (max-width: 900px) {
-    .registration-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .student_register .normal-text, .teacher_register .normal-text {
-        display: none;
-    }
-
-    .student_register .mobile-text, .teacher_register .mobile-text {
-        display: block;
-        font-size: 15px;
-    }
-
-    .registration-container h2 {
-        font-size: 20px;
-    }
-
-    .mobile-text {
-        padding: 20px 0;
-        line-height: 1.4;
-    }
-}
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WRITER-TO-TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .role-selection {
@@ -1850,6 +1768,10 @@ a {
 }
 
 .center-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
     gap: 10px;
 }
 
@@ -1921,13 +1843,6 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     font-weight: 900;
 }
 
-.center-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 50px;
-}
-
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATOR/MIGRATE-USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .create-account-container {
@@ -1947,23 +1862,32 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 
 .create-account {
     width: 100%;
-    max-width: 1400px;
-    border-radius: 10px;
+    max-width: 1200px;
+    border-radius: 15px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 0 6px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     background: #FFF;
-    padding: 30px;
+    padding: 20px 50px;
+    max-height: 100%;
+    overflow-y: auto;
+    transition: all 0.3s ease-in-out;
+}
+
+.create-account:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
 }
 
 .create-account-logo {
     text-align: center;
-    margin: 0 0 20px 0;
-    font-size: 30px;
-    color: #BB00FF;
+    margin: 0 0 15px 0;
+    font-size: 24px;
     text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: bold;
 }
 
 .create-account p {
@@ -1971,12 +1895,20 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     flex-direction: column;
     align-items: center;
     text-align: left;
+    color: #696969;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 15px 0;
 }
 
 .create-account img {
-    height: 25rem;
-    width: 25rem;
+    height: 200px;
+    width: 200px;
     margin: 0 0 20px 0;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    padding: 10px;
 }
 
 @media (max-width: 850px) {
@@ -1993,7 +1925,7 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     }
 
     .create-account p {
-        font-size: 16px;
+        font-size: 14px;
         text-align: center;
     }
 
@@ -2005,15 +1937,14 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TEACHER-DASHBOARD~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .no-courses-info {
-    background-color: #fff;
+    background-color: #FFF;
     color: #000;
     text-align: center;
-    padding: 20px;
-    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.4);
-    border-radius: 8px;
+    padding: 5px 20px;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
     width: 100%;
-    margin: 20px auto;
-    margin-top: 50px;
+    margin-top: 25px;
 }
 
 .welcome-title {
@@ -2031,9 +1962,8 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 .no-courses-info p {
     margin-top: 50px;
     margin-bottom: 60px;
-    font-weight: 900;
     text-align: left;
-    font-size: 17px;
+    font-size: 16px;
 }
 
 .info-list {
@@ -2044,16 +1974,17 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
 .info-list li {
     text-align: left;
     margin: 35px;
-    font-size: 16px;
+    font-size: 15px;
     display: flex;
     align-items: center;
 }
 
 .info-list li img {
-    max-width: 19%;
+    max-width: 25%;
     max-height: auto;
-    margin-right: 10px;
-    border-radius: 7px;
+    margin-right: 20px;
+    border-radius: 5px;
+    border: 2px solid #DBDBDB;
 }
 
 @media (max-width: 768px) {
@@ -2062,27 +1993,26 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     }
 
     .info-list li img {
-        max-width: 75%;
+        max-width: 60%;
         margin-right: 0;
     }
 
     .info-list li span {
-        margin-top: 10px;
+        margin-top: 20px;
     }
 
     .no-courses-info p {
-        font-size: 15px;
-        margin-top: 15px;
-        margin-bottom: 15px;
+        margin: 15px 0 50px 0;
     }
 
     .info-list li {
         flex-direction: column;
         text-align: center;
-        margin-bottom: 20px;
-        margin-top: 20px;
+        margin: 30px 0;
     }
 }
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~FEED-COMPONENTS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 
 .expired-lesson {
     background: #D3D3D3;
@@ -2189,6 +2119,26 @@ input[type="checkbox"]:checked, input[type="radio"]:checked {
     margin: 5px 0;
     color: #555;
     font-size: 0.9em;
+}
+
+.no-students {
+  display: flex;
+  margin-top: 60px;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  text-align: center;
+  background-color: #F9F9F9;
+  border: 1px solid #DDD;
+  border-radius: 8px;
+  padding: 20px;
+  font-size: 18px;
+  color: #666;
+}
+
+.no-students p {
+  font-weight: bold;
+  color: #999;
 }
 
 .student-card__badge {
@@ -2351,4 +2301,56 @@ ul.messages li, .form__error{
 .form__error p{
     margin: 0;
     font-size: 14px;
+}
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LESSON-PROFILE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+.earnings-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.earnings-item {
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+
+.earnings-month-toggle {
+    background-color: #F5F5F5;
+    color: #FFF;
+    color: #000;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 1px solid #DBDBDB;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+}
+
+.earnings-month-toggle:hover {
+    background-color: #DBDBDB;
+}
+
+.earnings-details {
+    margin-top: 10px;
+    background-color: #F5F5F5;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-top: 10px;
+}
+
+.earnings-details p {
+    margin: 5px 0;
+}
+
+.download-link {
+    color: #BB00FF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.download-link:hover {
+    text-decoration: underline;
 }

@@ -7,7 +7,7 @@
     <li>
       <a href="{% url 'schoolweb:teacherPage' %}" class="topic-link {% if not request.GET.q %}active{% endif %}">
           <div>
-              <img src="{% static 'img/icons/5.svg' %}"/>
+              <img src="{% static 'img/icons/5_ZZWRR5G.svg' %}"/>
               Wszystkie
           </div>
           <span>{{courses.count}}</span>
@@ -18,7 +18,7 @@
     <li>
       <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}" class="topic-link {% if request.GET.q == course.name %}active{% endif %}">
           <div>
-              <img src="{% static 'img/icons/5.svg' %}"/>
+              <img src="{% static 'img/icons/5_ZZWRR5G.svg' %}"/>
               {{course.name}}
           </div>
           <span>{{course.lesson_set.all.count}}</span>
@@ -26,7 +26,7 @@
     </li>
     {% endfor %}
   </ul>
-  <a class="btn btn--link" href="{% url 'schoolweb:courses-teachers' %}">
+  <a class="btn btn--link" href="{% url 'schoolweb:courses-tutoring-zone' %}">
     Więcej
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
       <title>Przewiń w dół</title>

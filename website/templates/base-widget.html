@@ -23,6 +23,9 @@
     <script src="{% static 'js/widget-menu-dropdown.js' %}" defer></script>
     <script src="{% static 'js/no-content-info.js' %}" defer></script>
     <script src="{% static 'js/chat.js' %}" defer></script>
+    <script id="google-analytics" async src="https://www.googletagmanager.com/gtag/js?id=G-4H49J1BGY5"></script>
+    <script src="{% static 'js/google-analytics.js' %}" defer></script>
+    <script src="{% static 'js/cookie-banner.js' %}" defer></script>
 </head>
 
 <body>
@@ -87,5 +90,14 @@
     </div>
 
     <input type="hidden" id="static-image-path" value="{% static 'img/icons/robot.svg' %}">
+
+    <div id="cookie-consent-banner">
+        <div class="cookie-content">
+            <p>Ta strona używa plików cookies, aby zapewnić najlepsze wrażenia użytkownika.
+            <a href="{% static 'files/regulamin.pdf' %}">Więcej informacji</a>.</p>
+            <button id="accept-cookies" class="accept-button">Akceptuję</button>
+            <button id="reject-cookies" class="reject-button">Odrzucam</button>
+        </div>
+    </div>
 </body>
 </html>

@@ -29,11 +29,11 @@
           <div class="student-card__badge">Nowy uczeń</div>
           {% endif %}
           <div class="student-avatar">
-            <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie posta" class="student-avatar">
+            <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie ucznia" class="student-avatar">
           </div>
           <div class="student-info">
             <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-            <p><strong>Przedmiot:</strong> {{ student.subject }}</p>
+            <p><strong>Przedmiot:</strong> {{ student.subject|default:"Brak danych" }}</p>
             <p><strong>Poziom:</strong> {{ student.level }}</p>
           </div>
           <form method="POST" action="{% url 'schoolweb:new_students' %}">
@@ -45,7 +45,9 @@
         {% endfor %}
       </div>
     {% else %}
-      <p>Brak nowych uczniów do wyświetlenia.</p>
+      <div class="no-students">
+        <p>Brak nowych uczniów do wyświetlenia.</p>
+      </div>
     {% endif %}
   </div>
 </main>

@@ -1,3 +1,4 @@
+{% load static %}
 <footer>
     <div class="footer-columns">
         <div class="footer-column">
@@ -11,8 +12,8 @@
         <div class="footer-column">
             <h4>Informacje</h4>
             <ul>
-                <li><a href="{% url 'schoolweb:statute' %}" title="Zobacz nasz regulamin">Regulamin</a></li>
-                <li><a href="#" title="Przeczytaj naszą politykę prywatności">Polityka prywatności</a></li>
+                <li><a href="{% static 'files/regulamin.pdf' %}" title="Zobacz nasz regulamin" target="_blank">Regulamin</a></li>
+                <li><a href="{% static 'files/regulamin.pdf' %}" title="Przeczytaj naszą politykę prywatności">Polityka prywatności</a></li>
             </ul>
         </div>
 

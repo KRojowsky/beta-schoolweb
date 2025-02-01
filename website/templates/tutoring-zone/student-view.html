@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-student-view.html' %}
+{% include 'tutoring-zone/nav-student-view.html' %}
 {% endblock navbar %}
 
 {% block content %}
@@ -24,8 +24,8 @@
           </label>
         </form>
         <div class="mobile-menuItems">
-          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses_students' %}">Twoje kursy</a>
-          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-lesson' %}">Ostatnie aktywności</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses-tutoring-zone' %}">Twoje kursy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-tutoring-zone' %}">Ostatnie aktywności</a>
         </div>
       </div>
 
@@ -65,33 +65,38 @@
             które pomogą Ci lepiej korzystać z naszej platformy.</p>
           <ul class="info-list">
             <li>
-              <img src="{% static 'img/tutoring-zone/opis2.png' %}" alt="Ikona 2" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction2.png' %}" alt="Ikona 2" class="icon">
               <span>Przejdź do zakładki "TWOJE KURSY", gdzie znajdziesz listę kursów, których jesteś korepetytorem.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis3.png' %}" alt="Ikona 3" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction3.png' %}" alt="Ikona 3" class="icon">
               <span>Ostatnie aktywności związane z Twoimi kursami znajdziesz w zakładce "OSTATNIE AKTYWNOŚCI".</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis4.png' %}" alt="Ikona 4" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction4.png' %}" alt="Ikona 4" class="icon">
               <span>W pasku nawigacji możesz wyszukać interesującą Cię lekcję.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis5.png' %}" alt="Ikona 5" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction5.png' %}" alt="Ikona 5" class="icon">
               <span>Klikając logo SchoolWeb wrócisz na stronę główną.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis6.png' %}" alt="Ikona 6" class="icon">
-              <span>Klikając w swoje imię na pasku nawigacji przejdziesz do swojego profilu.</span>
+              <img src="{% static 'img/tutoring-zone/instruction6.png' %}" alt="Ikona 6" class="icon">
+              <span>Klikając w swoją nazwę na pasku nawigacji przejdziesz do swojego profilu.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis7.png' %}" alt="Ikona 7" class="icon">
-              <span>Klikając "Edytuj profil" będziesz w stanie edytować swój profil.</span>
+              <img src="{% static 'img/tutoring-zone/instruction8.png' %}" alt="Ikona 8" class="icon">
+              <span>Klikając "Ustawiena" na swoim profilu będziesz w stanie edytować profil.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/tutoring-zone/instruction11.png' %}" alt="Ikona 11" class="icon">
+              <span>Klikając "Znajdź korepetycje" masz możliwość znaleźć korepetytora z interesującego Cię przedmiotu.</span>
             </li>
           </ul>
           <p><i>Informacja zniknie, gdy zostaniesz dodany/a do swojego pierwszego kursu.</i></p>
@@ -105,13 +110,5 @@
   </div>
 </main>
 
-<script>
- function closeNotification(notificationId = 'notification') {
-  const notification = document.getElementById(notificationId);
-  if (notification) {
-    notification.style.display = 'none';
-  }
-}
-
-</script>
+<script src="{% static 'js/notification.js' %}"></script>
 {% endblock %}

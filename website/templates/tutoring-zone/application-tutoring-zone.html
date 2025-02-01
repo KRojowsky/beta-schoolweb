@@ -1,11 +1,7 @@
 {% extends 'base-tutoring-zone.html' %}
 
 {% block navbar %}
-  {% if user_type == 'teacher' %}
-    {% include 'tutoring-zone/nav-no-search.html' %}
-  {% else %}
-    {% include 'knowledge-zone/nav-empty-knowledge-zone.html' %}
-  {% endif %}
+{% include 'tutoring-zone/nav-no-search.html' %}
 {% endblock navbar %}
 {% load static %}
 {% block content %}
@@ -51,11 +47,14 @@
           </div>
 
           <div class="form__group">
-            <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-            {{ form.username }}
-            {% if form.username.errors %}
-              <div class="form__error">{{ form.username.errors }}</div>
-            {% endif %}
+              <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+              {{ form.username }}
+              <script>
+                  document.getElementById("{{ form.username.id_for_label }}").setAttribute("maxlength", "10");
+              </script>
+              {% if form.username.errors %}
+                <div class="form__error">{{ form.username.errors }}</div>
+              {% endif %}
           </div>
 
           <div class="form__group">
@@ -121,13 +120,15 @@
           </div>
 
           <div class="form__group">
-            <label for="{{ form.terms_and_privacy.id_for_label }}">
-              {{ form.terms_and_privacy }}
-              {{ form.terms_and_privacy.label }}
-            </label>
-            {% if form.terms_and_privacy.errors %}
-              <div class="form__error">{{ form.terms_and_privacy.errors }}</div>
-            {% endif %}
+              <label for="{{ form.terms_and_privacy.id_for_label }}">
+                  {{ form.terms_and_privacy }}
+                  <span class="checkmark"></span> Akceptuję
+                  <a href="{% static 'files/regulamin.pdf' %}" target="_blank">Regulamin</a> oraz
+                  <a href="{% static 'files/regulamin.pdf' %}" target="_blank">Politykę Prywatności</a> SchoolWeb.pl
+              </label>
+              {% if form.terms_and_privacy.errors %}
+                  <div class="form__error">{{ form.terms_and_privacy.errors }}</div>
+              {% endif %}
           </div>
 
           <div class="form__group">

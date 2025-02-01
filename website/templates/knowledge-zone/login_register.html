@@ -130,9 +130,11 @@
 
 
                     <div class="form__group">
-                      <label class="custom-checkbox" for="accept_terms">
+                      <label for="accept_terms">
                           <input type="checkbox" id="accept_terms" name="accept_terms" required>
-                          <span class="checkmark"></span> Akceptuję <a href="#">Regulamin</a> oraz <a href="#">Politykę Prywatności</a> SchoolWeb.pl
+                          <span class="checkmark"></span> Akceptuję
+                          <a href="{% static 'files/regulamin.pdf' %}" target = "_blank">Regulamin</a> oraz
+                          <a href="{% static 'files/regulamin.pdf' %}" target = "_blank">Politykę Prywatności</a> SchoolWeb.pl
                       </label>
                     </div>
 

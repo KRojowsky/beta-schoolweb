@@ -24,8 +24,8 @@
           </label>
         </form>
         <div class="mobile-menuItems">
-          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses-teachers' %}">Twoje kursy</a>
-          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-lesson' %}">Ostatnie aktywności</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:courses-tutoring-zone' %}">Twoje kursy</a>
+          <a class="btn btn--main btn--pill" href="{% url 'schoolweb:activity-tutoring-zone' %}">Ostatnie aktywności</a>
         </div>
       </div>
       <div class="roomList__header">
@@ -43,50 +43,65 @@
           Utwórz lekcję
         </a>
       </div>
-      <a class="btn btn--main" style="margin-bottom:10px;" href="{% url 'schoolweb:new_students' %}" title="Zdobądź ucznia">
+      <a class="btn btn--main" href="{% url 'schoolweb:new_students' %}" title="Zdobądź ucznia">
             Zdobądź ucznia
       </a>
        {% if courses.count == 0 %}
         <div class="no-courses-info">
-          <h2 class="welcome-title">Witaj w SchoolWeb!</h2>
+          <h2 class="welcome-title">Witaj na SchoolWeb!</h2>
           <p>Cieszymy się, że dołączyłeś/aś do naszej platformy jako nowy korepetytor. Życzymy Ci powodzenia w pracy
           na SchoolWeb!<br><br> Jeśli napotkasz jakiekolwiek problemy lub potrzebujesz pomocy, jesteśmy dostępni,
           aby Ci pomóc. Skontaktuj się z nami w razie potrzeby.<br><br> Poniżej znajdziesz podstawowe instrukcje,
           które pomogą Ci lepiej korzystać z naszej platformy.</p>
           <ul class="info-list">
             <li>
-              <img src="{% static 'img/tutoring-zone/opis1.png' %}" alt="Ikona 1" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction1.png' %}" alt="Ikona 1" class="icon">
               <span>Kliknij "Utwórz lekcję", aby rozpocząć tworzenie nowej lekcji w danym kursie.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis2.png' %}" alt="Ikona 2" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction2.png' %}" alt="Ikona 2" class="icon">
               <span>Przejdź do zakładki "TWOJE KURSY", gdzie znajdziesz listę kursów, których jesteś korepetytorem.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis3.png' %}" alt="Ikona 3" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction3.png' %}" alt="Ikona 3" class="icon">
               <span>Ostatnie aktywności związane z Twoimi kursami znajdziesz w zakładce "OSTATNIE AKTYWNOŚCI".</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis4.png' %}" alt="Ikona 4" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction4.png' %}" alt="Ikona 4" class="icon">
               <span>W pasku nawigacji możesz wyszukać interesującą Cię lekcję.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis5.png' %}" alt="Ikona 5" class="icon">
+              <img src="{% static 'img/tutoring-zone/instruction5.png' %}" alt="Ikona 5" class="icon">
               <span>Klikając logo SchoolWeb wrócisz na stronę główną.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis6.png' %}" alt="Ikona 6" class="icon">
-              <span>Klikając w swoje imię na pasku nawigacji przejdziesz do swojego profilu.</span>
+              <img src="{% static 'img/tutoring-zone/instruction6.png' %}" alt="Ikona 6" class="icon">
+              <span>Klikając w swoją nazwę na pasku nawigacji przejdziesz do swojego profilu.</span>
             </li>
             <hr>
             <li>
-              <img src="{% static 'img/tutoring-zone/opis7.png' %}" alt="Ikona 7" class="icon">
-              <span>Klikając "Edytuj profil" będziesz w stanie edytować swój profil.</span>
+              <img src="{% static 'img/tutoring-zone/instruction7.png' %}" alt="Ikona 7" class="icon">
+              <span>Klikając "Zdobądź ucznia" przejdziesz do listy uczniów, gdzie będziesz mogł zdobyć nowego ucznia".</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/tutoring-zone/instruction8.png' %}" alt="Ikona 8" class="icon">
+              <span>Klikając "Ustawiena" na swoim profilu będziesz w stanie edytować profil.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/tutoring-zone/instruction9.png' %}" alt="Ikona 9" class="icon">
+              <span>Kliknij "Dane bankowe" na swoim profilu aby uzupełnić informacje odnośnie konta, na które będziesz otrzymywał wynagrodzenie.</span>
+            </li>
+            <hr>
+            <li>
+              <img src="{% static 'img/tutoring-zone/instruction10.png' %}" alt="Ikona 10" class="icon">
+              <span>Klikając "Pliki PDF z przychodami" będziesz mógł zobaczyć swoje dotychczasowe wynagrodzenia.</span>
             </li>
           </ul>
           <p><i>Informacja zniknie, gdy zostaniesz dodany/a do swojego pierwszego kursu.</i></p>

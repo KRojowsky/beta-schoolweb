@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Raport z Lekcji</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Raport z Lekcji za {{ month }}/{{ year }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Data i Godzina</th>
+                <th>Tytul Lekcji</th>
+                <th>Kurs</th>
+                <th>Poziom Kursu</th>
+                <th>Wynagrodzenie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lesson in lessons %}
+                <tr>
+                    <td>{{ lesson.event_datetime|date:"d M Y H:i" }}</td>
+                    <td>{{ lesson.title }}</td>
+                    <td>{{ lesson.course.name }}</td>
+                    <td>
+                        {% if lesson.course.course_type == 'basic' %}
+                            Podstawowy
+                        {% else %}
+                            Rozszerzony
+                        {% endif %}
+                    </td>
+                    <td>{{ lesson.payment }} PLN</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Podsumowanie:</h2>
+    <ul>
+        <li>Zarobki z lekcji: {{ aggregate_earnings }} PLN</li>
+        <li>Bonus miesieczny: {{ month_bonus }} PLN</li>
+        <li>Bonus za polecenia: {{ month_referral_bonus }} PLN</li>
+        <li><strong>Calkowity zarobek: {{ total_earnings }} PLN</strong></li>
+    </ul>
+</body>
+</html>
