@@ -1,0 +1,204 @@
+{
+  "questions": [
+    {
+      "question": [
+        "Jak zostac uczniem",
+        "Jak dolaczyc jako uczen",
+        "Uczen",
+        "Jak zapisac sie na zajecia"
+      ],
+      "answers": [
+        "Aby dołączyć do grona uczniów platformy SchoolWeb i rozpocząć korepetycje, <b>kliknij na głównej stronie w przycisk \u201eUmów pierwsze zajęcia\u201d lub przejdź do sekcji \u201eStrefa Korepetycji\u201d</b>. Następnie <b>wypełnij formularz zgłoszeniowy</b>, a nasz zespół szybko go rozpatrzy. Po akceptacji otrzymasz dostęp do Strefy Korepetycji, gdzie, po opłaceniu zajęć, przydzielimy Ci korepetytora, z którym odbędziesz swoje pierwsze zajęcia."
+      ]
+    },
+    {
+      "question": [
+        "Jak zostac korepetytorem",
+        "Jak dolaczyc jako korepetytor",
+        "Korepetytor",
+        "Jak udzielac korepetycji",
+        "Praca jako korepetytor"
+      ],
+      "answers": [
+        "Aby zostać korepetytorem na platformie <b>kliknij na głównej stronie w przycisk \u201eZostań korepetytorem\u201d lub przejdź do sekcji \u201eStrefa Korepetycji\u201d</b>. Następnie <b>wypełnij formularz zgłoszeniowy</b> oraz rozwiąż przygotowany test kompetencji, a nasz zespół szybko go rozpatrzy. Po akceptacji zostaniesz zaproszony na szybką rozmowę wideo z naszym przedstawicielem, po czym otrzymasz dostęp do Strefy Korepetycji, gdzie po przydzieleniu ucznia będziesz mógł przeprowadzać lekcje."
+      ]
+    },
+    {
+      "question": [
+        "Ile trwaja pojedyncze zajecia",
+        "Czas trwania lekcji",
+        "Ile trwa lekcja",
+        "Jaki jest czas trwania korepetycji"
+      ],
+      "answers": [
+        "Czas trwania pojedynczej jednostki lekcyjnej to <b>50 minut</b>."
+      ]
+    },
+    {
+      "question": [
+        "Metody platnosci",
+        "Jak moge zaplacic",
+        "Formy platnosci",
+        "Opcje platnosci"
+      ],
+      "answers": [
+        "Obecnie dostępne metody płatności to:<br><b>BLIK: 572930585</b><br>lub<br><b>Przelew na numer rachunku<br>62 1240 2656 1111 0011 0441 8595</b>"
+      ]
+    },
+    {
+      "question": [
+        "Dostepne rabaty",
+        "Czy sa dostepne znizki",
+        "Rabaty na zajecia",
+        "Promocje na korepetycje"
+      ],
+      "answers": [
+        "Dostępne rabaty dla każdego rodzaju zajęć są dostępne na naszej głównej stronie w sekcji <b>\u201eCennik zajęć\u201d</b>."
+      ]
+    },
+    {
+      "question": [
+        "Czy moge odwolac zajecia",
+        "Rezygnacja z lekcji",
+        "Jak odwolac korepetycje",
+        "Zasady odwolania zajec"
+      ],
+      "answers": [
+        "Tak, możesz odwołać zajęcia, jednak obowiązują pewne zasady. Aby uniknąć opłaty za lekcję, należy odwołać zajęcia co najmniej <b>30 minut przed ich rozpoczęciem</b>. W przypadku odwołania w krótszym terminie opłata za zajęcia nie podlega zwrotowi. Odwołania można dokonać kontaktując się z korepetytorem poprzez platformę albo komunikator zewnętrzny."
+      ]
+    },
+    {
+      "question": [
+        "Czy korepetycje odbywaja sie online",
+        "Forma zajec",
+        "Czy lekcje sa stacjonarne czy online",
+        "Rodzaje korepetycji"
+      ],
+      "answers": [
+        "Wszystkie zajęcia na naszej platformie odbywają się w formie <b>online</b>, co pozwala na elastyczność i dostępność z każdego miejsca."
+      ]
+    },
+    {
+      "question": [
+        "Jak wyglada pierwszy kontakt z korepetytorem",
+        "Pierwsze zajecia",
+        "Co sie dzieje po zapisaniu na zajecia",
+        "Proces po zgloszeniu ucznia"
+      ],
+      "answers": [
+        "Po utworzeniu konta na Strefie Korepetycji lub złożeniu wniosku o korepetycje, zostanie Ci w niedługim czasie utworzony kurs z danym przedmiotem, gdzie będziesz mógł się kontaktować oraz umawiać na zajęcia z korepetytorem. Kontakt jest również możliwy poprzez komunikator zewnętrzny."
+      ]
+    },
+    {
+      "question": [
+        "Czy moge zmienic korepetytora",
+        "Zmiana korepetytora",
+        "Co jesli nie odpowiada mi korepetytor"
+      ],
+      "answers": [
+        "Tak, jeśli nie jesteś zadowolony z przydzielonego korepetytora, możesz go zmienić. Wystarczy, że skontaktujesz się z naszą administracją za pośrednictwem formularza kontaktowego lub napiszesz do nas na adres e-mail podany w zakładce <b>Kontakt</b>. Postaramy się jak najszybciej znaleźć nowego korepetytora zgodnego z Twoimi oczekiwaniami."
+      ]
+    },
+    {
+      "question": [
+        "zapis na zajecia indywidualne",
+        "zajecia indywidualne",
+        "jak zapisac sie na zajecia indywidualne",
+        "indywidualne korepetycje",
+        "zapis na lekcje indywidualne"
+      ],
+      "answers": [
+        "W celu zapisania się na zajęcia indywidualne należy utworzyć konto na Strefie Korepetycji. Po poprawnym procesie tworzenia konta zostaniesz dodany do listy uczniów, gdzie otrzymasz swojego pierwszego korepetytora. Jeśli chcesz otrzymać kolejne zajęcia, należy złożyć zgłoszenie poprzez wniosek dostępny na stronie. Celem personalizacji, np. wyboru korepetycji, określenia terminu zajęć itp., kontaktuj się z naszą administracją."
+      ]
+    },
+    {
+      "question": [
+        "zapis na zajecia grupowe",
+        "zajecia grupowe"
+      ],
+      "answers": [
+        "W celu zapisania się na zajęcia grupowe należy utworzyć konto na Strefie Korepetycji. Po poprawnym procesie tworzenia konta nasza administracja rozpocznie proces tworzenia kursu. Warunkiem koniecznym, aby utworzyć kurs grupowy, jest dobranie minimum 2 uczniów o podobnym poziomie edukacyjnym z danego przedmiotu."
+      ]
+    },
+    {
+      "question": [
+        "Czy moge zapisac sie na zajecia z roznych przedmiotow",
+        "Czy moge uczeszczac na rozne przedmioty",
+        "Jak zapisac sie na wiecej niz jeden przedmiot"
+      ],
+      "answers": [
+        "Tak, możesz zapisać się na zajęcia z różnych przedmiotów. Po zalogowaniu się do Strefy Korepetycji możesz wybrać przycisk 'Zdobądź korepetytora' oraz wybrać przedmiot i poziom. Po dobraniu korepetytora nowy kurs zostanie utworzony. Lista przedmiotów dostępna jest na stronie głównej platformy."
+      ]
+    },
+    {
+      "question": [
+        "Czy zajecia sa nagrywane",
+        "Nagrania z lekcji",
+        "Czy moge miec dostep do nagran zajec"
+      ],
+      "answers": [
+        "Na naszej platformie zajęcia nie są nagrywane, ale możesz poprosić swojego korepetytora o nagranie pojedynczych lekcji, jeśli uznasz to za pomocne. Zawsze możesz także poprosić o dodatkowe materiały lub wyjaśnienia."
+      ]
+    },
+    {
+      "question": [
+        "Czy moge zapisac sie na zajecia w weekendy",
+        "Czy zajecia odbywaja sie w weekendy",
+        "Czy moge umawiac sie na zajecia w sobote lub niedziele"
+      ],
+      "answers": [
+        "Tak, nasze zajęcia są dostępne przez całą dobę, w tym również w weekendy. Korepetytorzy dostosowują swoje dostępności, aby pasowały do Twojego grafiku. Możesz wybrać dogodny termin zajęć."
+      ]
+    },
+    {
+      "question": [
+        "Czy moge zmienic godzine zajec",
+        "Zmiana terminu zajec",
+        "Czy moge przelozyc lekcje"
+      ],
+      "answers": [
+        "Tak, możesz zmienić godzinę zajęć, jeśli wcześniej skontaktujesz się z korepetytorem. Pamiętaj, że zmiana musi być uzgodniona z nauczycielem."
+      ]
+    },
+    {
+      "question": [
+        "Jakie sa wymagania dla korepetytora",
+        "Wymagania dla korepetytora",
+        "Jakie kwalifikacje musi miec korepetytor"
+      ],
+      "answers": [
+        "Korepetytorzy na naszej platformie muszą posiadać odpowiednią wiedzę merytoryczną oraz umiejętność nauczania. Dodatkowo, oczekujemy od nich przejścia testu kompetencyjnego, który sprawdzi ich umiejętności w nauczanym przedmiocie. Korepetytorzy są także zobowiązani do prowadzenia lekcji w sposób profesjonalny i dostosowany do potrzeb ucznia."
+      ]
+    },
+    {
+      "question": [
+        "Czy oferujecie zajęcia przygotowujace do matury",
+        "Korepetycje maturalne",
+        "Przygotowanie do matury"
+      ],
+      "answers": [
+        "Tak, oferujemy korepetycje przygotowujące do matury. Możesz wybrać przedmiot, poziom (podstawowy lub rozszerzony) oraz skontaktować się z korepetytorem w danym zakresie."
+      ]
+    },
+    {
+      "question": [
+        "Czy korepetytorzy posiadaja doswiadczenie",
+        "Doswiadczenie korepetytorow",
+        "Czy korepetytorzy są wykwalifikowani"
+      ],
+      "answers": [
+        "Wszyscy nasi korepetytorzy przechodzą dokładny proces weryfikacji, który obejmuje ocenę kwalifikacji, doświadczenia i kompetencji. Gwarantujemy, że nasi nauczyciele są w pełni przygotowani do prowadzenia lekcji."
+      ]
+    },
+    {
+      "question": [
+        "Czy oferujecie korepetycje dla dzieci w wieku szkolnym",
+        "Korepetycje dla dzieci",
+        "Czy dzieci moga korzystac z korepetycji"
+      ],
+      "answers": [
+        "Tak, oferujemy korepetycje dla dzieci w wieku szkolnym. Nasza oferta obejmuje różnorodne przedmioty i poziomy nauczania, dostosowane do wieku i potrzeb ucznia."
+      ]
+    }
+  ]
+}

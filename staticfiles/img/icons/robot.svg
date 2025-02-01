@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Warstwa_2" data-name="Warstwa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #c302fd;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5 {
+        stroke: #000;
+        stroke-miterlimit: 10;
+        stroke-width: .25px;
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+
+      .cls-3 {
+        fill: #c4f2ff;
+      }
+
+      .cls-4 {
+        fill: #050505;
+      }
+
+      .cls-5 {
+        fill: #e8adff;
+      }
+    </style>
+  </defs>
+  <rect class="cls-5" x="11.55" y="21" width="41.45" height="28.19" rx="4.45" ry="4.45"/>
+  <path class="cls-1" d="M7.21,29.81h3.91v11.45h-3.91c-.94,0-1.71-.76-1.71-1.71v-8.04c0-.94.76-1.71,1.71-1.71Z"/>
+  <path class="cls-1" d="M55.21,29.81h3.91v11.45h-3.91c-.94,0-1.71-.76-1.71-1.71v-8.04c0-.94.76-1.71,1.71-1.71Z" transform="translate(112.61 71.07) rotate(180)"/>
+  <ellipse class="cls-4" cx="26.23" cy="32.45" rx="3.45" ry="3.52"/>
+  <ellipse class="cls-4" cx="38.32" cy="32.45" rx="3.45" ry="3.52"/>
+  <path class="cls-4" d="M29.68,39.5h10.36v2.29c0,1.66-1.34,3-3,3h-4.36c-1.66,0-3-1.34-3-3v-2.29h0Z"/>
+  <polygon class="cls-3" points="24.43 9.83 22.84 10.53 26.98 20.23 28.57 19.52 24.43 9.83"/>
+  <ellipse class="cls-5" cx="21.91" cy="7.14" rx="2.59" ry="2.64"/>
+  <polygon class="cls-3" points="34.38 14.03 33.36 13.47 30.01 19.7 31.03 20.27 34.38 14.03"/>
+  <ellipse class="cls-5" cx="35.27" cy="11.15" rx="1.74" ry="1.78"/>
+  <path class="cls-3" d="M25.36,50.95h15.55v4.42c0,1.45-1.18,2.63-2.63,2.63h-10.28c-1.45,0-2.63-1.18-2.63-2.63v-4.42h0Z"/>
+  <ellipse class="cls-2" cx="27.09" cy="31.57" rx="1.73" ry="1.76"/>
+  <ellipse class="cls-2" cx="39.18" cy="31.57" rx="1.73" ry="1.76"/>
+</svg>
