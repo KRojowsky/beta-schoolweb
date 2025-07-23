@@ -43,17 +43,14 @@
           <div class="form__group">
             <label for="room_event_datetime">Data:</label>
             <input type="datetime-local" id="room_event_datetime" name="event_datetime" min="{{ current_date }}">
-            {% for error in form.event_datetime.errors %}
-              <div class="alert alert-danger">{{ error }}</div>
-            {% endfor %}
           </div>
 
           {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
+              <ul class="messages">
+                  {% for message in messages %}
+                      <li class="{{ message.tags }}">{{ message }}</li>
+                  {% endfor %}
+              </ul>
           {% endif %}
 
           <div class="form__action">

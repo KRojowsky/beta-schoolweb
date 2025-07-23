@@ -1,4 +1,5 @@
 {% extends 'base-knowledge-zone.html' %}
+{% load static %}
 
 {% block navbar %}
 {% include 'knowledge-zone/nav-no-search.html' %}
@@ -11,34 +12,39 @@
             <div class="layout__boxHeader">
                 <div class="layout__boxTitle">
                     <a href="{% url 'schoolweb:knowledge_zone' %}">
+                        <!-- ikona cofania -->
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                             viewBox="0 0 32 32">
                             <title>Cofnij</title>
-                            <path
-                                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-                            </path>
+                            <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
                         </svg>
                     </a>
                     <h3>Edytuj swój profil</h3>
                 </div>
             </div>
             <div class="layout__body">
-                <form class="form" action="" method="POST" enctype="multipart/form-data">
+                <form class="form" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="form__group">
                         <label for="id_avatar">Aktualne zdjęcie profilowe</label>
-                        <div class="image-preview">
-                            <img src="{{ form.avatar.value.url }}" alt="Aktualne zdjęcie" class="image-preview__img">
-                            <div class="image-clear-wrapper">
-                                <input type="checkbox" name="image_clear" id="id_image_clear" class="image-clear-checkbox">
-                                <label for="id_image_clear" class="clear-image-btn">Usuń zdjęcie</label>
-                            </div>
+                        <div class="image-preview" id="avatar-preview" style="{% if not user.avatar %}display:none;{% endif %}">
+                            {% if user.avatar %}
+                                <img id="current-image" src="{{ user.avatar.url }}" alt="Aktualne zdjęcie" class="image-preview__img">
+                            {% else %}
+                                <img id="current-image" src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślne zdjęcie" class="image-preview__img">
+                            {% endif %}
+                        </div>
+
+                        <div class="avatar-clear-wrapper" id="avatar-clear-wrapper" style="margin-top: 10px; {% if not user.avatar %}display:none;{% endif %}">
+                            <input type="hidden" name="avatar_clear" id="id_avatar_clear" value="">
+                            <button type="button" class="btn--clear" id="clear_avatar_btn">Usuń zdjęcie</button>
                         </div>
                     </div>
-                    <div class="form__group">
-                        <label for="id_avatar">Dodaj zdjęcie profilowe</label>
-                        <input type="file" name="avatar" id="id_avatar" accept="image/*">
+
+                    <div class="form__group" style="margin-top: 10px;">
+                        <label for="id_avatar_upload">Dodaj nowe zdjęcie profilowe</label>
+                        <input type="file" name="avatar" id="id_avatar_upload" accept="image/*">
                     </div>
 
                     <div class="form__group">
@@ -64,7 +70,7 @@
                     {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
-                        <li>{{ message }}</li>
+                            <li>{{ message }}</li>
                         {% endfor %}
                     </ul>
                     {% endif %}
@@ -78,4 +84,53 @@
         </div>
     </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const clearAvatarBtn = document.getElementById("clear_avatar_btn");
+    const avatarPreview = document.getElementById("avatar-preview");
+    const avatarClearWrapper = document.getElementById("avatar-clear-wrapper");
+    const avatarClearInput = document.getElementById("id_avatar_clear");
+    const avatarInput = document.getElementById("id_avatar_upload");
+    const currentImage = document.getElementById("current-image");
+
+    if (clearAvatarBtn) {
+        clearAvatarBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            if (avatarPreview) avatarPreview.style.display = "none";
+            if (avatarClearWrapper) avatarClearWrapper.style.display = "none";
+
+            if (avatarClearInput) avatarClearInput.value = 'on';
+
+            if (avatarInput) avatarInput.value = '';
+
+            if (currentImage) {
+                currentImage.src = '';
+                currentImage.style.display = 'none';
+            }
+        });
+    }
+
+    if (avatarInput) {
+        avatarInput.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    if (currentImage) {
+                        currentImage.src = e.target.result;
+                        currentImage.style.display = 'block';
+                    }
+                    if (avatarPreview) avatarPreview.style.display = "block";
+                    if (avatarClearWrapper) avatarClearWrapper.style.display = "flex";
+                    if (avatarClearInput) avatarClearInput.value = ''; // reset flagi usuwania
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+});
+</script>
+
 {% endblock content %}

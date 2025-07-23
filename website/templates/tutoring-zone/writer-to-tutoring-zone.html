@@ -15,32 +15,38 @@
       </div>
       <div class="layout__body">
         <h2 class="auth__tagline">
-          Wybierz, czy chcesz zostać korepetytorem, czy uczniem. Uzupełnij brakujące dane, aby móc korzystać ze <i>Strefy Korepetycji</i>.
+          Wybierz rolę, aby dołączyć do <i>Strefy Korepetycji</i>
         </h2>
 
-        <form class="form" method="POST">
+        <div class="form__group role-selection">
+          <button type="button" id="student-btn" class="role-btn" data-role="student">
+            <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="Uczeń">
+            Uczeń
+          </button>
+          <button type="button" id="teacher-btn" class="role-btn" data-role="teacher">
+            <img src="{% static 'img/widget/main-view-2.png' %}" alt="Korepetytor">
+            Korepetytor
+          </button>
+        </div>
+
+        <form class="form" method="POST" id="user-form" style="display: none;">
           {% csrf_token %}
 
           <div class="form__group">
-            <label>Wybierz rolę</label>
-            <div class="role-selection">
-              <button type="button" id="teacher-btn" class="role-btn" data-role="teacher">
-                Korepetytor
-              </button>
-              <button type="button" id="student-btn" class="role-btn" data-role="student">
-                Uczeń
-              </button>
-            </div>
-            {% if form.user_type.errors %}
-              <div class="form__error">{{ form.user_type.errors }}</div>
-            {% endif %}
-          </div>
-
-          <div class="form__group">
-            <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
-            {{ form.phone_number }}
+            <input
+              type="text"
+              name="phone_number"
+              id="{{ form.phone_number.id_for_label }}"
+              class="form-control"
+              placeholder="{{ form.phone_number.label }}"
+              value="{{ form.phone_number.value|default_if_none:'' }}"
+            >
             {% if form.phone_number.errors %}
-              <div class="form__error">{{ form.phone_number.errors }}</div>
+              <ul class="messages">
+                {% for error in form.phone_number.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
             {% endif %}
           </div>
 
@@ -48,7 +54,11 @@
             <label for="{{ form.subject.id_for_label }}">{{ form.subject.label }}</label>
             {{ form.subject }}
             {% if form.subject.errors %}
-              <div class="form__error">{{ form.subject.errors }}</div>
+              <ul class="messages">
+                {% for error in form.subject.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
             {% endif %}
           </div>
 
@@ -56,17 +66,31 @@
             <label for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
             {{ form.level }}
             {% if form.level.errors %}
-              <div class="form__error">{{ form.level.errors }}</div>
+              <ul class="messages">
+                {% for error in form.level.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
             {% endif %}
           </div>
 
           <div class="form__group">
-            <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
-            {{ form.referral_code_input }}
+            <input
+              type="text"
+              name="referral_code_input"
+              id="{{ form.referral_code_input.id_for_label }}"
+              class="form-control"
+              placeholder="{{ form.referral_code_input.label }}"
+              value="{{ form.referral_code_input.value|default_if_none:'' }}"
+            >
             {% if form.referral_code_input.errors %}
               <div class="form__error">{{ form.referral_code_input.errors }}</div>
             {% endif %}
             <small>{{ form.referral_code_input.help_text }}</small>
+          </div>
+
+          <div class="form__group">
+            <div class="g-recaptcha" data-sitekey="6Ld1rU0rAAAAANPKXRZINCSKpLpy3HiPX5dbaLXn"></div>
           </div>
 
           <div class="container">
@@ -75,14 +99,15 @@
                 Anuluj
               </button>
               <button class="btn btn--link" type="submit">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                  <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 12v-2c0-4.418 3.582-8 8-8s8 3.582 8 8v2h-16zM26 30h-20v-16h20v16z"></path>
-                </svg>
-                <span>Zapisz</span>
+                  <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                      <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 12v-2c0-4.418 3.582-8 8-8s8 3.582 8 8v2h-16zM26 30h-20v-16h20v16z"></path>
+                  </svg>
+                  <span>Dołącz</span>
               </button>
             </div>
           </div>
         </form>
+
       </div>
     </div>
   </div>

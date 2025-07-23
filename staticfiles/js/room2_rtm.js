@@ -1,15 +1,34 @@
-let handleMemberJoined = async (MemberId) => {
-    console.log('A new member has joined the room:', MemberId)
-    addMemberToDom(MemberId)
+import { rtmClient, channel, addBotMessageToDom, displayName } from './room2_rtc.js';
 
-    let members = await channel.getMembers()
-    updateMemberTotal(members)
-
-    let {name} = await rtmClient.getUserAttributesByKeys(MemberId, ['name'])
-    addBotMessageToDom(`Witaj na zajęciach ${name}! 👋`)
+export function setupRTM() {
+    console.log("Setting up RTM functionality...");
+    
+    const messageForm = document.getElementById('message__form');
+    if (messageForm) {
+        messageForm.addEventListener('submit', sendMessage);
+    }
+    
+    window.addEventListener('beforeunload', leaveChannel);
+    
+    if (channel) {
+        channel.on('MemberJoined', handleMemberJoined);
+        channel.on('MemberLeft', handleMemberLeft);
+        channel.on('ChannelMessage', handleChannelMessage);
+    }
 }
 
-let addMemberToDom = async (MemberId) => {
+export let handleMemberJoined = async (MemberId) => {
+    console.log('A new member has joined the room:', MemberId);
+    addMemberToDom(MemberId);
+
+    let members = await channel.getMembers();
+    updateMemberTotal(members);
+
+    let {name} = await rtmClient.getUserAttributesByKeys(MemberId, ['name']);
+    addBotMessageToDom(`Witaj na zajęciach ${name}! 👋`);
+}
+
+export let addMemberToDom = async (MemberId) => {
     let {name} = await rtmClient.getUserAttributesByKeys(MemberId, ['name'])
 
     let membersWrapper = document.getElementById('member__list')
@@ -21,19 +40,19 @@ let addMemberToDom = async (MemberId) => {
     membersWrapper.insertAdjacentHTML('beforeend', memberItem)
 }
 
-let updateMemberTotal = async (members) => {
+export let updateMemberTotal = async (members) => {
     let total = document.getElementById('members__count')
     total.innerText = members.length
 }
 
-let handleMemberLeft = async (MemberId) => {
+export let handleMemberLeft = async (MemberId) => {
     removeMemberFromDom(MemberId)
 
     let members = await channel.getMembers()
     updateMemberTotal(members)
 }
 
-let removeMemberFromDom = async (MemberId) => {
+export let removeMemberFromDom = async (MemberId) => {
     let memberWrapper = document.getElementById(`member__${MemberId}__wrapper`)
     let name = memberWrapper.getElementsByClassName('member_name')[0].textContent
     addBotMessageToDom(`${name} opuścił/a zajęcia.`)
@@ -41,15 +60,16 @@ let removeMemberFromDom = async (MemberId) => {
     memberWrapper.remove()
 }
 
-let getMembers = async () => {
-    let members = await channel.getMembers()
-    updateMemberTotal(members)
+export let getMembers = async () => {
+    let members = await channel.getMembers();
+    updateMemberTotal(members);
     for (let i = 0; members.length > i; i++){
-        addMemberToDom(members[i])
+        addMemberToDom(members[i]);
     }
+    return members;
 }
 
-let handleChannelMessage = async (messageData, MemberId) => {
+export let handleChannelMessage = async (messageData, MemberId) => {
     console.log('A new message was received')
     let data = JSON.parse(messageData.text)
 
@@ -58,7 +78,7 @@ let handleChannelMessage = async (messageData, MemberId) => {
     }
 }
 
-let sendMessage = async (e) => {
+export let sendMessage = async (e) => {
     e.preventDefault()
 
     let message = e.target.message.value
@@ -67,13 +87,26 @@ let sendMessage = async (e) => {
     e.target.reset()
 }
 
-let addMessageToDom = (name, message) => {
+export let addMessageToDom = (name, message) => {
     let messagesWrapper = document.getElementById('messages')
+
+    function convertLinksToAnchors(text) {
+        const urlPattern = /(\bhttps?:\/\/[^\s<]+[^\s]*|www\.[^\s<]+[^\s]*)/gi;
+        return text.replace(urlPattern, function(url) {
+            var fullUrl = url;
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                fullUrl = 'http://' + url;
+            }
+            return `<a href="${fullUrl}" target="_blank">${url}</a>`;
+        });
+    }
+
+    let messageWithLinks = convertLinksToAnchors(message);
 
     let newMessage = `<div class="message__wrapper">
                         <div class="message__body">
                             <strong class="message__author">${name}</strong>
-                            <p class="message__text">${message}</p>
+                            <p class="message__text">${messageWithLinks}</p>
                         </div>
                     </div>`
 
@@ -85,29 +118,12 @@ let addMessageToDom = (name, message) => {
     }
 }
 
-let addBotMessageToDom = (botMessage) => {
-    let messagesWrapper = document.getElementById('messages')
 
-    let newMessage = `<div class="message__wrapper">
-                        <div class="message__body__bot">
-                            <strong class="message__author__bot">🐻‍❄️ Resq Bot</strong>
-                            <p class="message__text__bot">${botMessage}</p>
-                        </div>
-                    </div>`
-
-    messagesWrapper.insertAdjacentHTML('beforeend', newMessage)
-
-    let lastMessage = document.querySelector('#messages .message__wrapper:last-child')
-    if(lastMessage){
-        lastMessage.scrollIntoView()
+export let leaveChannel = async () => {
+    if (channel) {
+        await channel.leave();
+    }
+    if (rtmClient) {
+        await rtmClient.logout();
     }
 }
-
-let leaveChannel = async () => {
-    await channel.leave()
-    await rtmClient.logout()
-}
-
-window.addEventListener('beforeunload', leaveChannel)
-let messageForm = document.getElementById('message__form')
-messageForm.addEventListener('submit', sendMessage)

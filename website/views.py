@@ -11,7 +11,7 @@ from .forms import (RoomForm, UserForm, MyUserCreationForm, LessonFormCreate, Le
                     ApplyUserForm, WriterDataForm, NewStudentForm)
 from django.contrib.auth.decorators import user_passes_test
 from django.http import HttpResponse
-from django.urls import reverse
+from django.urls import reverse, NoReverseMatch
 from django.http import JsonResponse
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
@@ -27,14 +27,22 @@ from django.core.exceptions import PermissionDenied
 from xhtml2pdf import pisa
 from django.template.loader import get_template
 from django.contrib.messages import get_messages
+from django.contrib.auth import get_user
+import html
+from django.views.decorators.http import require_POST
+from django.conf import settings
+import requests
+from django.http import HttpResponseForbidden
 
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 def get_target_url(user):
     if user.is_authenticated:
-        if user.groups.exists():
-            group = user.groups.first().name
+        group_obj = user.groups.first()
+        if group_obj:
+            group = group_obj.name
             return {
                 'Teachers': 'schoolweb:teacherPage',
                 'Students': 'schoolweb:studentPage',
@@ -43,6 +51,9 @@ def get_target_url(user):
                 'Writers': 'schoolweb:WriterToTutoringZone'
             }.get(group, 'schoolweb:applyUser')
     return 'schoolweb:applyUser'
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 def home(request):
@@ -70,31 +81,177 @@ def subjects(request):
     return render(request, 'widget/subjects.html', {'target_url': target_url})
 
 
-# SENDING EMAIL VIA PLATFORM CONTACT FORM
+def verify_recaptcha(token):
+    secret_key = settings.RECAPTCHA_SECRET_KEY
+    response = requests.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        data={
+            'secret': secret_key,
+            'response': token
+        }
+    )
+    result = response.json()
+    return result.get('success', False)
+
+
+@require_POST
 def user_message(request):
-    if request.method == 'POST':
-        email = request.POST['email']
-        phone_number = request.POST['phone_number']
-        message = request.POST['message']
+    email = request.POST.get('email', '').strip()
+    phone_number = request.POST.get('phone_number', '').strip()
+    message = request.POST.get('message', '').strip()
+    recaptcha_token = request.POST.get('g-recaptcha-response')
 
-        try:
-            PlatformMessage.objects.create(email=email, phone_number=phone_number, message=message)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': 'Wystąpił problem podczas wysyłania wiadomości.'}, status=500)
+    if not email or not message:
+        return JsonResponse({'status': 'error', 'message': 'Email i wiadomość są wymagane.'}, status=400)
 
-        return JsonResponse({'status': 'success', 'message': 'Wiadomość została wysłana!'})
+    if '@' not in email:
+        return JsonResponse({'status': 'error', 'message': 'Nieprawidłowy adres email.'}, status=400)
 
-    return render(request, 'base-widget.html')
+    if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+        return JsonResponse({'status': 'error', 'message': 'Weryfikacja reCAPTCHA nie powiodła się.'}, status=400)
+
+    email = html.escape(email)
+    phone_number = html.escape(phone_number)
+    message = html.escape(message)
+
+    try:
+        PlatformMessage.objects.create(
+            email=email,
+            phone_number=phone_number,
+            message=message
+        )
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Wystąpił problem podczas wysyłania wiadomości.'
+        }, status=500)
+
+    return JsonResponse({'status': 'success', 'message': 'Wiadomość została wysłana!'})
+
+
+'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
+
+def get_blog_context():
+    categories = BlogCategory.objects.all()
+    years = BlogPost.objects.dates('created_at', 'year').distinct()
+    months = BlogPost.objects.dates('created_at', 'month').distinct()
+    days = BlogPost.objects.dates('created_at', 'day').distinct()
+
+    return {
+        'categories': categories,
+        'years': years,
+        'months': months,
+        'days': days,
+    }
+
+
+def blog_post_list(request):
+    category_id = request.GET.get('category')
+    query = request.GET.get('q')
+    year = request.GET.get('year')
+    month = request.GET.get('month')
+    day = request.GET.get('day')
+    new = request.GET.get('new')
+    trending = request.GET.get('trending')
+
+    blog_posts = BlogPost.objects.all()
+
+    if category_id:
+        category = get_object_or_404(BlogCategory, id=category_id)
+        blog_posts = blog_posts.filter(category=category)
+
+    if query:
+        blog_posts = blog_posts.filter(Q(title__icontains=query))
+
+    if year:
+        blog_posts = blog_posts.filter(created_at__year=year)
+
+    if month:
+        blog_posts = blog_posts.filter(created_at__month=month)
+
+    if day:
+        blog_posts = blog_posts.filter(created_at__day=day)
+
+    if new:
+        blog_posts = blog_posts.filter(is_new=True)
+
+    if trending:
+        blog_posts = blog_posts.filter(is_trending=True)
+
+    blog_posts = blog_posts.order_by('-created_at')
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(blog_posts, 12)
+    blog_posts = paginator.get_page(page)
+
+    context = get_blog_context()
+    context.update({
+        'blog_posts': blog_posts,
+    })
+
+    return render(request, 'blog/blog-post-list.html', context)
+
+
+def blog_post_detail(request, slug, id):
+    post = get_object_or_404(BlogPost, slug=slug, id=id)
+    post.increment_views()
+    content_blocks = post.content_blocks.all()
+    similar_posts = post.get_similar_posts().order_by('-created_at')[:4]
+
+    liked_posts = request.COOKIES.get('liked_posts', '')
+    liked = str(post.id) in liked_posts.split(',')
+
+    context = get_blog_context()
+    context.update({
+        'post': post,
+        'content_blocks': content_blocks,
+        'similar_posts': similar_posts,
+        'liked': liked,
+    })
+
+    return render(request, 'blog/blog-post-detail.html', context)
+
+
+def like_post(request, pk):
+    post = get_object_or_404(BlogPost, pk=pk)
+    liked_posts = request.COOKIES.get('liked_posts', '')
+    liked_posts_list = liked_posts.split(',')
+
+    if str(pk) in liked_posts_list:
+        liked_posts_list.remove(str(pk))
+        post.likes -= 1
+        liked = False
+    else:
+        liked_posts_list.append(str(pk))
+        post.likes += 1
+        liked = True
+
+    post.save()
+    response = JsonResponse({'likes': post.likes, 'liked': liked})
+    response.set_cookie('liked_posts', ','.join(liked_posts_list))
+    return response
 
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
 
 def loginPage(request):
+    messages.get_messages(request)
+
     if request.method == 'POST':
+        recaptcha_token = request.POST.get('g-recaptcha-response')
+        if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+            messages.error(request, 'Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie.')
+            return render(request, 'knowledge-zone/login_register.html', {'page': 'login'})
+
         email = request.POST.get('email', '').lower()
         password = request.POST.get('password', '')
-        next_url = request.POST.get('next', request.GET.get('next', reverse('schoolweb:knowledge_zone')))
+
+        try:
+            next_url = request.POST.get('next') or request.GET.get('next') or reverse('schoolweb:knowledge_zone')
+        except NoReverseMatch:
+            next_url = reverse('home')
 
         user = authenticate(request, username=email, password=password)
 
@@ -114,40 +271,52 @@ def logoutUser(request):
     return redirect(next_url)
 
 
+def session_timeout(request):
+    logout(request)
+    messages.error(request, "Zostałeś automatycznie wylogowany z powodu braku aktywności.")
+    return redirect('schoolweb:login')
+
+
 def registerPage(request):
-    form = MyUserCreationForm()
+    messages.get_messages(request)
 
     if request.method == 'POST':
+        recaptcha_token = request.POST.get('g-recaptcha-response')
+        if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+            messages.error(request, 'Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie.')
+            return redirect('schoolweb:register')
+
+        if not request.POST.get('accept_terms'):
+            messages.error(request, 'Musisz zaakceptować regulamin i politykę prywatności.')
+            return redirect('schoolweb:register')
+
         form = MyUserCreationForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data['username'].lower()
 
             if User.objects.filter(username=username).exists():
-                messages.error(request, 'Użytkownik o podanej nazwie już istnieje.')
-                return redirect('schoolweb:registerPage')
+                form.add_error('username', 'Użytkownik o podanej nazwie już istnieje.')
+            else:
+                try:
+                    with transaction.atomic():
+                        user = form.save(commit=False)
+                        user.username = username
+                        user.save()
 
-            try:
-                with transaction.atomic():
-                    user = form.save(commit=False)
-                    user.username = username
-                    user.save()
+                        writers_group = Group.objects.get(name='Writers')
+                        user.groups.add(writers_group)
 
-                    writers_group = Group.objects.get(name='Writers')
-                    user.groups.add(writers_group)
+                    login(request, user)
+                    messages.success(request, 'Rejestracja zakończona pomyślnie!')
+                    return redirect('schoolweb:knowledge_zone')
 
-                login(request, user)
-                messages.success(request, 'Rejestracja zakończona pomyślnie!')
-                return redirect('schoolweb:knowledge_zone')
+                except Exception as e:
+                    form.add_error(None, f'Wystąpił błąd podczas rejestracji: {str(e)}')
 
-            except Exception as e:
-                messages.error(request, f'Wystąpił błąd podczas rejestracji: {str(e)}')
-                return redirect('schoolweb:registerPage')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                    messages.error(request, error)
+    else:
+        form = MyUserCreationForm()
 
-    return render(request, 'knowledge-zone/login_register.html', {'form': form})
+    return render(request, 'knowledge-zone/login_register.html', {'form': form, 'page': 'register'})
 
 
 def knowledge_zone(request):
@@ -166,7 +335,7 @@ def knowledge_zone(request):
     if level_filter:
         rooms = rooms.filter(level=level_filter)
 
-    topics = Topic.objects.all()[:28]
+    topics = Topic.objects.all()[:30]
     room_count = rooms.count()
     room_messages = Message.objects.order_by('-created')[:12]
 
@@ -183,6 +352,8 @@ def knowledge_zone(request):
             user_redirect_url = reverse('schoolweb:applyUser')
     else:
         user_redirect_url = reverse('schoolweb:applyUser')
+
+    print(user_redirect_url)
 
     context = {
         'rooms': rooms,
@@ -217,6 +388,8 @@ def room(request, pk):
             )
             room.participants.add(request.user)
 
+            messages.success(request, 'Komentarz został dodany pomyślnie!')
+
             return redirect(reverse('schoolweb:room', kwargs={'pk': room.id}))
 
     context = {'room': room, 'room_messages': room_messages, 'participants': participants}
@@ -224,48 +397,29 @@ def room(request, pk):
 
 
 @login_required(login_url='schoolweb:login')
+@transaction.atomic
 def createRoom(request):
     form = RoomForm(request.POST or None, request.FILES or None)
     topics = Topic.objects.all()
 
     if request.method == 'POST' and form.is_valid():
-        with transaction.atomic():
-            room = form.save(commit=False)
-            room.host = request.user
+        room = form.save(commit=False)
+        room.host = request.user
 
-            if 'image' in request.FILES:
-                room.image = request.FILES['image']
+        if request.POST.get('image_clear') == 'on':
+            room.image = None
 
-            room.save()
-            messages.success(request, 'Post został pomyślnie utworzony!')
+        room.save()
 
-            user_points = request.user.points
-
-            if user_points >= 1000:
-                request.user.points -= 1000
-                request.user.save()
-
-                lesson_stats, created = LessonStats.objects.get_or_create(user=request.user)
-
-                if request.user.groups.filter(name='Teachers').exists():
-                    lesson_stats.month_bonus += 50
-                    lesson_stats.all_bonus += 50
-
-                elif request.user.groups.filter(name='Students').exists():
-                    if request.user.level == 'Podstawa':
-                        lesson_stats.lessons += 1
-                    elif request.user.level == 'Rozszerzenie':
-                        lesson_stats.lessons_intermediate += 1
-
-                lesson_stats.save()
-
-            return redirect('schoolweb:knowledge_zone')
+        messages.success(request, 'Post został pomyślnie utworzony!')
+        return redirect('schoolweb:knowledge_zone')
 
     context = {'form': form, 'topics': topics}
     return render(request, 'knowledge-zone/room_form.html', context)
 
 
 @login_required(login_url='schoolweb:login')
+@transaction.atomic
 def updateRoom(request, pk):
     room = get_object_or_404(Room, id=pk)
 
@@ -280,7 +434,9 @@ def updateRoom(request, pk):
         if form.is_valid():
             updated_room = form.save(commit=False)
 
-            if 'image_clear' in request.POST:
+            if request.POST.get('image_clear') == 'on':
+                if updated_room.image:
+                    updated_room.image.delete(save=False)
                 updated_room.image = None
 
             updated_room.likes.set(current_likes)
@@ -293,13 +449,22 @@ def updateRoom(request, pk):
         form = RoomForm(instance=room)
 
     topics = Topic.objects.all()
-    context = {'form': form, 'topics': topics}
+    context = {'form': form, 'topics': topics, 'room': room}
     return render(request, 'knowledge-zone/room_form.html', context)
 
 
 @login_required(login_url='schoolweb:login')
 def reportRoom(request, pk):
     room = get_object_or_404(Room, id=pk)
+
+    if room.host == request.user:
+        messages.error(request, 'Nie możesz zgłosić własnego posta.')
+        return redirect('schoolweb:knowledge_zone')
+
+    if room.reports.filter(reporter=request.user).exists():
+        messages.warning(request, 'Ten post został już przez Ciebie zgłoszony.')
+        return redirect('schoolweb:knowledge_zone')
+
     if request.method == 'POST':
         form = ReportForm(request.POST)
         if form.is_valid():
@@ -322,18 +487,26 @@ def deleteRoom(request, pk):
     room = get_object_or_404(Room, id=pk)
 
     if request.user != room.host:
-        messages.error(request, 'Nie masz uprawnień do usunięcia tego pokoju.')
+        messages.error(request, 'Nie masz uprawnień do usunięcia tego postu.')
         return redirect('schoolweb:knowledge_zone')
+
+    if request.method == 'GET':
+        previous_url = request.META.get('HTTP_REFERER', '/')
+        request.session['lesson_url'] = previous_url
 
     if request.method == 'POST':
         try:
             room.delete()
             messages.success(request, 'Post został pomyślnie usunięty.')
         except Exception as e:
-            messages.error(request, f'Wystąpił błąd podczas usuwania pokoju: {str(e)}')
-        return redirect('schoolweb:knowledge_zone')
+            messages.error(request, f'Wystąpił błąd podczas usuwania postu: {str(e)}')
 
-    return render(request, 'knowledge-zone/delete.html', {'obj': room})
+        return redirect(reverse('schoolweb:knowledge_zone'))
+
+    return render(request, 'knowledge-zone/delete.html', {
+        'obj': room,
+        'lesson_url': request.session.get('lesson_url', reverse('schoolweb:knowledge_zone'))
+    })
 
 
 @login_required(login_url='schoolweb:login')
@@ -346,16 +519,21 @@ def deleteMessage(request, pk):
     if request.method == 'GET':
         lesson_url = request.META.get('HTTP_REFERER', '/')
         request.session['lesson_url'] = lesson_url
+    else:
+        lesson_url = request.session.get('lesson_url', '/')
 
     if request.method == 'POST':
         try:
             message.delete()
-            messages.success(request, 'Wiadomość została usunięta.')
+            messages.success(request, 'Komentarz został poprawnie usunięty.')
         except Exception as e:
             messages.error(request, f'Wystąpił błąd podczas usuwania wiadomości: {str(e)}')
-        return redirect(request.session.get('lesson_url', '/'))
+        return redirect(lesson_url)
 
-    return render(request, 'knowledge-zone/delete.html', {'obj': message})
+    return render(request, 'knowledge-zone/delete.html', {
+        'obj': message,
+        'lesson_url': lesson_url,
+    })
 
 
 @login_required(login_url='schoolweb:login')
@@ -366,21 +544,47 @@ def editRoomMessage(request, pk):
         messages.error(request, 'Nie możesz edytować tej wiadomości.')
         return redirect('schoolweb:room', pk=message.room.pk)
 
-    if request.method == 'POST':
-        form = RoomMessageForm(request.POST, request.FILES, instance=message)
-        if form.is_valid():
-            if form.cleaned_data.get('image_clear'):
-                message.image.delete(save=False)
-            try:
-                form.save()
-                messages.success(request, 'Wiadomość została zaktualizowana.')
-            except Exception as e:
-                messages.error(request, f'Wystąpił błąd podczas aktualizacji wiadomości: {str(e)}')
-            return redirect(request.session.get('lesson_url', '/'))
-    else:
-        form = RoomMessageForm(instance=message)
+    if request.method == 'GET':
+        lesson_url = request.META.get('HTTP_REFERER')
+        if lesson_url:
+            request.session['lesson_url'] = lesson_url
 
-    return render(request, 'knowledge-zone/edit-message.html', {'form': form, 'message': message})
+    form = RoomMessageForm(request.POST or None, request.FILES or None, instance=message)
+
+    if request.method == 'POST' and form.is_valid():
+        message = form.save(commit=False)
+
+        if request.POST.get('image_clear') == 'on':
+            message.image.delete(save=False)
+            message.image = None
+
+        if request.POST.get('file_clear') == 'on':
+            message.file.delete(save=False)
+            message.file = None
+
+        is_empty = (
+            not message.body.strip() and
+            not message.image and
+            not message.file
+        )
+
+        if is_empty:
+            message.delete()
+            messages.info(request, 'Komentarz został usunięty, ponieważ był pusty.')
+        else:
+            message.save()
+            messages.success(request, 'Komentarz został zaktualizowany.')
+
+        next_url = request.POST.get('next') or request.session.get('lesson_url', '/')
+        return redirect(next_url)
+
+    lesson_url = request.session.get('lesson_url', '/')
+
+    return render(request, 'knowledge-zone/edit-message.html', {
+        'form': form,
+        'message': message,
+        'lesson_url': lesson_url,
+    })
 
 
 @login_required(login_url='schoolweb:login')
@@ -389,6 +593,63 @@ def userProfile(request, pk):
     rooms = user.hosted_rooms.all()
     room_messages = user.messages.all()
     topics = Topic.objects.all()
+
+    lesson_stats = getattr(user, 'lesson_stats', None)
+    if not lesson_stats:
+        lesson_stats = LessonStats.objects.create(user=user)
+
+    month_earnings = (
+        60 * lesson_stats.lessons_intermediate +
+        40 * lesson_stats.lessons +
+        20 * lesson_stats.break_lessons -
+        50 * lesson_stats.missed_lessons +
+        lesson_stats.month_bonus +
+        lesson_stats.month_referral_bonus
+    )
+    all_earnings = (
+        60 * lesson_stats.all_lessons_intermediate +
+        40 * lesson_stats.all_lessons +
+        20 * lesson_stats.all_break_lessons -
+        50 * lesson_stats.all_missed_lessons +
+        lesson_stats.all_bonus +
+        lesson_stats.all_referral_bonus
+    )
+
+    # Sprawdzenie grup użytkownika
+    logged_in_user = request.user
+    is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
+    is_student = logged_in_user.groups.filter(name='Students').exists()
+
+    if is_teacher:
+        navbar_template = 'tutoring-zone/nav-teacher-view.html'
+        courses_component = 'tutoring-zone/courses-component-teachers.html'
+        courses = Course.objects.filter(teacher=logged_in_user)
+        accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
+    elif is_student:
+        navbar_template = 'tutoring-zone/nav-student-view.html'
+        courses_component = 'tutoring-zone/courses-component-students.html'
+        courses = Course.objects.filter(students=logged_in_user)
+        accessible_users = User.objects.filter(
+            Q(groups__name='Students', courses_enrolled__in=courses) |
+            Q(groups__name='Teachers', courses_taught__in=courses)
+        ).distinct()
+    else:
+        navbar_template = ''
+        courses_component = ''
+        courses = []
+        accessible_users = []
+
+    is_accessible_profile = (
+        logged_in_user == user or
+        (is_teacher and user in accessible_users) or
+        (is_student and user in accessible_users)
+    )
+
+    if not is_accessible_profile:
+        return render(request, 'tutoring-zone/lesson-no-exists.html')
+
+    lessons = user.lesson_set.all()
+    lesson_messages = user.coursemessage_set.all()
 
     if request.user.is_authenticated:
         if request.user.groups.filter(name='NewTeachers').exists() or request.user.groups.filter(name='NewStudents').exists():
@@ -410,6 +671,17 @@ def userProfile(request, pk):
         'room_messages': room_messages,
         'topics': topics,
         'user_redirect_url': user_redirect_url,
+        'lessons': lessons,
+        'lesson_messages': lesson_messages,
+        'package': lesson_stats.lessons,
+        'all_package': lesson_stats.all_lessons,
+        'courses': courses,
+        'navbar_template': navbar_template,
+        'courses_component': courses_component,
+        'month_earnings': month_earnings,
+        'all_earnings': all_earnings,
+        'is_teacher': is_teacher,
+        'lesson_stats': lesson_stats,
     }
 
     return render(request, 'knowledge-zone/profile.html', context)
@@ -418,31 +690,38 @@ def userProfile(request, pk):
 @login_required(login_url='schoolweb:login')
 def updateUser(request):
     user = request.user
-    form = UserForm(instance=user)
 
     if request.method == 'POST':
+        if request.POST.get('avatar_clear') == 'on':
+            if user.avatar:
+                try:
+                    user.avatar.delete(save=False)
+                except Exception:
+                    pass
+            user.avatar = None
+            user.save()
+            messages.success(request, "Zdjęcie profilowe zostało usunięte.")
+            return redirect('schoolweb:user-profile', pk=user.id)
+
         form = UserForm(request.POST, request.FILES, instance=user)
+
         if form.is_valid():
-            if 'image_clear' in request.POST:
-                user.avatar = 'profile-pictures/avatar.svg'
-                user.save()
             form.save()
             messages.success(request, "Twój profil został zaktualizowany.")
             return redirect('schoolweb:user-profile', pk=user.id)
 
-    error_messages = [error for field, errors in form.errors.items() for error in errors]
-    for error in error_messages:
-        messages.error(request, error)
+        error_messages = [error for field, errors in form.errors.items() for error in errors]
+        for error in error_messages:
+            messages.error(request, error)
 
-    return render(request, 'knowledge-zone/update-user.html', {'form': form})
+    else:
+        form = UserForm(instance=user)
+
+    return render(request, 'knowledge-zone/update-user.html', {'form': form, 'user': user})
 
 
 def activityPage(request):
-    try:
-        room_messages = Message.objects.all()[:12]
-    except Exception as e:
-        room_messages = []
-
+    room_messages = Message.objects.select_related('user', 'room')[:12]
     return render(request, 'knowledge-zone/activity.html', {'room_messages': room_messages})
 
 
@@ -450,7 +729,24 @@ def topicsPage(request):
     q = request.GET.get('q', '')
     topics = Topic.objects.filter(Q(name__icontains=q))
 
-    return render(request, 'knowledge-zone/topics.html', {'topics': topics})
+    if request.user.is_authenticated:
+        if request.user.groups.filter(name='NewTeachers').exists() or request.user.groups.filter(name='NewStudents').exists():
+            user_redirect_url = reverse('schoolweb:coursesLoader')
+        elif request.user.groups.filter(name='Teachers').exists():
+            user_redirect_url = reverse('schoolweb:teacherPage')
+        elif request.user.groups.filter(name='Students').exists():
+            user_redirect_url = reverse('schoolweb:studentPage')
+        elif request.user.groups.filter(name='Writers').exists():
+            user_redirect_url = reverse('schoolweb:WriterToTutoringZone')
+        else:
+            user_redirect_url = reverse('schoolweb:applyUser')
+    else:
+        user_redirect_url = reverse('schoolweb:applyUser')
+
+    return render(request, 'knowledge-zone/topics.html', {
+        'topics': topics,
+        'user_redirect_url': user_redirect_url
+    })
 
 
 def like_room(request, pk):
@@ -493,22 +789,39 @@ def get_room_likes(request, room_id):
     room = get_object_or_404(Room, id=room_id)
     liked_users = room.likes.all()
 
-    liked_users_data = [
-        {'id': user.id, 'username': user.username, 'avatar': user.avatar.url}
-        for user in liked_users
-    ]
+    liked_users_data = []
+    for user in liked_users:
+        if user.avatar and hasattr(user.avatar, 'url'):
+            avatar_url = user.avatar.url
+        else:
+            avatar_url = '/static/img/profile-pictures/avatar.svg'
+
+        liked_users_data.append({
+            'id': user.id,
+            'username': user.username,
+            'avatar': avatar_url,
+        })
 
     return JsonResponse({'liked_users': liked_users_data})
+
 
 
 def get_likes(request, message_id):
     message = get_object_or_404(Message, id=message_id)
     liked_users = message.likes.all()
 
-    liked_users_data = [
-        {'id': user.id, 'username': user.username, 'avatar': user.avatar.url}
-        for user in liked_users
-    ]
+    liked_users_data = []
+    for user in liked_users:
+        if user.avatar and hasattr(user.avatar, 'url'):
+            avatar_url = user.avatar.url
+        else:
+            avatar_url = '/static/img/profile-pictures/avatar.svg'
+
+        liked_users_data.append({
+            'id': user.id,
+            'username': user.username,
+            'avatar': avatar_url,
+        })
 
     return JsonResponse({'liked_users': liked_users_data})
 
@@ -531,21 +844,23 @@ def WriterToTutoringZone(request):
                 referred_user = User.objects.filter(referral_code=referral_code_input).first()
 
                 if referred_user:
-                    if user_type == 'student' and referred_user.groups.filter(name="Students").exists():
-                        user.referred_by = referral_code_input
-                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
-                        if referred_user.level == "Podstawa":
-                            lesson_stats.lessons += 1
-                        elif referred_user.level == "Rozszerzenie":
-                            lesson_stats.lessons_intermediate += 1
-                        lesson_stats.save()
+                    if user_type in ['student', 'teacher']:
+                        if referred_user.groups.filter(name="Teachers").exists():
+                            user.referred_by = referral_code_input
+                            lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                            lesson_stats.month_referral_bonus += 50
+                            lesson_stats.all_referral_bonus += 50
+                            lesson_stats.save()
 
-                    elif user_type == 'teacher' and referred_user.groups.filter(name="Teachers").exists():
-                        user.referred_by = referral_code_input
-                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
-                        lesson_stats.month_referral_bonus += 50
-                        lesson_stats.all_referral_bonus += 50
-                        lesson_stats.save()
+                        elif referred_user.groups.filter(name="Students").exists():
+                            user.referred_by = referral_code_input
+                            lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+
+                            if referred_user.level == "Podstawa":
+                                lesson_stats.lessons += 1
+                            elif referred_user.level == "Rozszerzenie":
+                                lesson_stats.lessons_intermediate += 1
+                            lesson_stats.save()
                     else:
                         form.add_error(
                             'referral_code_input',
@@ -558,18 +873,19 @@ def WriterToTutoringZone(request):
 
             new_group = None
 
-            NewStudents.objects.get_or_create(
-                email=user.email,
-                defaults={
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'subject': user.subject,
-                    'level': user.level,
-                    'is_selected': False,
-                    'is_new': True,
-                    'user': user
-                }
-            )
+            if user_type == 'student':
+                NewStudents.objects.get_or_create(
+                    email=user.email,
+                    defaults={
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'subject': user.subject,
+                        'level': user.level,
+                        'is_selected': False,
+                        'is_new': True,
+                        'user': user
+                    }
+                )
 
             if user_type == 'teacher':
                 new_group = Group.objects.get(name='NewTeachers')
@@ -591,6 +907,12 @@ def WriterToTutoringZone(request):
 
 def applyUser(request):
     if request.method == 'POST':
+        recaptcha_token = request.POST.get('g-recaptcha-response')
+        if not recaptcha_token or not verify_recaptcha(recaptcha_token):
+            form = ApplyUserForm(request.POST)
+            form.add_error(None, 'Weryfikacja reCAPTCHA nie powiodła się. Spróbuj ponownie.')
+            return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
+
         form = ApplyUserForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -605,22 +927,23 @@ def applyUser(request):
                 referred_user = User.objects.filter(referral_code=referral_code_input).first()
 
                 if referred_user:
-                    if role == 'student' and referred_user.groups.filter(name="Students").exists():
-                        user.referred_by = referral_code_input
-                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                    if role in ['student', 'teacher']:
+                        if referred_user.groups.filter(name="Teachers").exists():
+                            user.referred_by = referral_code_input
+                            lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
+                            lesson_stats.month_referral_bonus += 50
+                            lesson_stats.all_referral_bonus += 50
+                            lesson_stats.save()
 
-                        if referred_user.level == "Podstawa":
-                            lesson_stats.lessons += 1
-                        elif referred_user.level == "Rozszerzenie":
-                            lesson_stats.lessons_intermediate += 1
-                        lesson_stats.save()
+                        elif referred_user.groups.filter(name="Students").exists():
+                            user.referred_by = referral_code_input
+                            lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
 
-                    elif role == 'teacher' and referred_user.groups.filter(name="Teachers").exists():
-                        user.referred_by = referral_code_input
-                        lesson_stats, created = LessonStats.objects.get_or_create(user=referred_user)
-                        lesson_stats.month_referral_bonus += 50
-                        lesson_stats.all_referral_bonus += 50
-                        lesson_stats.save()
+                            if referred_user.level == "Podstawa":
+                                lesson_stats.lessons += 1
+                            elif referred_user.level == "Rozszerzenie":
+                                lesson_stats.lessons_intermediate += 1
+                            lesson_stats.save()
                     else:
                         form.add_error(
                             'referral_code_input',
@@ -633,18 +956,19 @@ def applyUser(request):
 
             user.save()
 
-            NewStudents.objects.get_or_create(
-                email=user.email,
-                defaults={
-                    'first_name': user.first_name,
-                    'last_name': user.last_name,
-                    'subject': user.subject,
-                    'level': user.level,
-                    'is_selected': False,
-                    'is_new': True,
-                    'user': user
-                }
-            )
+            if role == 'student':
+                NewStudents.objects.get_or_create(
+                    email=user.email,
+                    defaults={
+                        'first_name': user.first_name,
+                        'last_name': user.last_name,
+                        'subject': user.subject,
+                        'level': user.level,
+                        'is_selected': False,
+                        'is_new': True,
+                        'user': user
+                    }
+                )
 
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password1')
@@ -673,14 +997,36 @@ def applyUser(request):
     return render(request, 'tutoring-zone/application-tutoring-zone.html', {'form': form})
 
 
+@login_required(login_url='schoolweb:knowledge_zone')
+def coursesLoader(request):
+    user_groups = set(request.user.groups.values_list('name', flat=True))
+
+    if 'Teachers' in user_groups:
+        return redirect('schoolweb:teacherPage')
+    elif 'Students' in user_groups:
+        return redirect('schoolweb:studentPage')
+    elif 'NewStudents' in user_groups or 'NewTeachers' in user_groups:
+        return render(request, 'tutoring-zone/user-creator.html')
+
+    return redirect('schoolweb:knowledge_zone')
+
+'''~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ '''
+
 @login_required(login_url='schoolweb:login')
 def newStudent(request):
+    if not request.user.groups.filter(name='Teachers').exists():
+        return HttpResponseForbidden("Nie masz uprawnień do tej akcji.")
+
     if request.method == 'POST':
         student_id = request.POST.get('student_id')
         if not student_id:
             return redirect('schoolweb:new_students')
 
         student = get_object_or_404(NewStudents, id=student_id)
+
+        if student.is_selected:
+            messages.error(request, "Ten uczeń został już wybrany przez innego nauczyciela.")
+            return redirect('schoolweb:new_students')
 
         with transaction.atomic():
             student.is_selected = True
@@ -690,8 +1036,8 @@ def newStudent(request):
             course_type = 'basic' if student.level == 'Podstawa' else 'intermediate'
 
             new_course = Course.objects.create(
-                name=f"{student.first_name} {student.last_name} ({student.subject})",
-                student=f"{student.subject} {student.level}",
+                name=f"{student.first_name} {student.last_name}",
+                subject=student.subject,
                 teacher=teacher,
                 course_type=course_type,
             )
@@ -706,49 +1052,63 @@ def newStudent(request):
     return render(request, 'tutoring-zone/students-list.html', context)
 
 
-@login_required(login_url='schoolweb:knowledge_zone')
-def coursesLoader(request):
-    user_groups = set(request.user.groups.values_list('name', flat=True))
-
-    if 'Teachers' in user_groups:
-        return redirect('schoolweb:teacherPage')
-    if 'Students' in user_groups:
-        return redirect('schoolweb:studentPage')
-    if user_groups.intersection({'NewStudents', 'NewTeachers'}):
-        return render(request, 'tutoring-zone/user-creator.html')
-
-    return redirect('schoolweb:knowledge_zone')
-
-
-'''~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ '''
-
 def is_teacher(user):
     return user.groups.filter(name='Teachers').exists()
 
-@user_passes_test(is_teacher, login_url='schoolweb:login')
+
 @login_required(login_url='schoolweb:login')
 def teacherPage(request):
-    now = datetime.now() - timedelta(minutes=15)
-    time_difference = timedelta(minutes=35)
-    time_threshold = now - time_difference
+    if not is_teacher(request.user):
+        return HttpResponseForbidden("Nie masz uprawnień do tej akcji.")
 
+    now = datetime.now()
     q = request.GET.get('q') if request.GET.get('q') is not None else ''
     teacher = request.user
+
     courses = Course.objects.filter(teacher=teacher)
     all_courses = Course.objects.all()
 
     upcoming_lessons = Lesson.objects.filter(
-        Q(course__in=courses) & Q(event_datetime__gt=now) & (Q(course__name=q) | Q(title__icontains=q))
+        Q(event_datetime__gt=now) &
+        (Q(course__name=q) | Q(title__icontains=q)) &
+        Q(host=teacher)
     ).order_by('event_datetime')
 
     past_lessons = Lesson.objects.filter(
-        Q(course__in=courses) & Q(event_datetime__lte=now) & (Q(course__name=q) | Q(title__icontains=q))
+        Q(event_datetime__lte=now) &
+        (Q(course__name=q) | Q(title__icontains=q)) &
+        Q(host=teacher)
     ).order_by('-event_datetime')
 
     lessons = list(upcoming_lessons) + list(past_lessons)
 
+    for lesson in lessons:
+        event = lesson.event_datetime
+        feedback_sent = lesson.feedback_submitted
+        correction_sent = lesson.lessoncorrection_set.exists()
+
+        # Przedziały czasowe względem teraz
+        time_until = (event - now).total_seconds()
+        time_since = (now - event).total_seconds()
+
+        # Czasowe flagi do użycia w HTML
+        lesson.lock_before_join = time_until > 15 * 60  # przed 15 min przed
+        lesson.can_join = 0 <= time_until <= 15 * 60 or 0 <= time_since <= 10 * 60  # od 15 min przed do 10 min po
+        lesson.lock_after_join = 10 * 60 < time_since < 50 * 60  # od 10 min po do 50 min po
+        lesson.can_feedback = time_since >= 50 * 60 and not feedback_sent
+        lesson.can_refresh = time_since >= 50 * 60 and feedback_sent and not correction_sent
+        lesson.lock_only = time_since >= 50 * 60 and feedback_sent and correction_sent  # po 50 min i wszystko już wysłane
+        print(lesson.id, feedback_sent, correction_sent, lesson.can_feedback, lesson.can_refresh, lesson.lock_only)
+
     post_count = len(lessons)
     lesson_messages = CourseMessage.objects.filter(room__in=lessons)
+
+    if request.user.groups.filter(name='Teachers').exists():
+        user_redirect_url = reverse('schoolweb:teacherPage')
+    elif request.user.groups.filter(name='Students').exists():
+        user_redirect_url = reverse('schoolweb:studentPage')
+    else:
+        user_redirect_url = reverse('schoolweb:login')
 
     context = {
         'lessons': lessons,
@@ -757,22 +1117,22 @@ def teacherPage(request):
         'lesson_messages': lesson_messages,
         'all_courses': all_courses,
         'now': now,
-        'time_threshold': time_threshold,
+        'time_threshold': now,
         'teacher': teacher,
+        'user_redirect_url': user_redirect_url,
     }
+
     return render(request, 'tutoring-zone/teacher-view.html', context)
 
 
 def is_student(user):
     return user.groups.filter(name='Students').exists()
 
+
 @login_required(login_url='schoolweb:login')
 @user_passes_test(is_student, login_url='schoolweb:login')
 def studentPage(request):
-    now = datetime.now() - timedelta(minutes=15)
-    time_difference = timedelta(minutes=35)
-    time_threshold = now - time_difference
-
+    now = datetime.now()
     q = request.GET.get('q', '')
     student = request.user
 
@@ -791,10 +1151,24 @@ def studentPage(request):
 
     lessons = list(upcoming_lessons) + list(past_lessons)
 
+    for lesson in lessons:
+        event = lesson.event_datetime
+        time_until = (event - now).total_seconds()
+        time_since = (now - event).total_seconds()
+
+        # Flagi czasowe tylko dla studenta
+        lesson.lock_before_join = time_until > 15 * 60
+        lesson.can_join = 0 <= time_until <= 15 * 60 or 0 <= time_since <= 10 * 60
+        lesson.lock_after_join = time_since > 10 * 60
+
     post_count = len(lessons)
     lesson_messages = CourseMessage.objects.filter(Q(room__in=lessons))
-
     new_student = NewStudents.objects.filter(email=student.email).first()
+
+    if request.user.groups.filter(name='Teachers').exists():
+        user_redirect_url = reverse('schoolweb:teacherPage')
+    elif request.user.groups.filter(name='Students').exists():
+        user_redirect_url = reverse('schoolweb:studentPage')
 
     context = {
         'lessons': lessons,
@@ -803,9 +1177,10 @@ def studentPage(request):
         'lesson_messages': lesson_messages,
         'all_courses': all_courses,
         'now': now,
-        'time_threshold': time_threshold,
+        'time_threshold': now,
         'teachers': teachers,
         'new_student': new_student,
+        'user_redirect_url': user_redirect_url,
     }
     return render(request, 'tutoring-zone/student-view.html', context)
 
@@ -834,87 +1209,18 @@ def coursesTutoringZone(request):
 @login_required(login_url='schoolweb:login')
 def activityTutoringZone(request):
     lesson_messages = CourseMessage.objects.all()[0:12]
-    return render(request, 'tutoring-zone/activity-tutoring-zone.html', {'lesson_messages': lesson_messages})
 
+    user_redirect_url = request.META.get('HTTP_REFERER', reverse('schoolweb:applyUser'))
 
-@login_required(login_url='schoolweb:login')
-def lessonProfile(request, pk):
-    user = get_object_or_404(User, id=pk)
+    if request.user.groups.filter(name='Teachers').exists():
+        user_redirect_url = reverse('schoolweb:teacherPage')
+    elif request.user.groups.filter(name='Students').exists():
+        user_redirect_url = reverse('schoolweb:studentPage')
 
-    lesson_stats = getattr(user, 'lesson_stats', None)
-
-    if not lesson_stats:
-        lesson_stats = LessonStats.objects.create(user=user)
-
-    month_earnings = (
-        60 * lesson_stats.lessons_intermediate +
-        40 * lesson_stats.lessons +
-        20 * lesson_stats.break_lessons -
-        50 * lesson_stats.missed_lessons +
-        lesson_stats.month_bonus +
-        lesson_stats.month_referral_bonus
-    )
-    all_earnings = (
-        60 * lesson_stats.all_lessons_intermediate +
-        40 * lesson_stats.all_lessons +
-        20 * lesson_stats.all_break_lessons -
-        50 * lesson_stats.all_missed_lessons +
-        lesson_stats.all_bonus +
-        lesson_stats.all_referral_bonus
-    )
-
-    logged_in_user = request.user
-    is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
-    is_student = logged_in_user.groups.filter(name='Students').exists()
-
-    if is_teacher:
-        navbar_template = 'tutoring-zone/nav-teacher-view.html'
-        courses_component = 'tutoring-zone/courses-component-teachers.html'
-        courses = Course.objects.filter(teacher=logged_in_user)
-        accessible_users = User.objects.filter(groups__name='Students', courses_enrolled__in=courses)
-    elif is_student:
-        navbar_template = 'tutoring-zone/nav-student-view.html'
-        courses_component = 'tutoring-zone/courses-component-students.html'
-        courses = Course.objects.filter(students=logged_in_user)
-        accessible_users = User.objects.filter(
-            Q(groups__name='Students', courses_enrolled__in=courses) |
-            Q(groups__name='Teachers', courses_taught__in=courses)
-        ).distinct()
-    else:
-        navbar_template = ''
-        courses_component = ''
-        courses = []
-        accessible_users = []
-
-    is_accessible_profile = (
-        logged_in_user == user or
-        (is_teacher and user in accessible_users) or
-        (is_student and user in accessible_users)
-    )
-
-    if not is_accessible_profile:
-        return render(request, 'tutoring-zone/lesson-no-exists.html')
-
-    lessons = user.lesson_set.all()
-    lesson_messages = user.coursemessage_set.all()
-
-    context = {
-        'user': user,
-        'lessons': lessons,
+    return render(request, 'tutoring-zone/activity-tutoring-zone.html', {
         'lesson_messages': lesson_messages,
-        'package': lesson_stats.lessons,
-        'all_package': lesson_stats.all_lessons,
-        'courses': courses,
-        'navbar_template': navbar_template,
-        'courses_component': courses_component,
-        'month_earnings': month_earnings,
-        'all_earnings': all_earnings,
-        'is_teacher': is_teacher,
-        'lesson_stats': lesson_stats,
-    }
-
-    return render(request, 'tutoring-zone/lesson-profile.html', context)
-
+        'user_redirect_url': user_redirect_url
+    })
 
 @login_required(login_url='schoolweb:login')
 @user_passes_test(is_teacher, login_url='schoolweb:login')
@@ -997,27 +1303,6 @@ def generate_pdf(request, month, year):
 
 
 @login_required(login_url='schoolweb:login')
-def updateUserTutoringZone(request):
-    user = request.user
-    form = UserForm(instance=user)
-
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES, instance=user)
-        if form.is_valid():
-            form.save()
-            return redirect('schoolweb:lesson-profile', pk=user.id)
-
-    navbar_template = ''
-    if user.groups.filter(name='Teachers').exists():
-        navbar_template = 'tutoring-zone/nav-teacher-view.html'
-    elif user.groups.filter(name='Students').exists():
-        navbar_template = 'tutoring-zone/nav-student-view.html'
-
-    context = {'navbar_template': navbar_template, 'form': form}
-    return render(request, 'tutoring-zone/update-user-lessons.html', context)
-
-
-@login_required(login_url='schoolweb:login')
 def access_denied(request):
     return render(request, 'tutoring-zone/lesson-no-exists.html')
 
@@ -1027,11 +1312,13 @@ def successPage(request):
     return render(request, 'tutoring-zone/success-page.html')
 
 
-@user_passes_test(is_teacher, login_url='schoolweb:login')
 @login_required(login_url='schoolweb:login')
 def resignation(request):
+    logged_in_user = request.user
+    is_teacher = logged_in_user.groups.filter(name='Teachers').exists()
+
     if request.method == 'POST':
-        form = ResignationForm(request.POST)
+        form = ResignationForm(request.POST, is_teacher=is_teacher)
         if form.is_valid():
             resignation = form.save(commit=False)
             resignation.user = request.user
@@ -1039,9 +1326,12 @@ def resignation(request):
             messages.success(request, "Twoja rezygnacja została przyjęta.")
             return redirect('schoolweb:success-page')
     else:
-        form = ResignationForm()
+        form = ResignationForm(is_teacher=is_teacher)
 
-    return render(request, 'tutoring-zone/resignation.html', {'form': form})
+    return render(request, 'tutoring-zone/resignation.html', {
+        'form': form,
+        'is_teacher': is_teacher
+    })
 
 @login_required(login_url='schoolweb:login')
 def lesson(request, pk):
@@ -1096,6 +1386,10 @@ def createLesson(request):
     form = LessonFormCreate(user=request.user, initial=initial_data)
     current_date = timezone.now().strftime('%Y-%m-%dT%H:%M')
 
+    storage = get_messages(request)
+    for _ in storage:
+        pass
+
     if request.method == 'POST':
         form = LessonFormCreate(request.POST, user=request.user, initial=initial_data)
         minimum_datetime = timezone.now() + timedelta(minutes=15)
@@ -1142,7 +1436,14 @@ def createLesson(request):
                     lesson_stats.save()
 
                 messages.success(request, "Lekcja została pomyślnie utworzona.")
-                return redirect('schoolweb:teacherPage')
+
+                return redirect('schoolweb:create-lesson')
+
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
+
 
     return render(request, 'tutoring-zone/create-lesson.html', {'form': form, 'current_date': current_date})
 
@@ -1262,7 +1563,7 @@ def lessonFeedback(request, pk):
     user = request.user
 
     if user != lesson.course.teacher:
-        return redirect('access_denied')
+        return redirect('schoolweb:access_denied')
 
     if lesson.feedback_submitted:
         return redirect('schoolweb:teacherPage')
@@ -1422,7 +1723,7 @@ def Lobby(request):
 
 
 def converse(request):
-    user = request.user
+    user = get_user(request)
     room_code = request.GET.get('room')
 
     post = get_object_or_404(Lesson, invite_code=room_code)
@@ -1442,106 +1743,3 @@ def converse(request):
 def user_pre_delete(sender, instance, **kwargs):
     Room.objects.filter(host=instance).update(host=None)
 
-
-'''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
-
-
-def get_blog_context():
-    categories = BlogCategory.objects.all()
-    years = BlogPost.objects.dates('created_at', 'year').distinct()
-    months = BlogPost.objects.dates('created_at', 'month').distinct()
-    days = BlogPost.objects.dates('created_at', 'day').distinct()
-
-    return {
-        'categories': categories,
-        'years': years,
-        'months': months,
-        'days': days,
-    }
-
-
-def blog_post_list(request):
-    category_id = request.GET.get('category')
-    query = request.GET.get('q')
-    year = request.GET.get('year')
-    month = request.GET.get('month')
-    day = request.GET.get('day')
-    new = request.GET.get('new')
-    trending = request.GET.get('trending')
-
-    blog_posts = BlogPost.objects.all()
-
-    if category_id:
-        category = get_object_or_404(BlogCategory, id=category_id)
-        blog_posts = blog_posts.filter(category=category)
-
-    if query:
-        blog_posts = blog_posts.filter(Q(title__icontains=query))
-
-    if year:
-        blog_posts = blog_posts.filter(created_at__year=year)
-
-    if month:
-        blog_posts = blog_posts.filter(created_at__month=month)
-
-    if day:
-        blog_posts = blog_posts.filter(created_at__day=day)
-
-    if new:
-        blog_posts = blog_posts.filter(is_new=True)
-
-    if trending:
-        blog_posts = blog_posts.filter(is_trending=True)
-
-    blog_posts = blog_posts.order_by('-created_at')
-
-    page = request.GET.get('page', 1)
-    paginator = Paginator(blog_posts, 12)
-    blog_posts = paginator.get_page(page)
-
-    context = get_blog_context()
-    context.update({
-        'blog_posts': blog_posts,
-    })
-
-    return render(request, 'blog/blog-post-list.html', context)
-
-
-def blog_post_detail(request, slug, id):
-    post = get_object_or_404(BlogPost, slug=slug, id=id)
-    post.increment_views()
-    content_blocks = post.content_blocks.all()
-    similar_posts = post.get_similar_posts().order_by('-created_at')[:4]
-
-    liked_posts = request.COOKIES.get('liked_posts', '')
-    liked = str(post.id) in liked_posts.split(',')
-
-    context = get_blog_context()
-    context.update({
-        'post': post,
-        'content_blocks': content_blocks,
-        'similar_posts': similar_posts,
-        'liked': liked,
-    })
-
-    return render(request, 'blog/blog-post-detail.html', context)
-
-
-def like_post(request, pk):
-    post = get_object_or_404(BlogPost, pk=pk)
-    liked_posts = request.COOKIES.get('liked_posts', '')
-    liked_posts_list = liked_posts.split(',')
-
-    if str(pk) in liked_posts_list:
-        liked_posts_list.remove(str(pk))
-        post.likes -= 1
-        liked = False
-    else:
-        liked_posts_list.append(str(pk))
-        post.likes += 1
-        liked = True
-
-    post.save()
-    response = JsonResponse({'likes': post.likes, 'liked': liked})
-    response.set_cookie('liked_posts', ','.join(liked_posts_list))
-    return response

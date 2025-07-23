@@ -10,6 +10,11 @@
         {% include 'knowledge-zone/topics-knowledge-zone.html' %}
 
         <div class="roomList">
+            <div class="top__options">
+                <a href="{{ request.META.HTTP_REFERER }}" class="top__options-link">← Cofnij</a>|
+                <a href="{% url 'schoolweb:knowledge_zone' %}" class="top__options-link">Strefa Wiedzy </a>|
+                <a href="{{ user_redirect_url }}" class="top__options-link">Strefa Korepetycji</a>
+            </div>
             <div class="mobile-menu">
                 <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET" class="header__search">
                     <label>
@@ -56,6 +61,7 @@
                     Utwórz post
                 </a>
             </div>
+
             <form action="{% url 'schoolweb:knowledge_zone' %}" method="GET">
                 <input type="hidden" name="q" value="{{ current_q }}">
                 <select name="level" id="level" onchange="this.form.submit()" class="level-select">

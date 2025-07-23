@@ -2,7 +2,10 @@
 <header class="header">
     <div class="container">
         <a href="{% url 'schoolweb:home' %}" class="header__logo">
-            <img src="{% static 'img/widget/logo.png' %}" title="Wróć do menu głównego"/>
+            <picture>
+                <source srcset="{% static 'img/widget/logo.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/logo.png' %}" alt="SchoolWeb logo" title="Wróć do menu głównego" loading="lazy">
+            </picture>
             <h1 title="Wróć do menu głównego">SchoolWeb</h1>
         </a>
 
@@ -23,7 +26,7 @@
             <div class="header__user">
                 <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
                     <div class="avatar avatar--medium active">
-                        <img src="{{request.user.avatar.url}}"/>
+                        <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Avatar użytkownika"/>
                     </div>
                     <p>{{request.user.first_name}}<span>@{{request.user.username}}</span></p>
                 </a>

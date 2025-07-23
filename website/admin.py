@@ -16,6 +16,26 @@ from django.utils.timezone import now
 class PlatformMessageAdmin(admin.ModelAdmin):
     list_display = ('email', 'phone_number', 'message', 'created')
 
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+class ContentBlockInline(admin.TabularInline):
+    model = ContentBlock
+    extra = 1
+
+
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'created_at', 'category', 'is_new', 'is_trending', 'views', 'likes', 'slug')
+    list_filter = ('created_at', 'category', 'is_new', 'is_trending')
+    search_fields = ('title', )
+    fields = ('title', 'author', 'category', 'image', 'slug', 'is_new', 'is_trending', 'views', 'likes')
+    inlines = [ContentBlockInline]
+    prepopulated_fields = {"slug": ("title",)}
+
+
+class BlogCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'image')
+    search_fields = ('name',)
+
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 class CustomUserAdmin(UserAdmin):
@@ -335,31 +355,14 @@ class CourseAdmin(admin.ModelAdmin):
 
     get_students.short_description = 'Uczniowie'
 
-# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-class ContentBlockInline(admin.TabularInline):
-    model = ContentBlock
-    extra = 1
-
-
-class BlogPostAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'created_at', 'category', 'is_new', 'is_trending', 'views', 'likes', 'slug')
-    list_filter = ('created_at', 'category', 'is_new', 'is_trending')
-    search_fields = ('title', )
-    fields = ('title', 'author', 'category', 'image', 'slug', 'is_new', 'is_trending', 'views', 'likes')
-    inlines = [ContentBlockInline]
-    prepopulated_fields = {"slug": ("title",)}
-
-
-class BlogCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'image')
-    search_fields = ('name',)
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+admin.site.register(PlatformMessage, PlatformMessageAdmin)
+
 admin.site.register(BlogPost, BlogPostAdmin)
 admin.site.register(BlogCategory, BlogCategoryAdmin)
-admin.site.register(PlatformMessage, PlatformMessageAdmin)
+
 admin.site.register(Availability, AvailabilityAdmin)
 admin.site.register(LessonCorrection, LessonCorrectionAdmin)
 admin.site.register(User, CustomUserAdmin)

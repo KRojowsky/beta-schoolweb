@@ -6,31 +6,38 @@
   <ul class="topics__list">
     <li>
       <a href="{% url 'schoolweb:studentPage' %}" class="topic-link {% if not request.GET.q %}active{% endif %}">
-          <div>
+          <div style="align-items: center;">
               <img src="{% static 'img/icons/5_ZZWRR5G.svg' %}"/>
-              Wszystkie
+              Wszystkie lekcje
           </div>
-          <span>{{courses.count}}</span>
+          <span class="topics__list__count">{{ courses.count }}</span>
       </a>
+      <hr>
     </li>
 
     {% for course in courses %}
     <li>
       <a href="{% url 'schoolweb:studentPage' %}?q={{course.name}}" class="topic-link {% if request.GET.q == course.name %}active{% endif %}">
-          <div>
-              <img src="{% static 'img/icons/5_ZZWRR5G.svg' %}"/>
-              {{course.student}}
+          <div class="topics__list__info">
+              <div class="topics__list__text">
+                  <span class="topics__list__name">{{ course.subject }}</span>
+                  <div class="topics__list__details__container">
+                      <span class="topics__list__type">
+                        {% if course.course_type == 'basic' %}
+                            Podstawa
+                        {% elif course.course_type == 'intermediate' %}
+                            Rozszerzenie
+                        {% else %}
+                            {{ course.course_type }}
+                        {% endif %}
+                      </span>
+                  </div>
+              </div>
           </div>
-          <span>{{course.lesson_set.all.count}}</span>
+          <span class="topics__list__count">{{ course.lesson_set.all.count }}</span>
       </a>
+      <hr>
     </li>
     {% endfor %}
   </ul>
-  <a class="btn btn--link" href="{% url 'schoolweb:courses-tutoring-zone' %}">
-    Więcej
-    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-      <title>Przewiń w dół</title>
-      <path d="M16 21l-13-13h-3l16 16 16-16h-3l-13 13z"></path>
-    </svg>
-  </a>
 </div>

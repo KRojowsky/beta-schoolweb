@@ -31,7 +31,11 @@
                         {% if message.user and message.user.id %}
                         <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
                             <div class="avatar avatar--small active">
-                                <img src="{{ message.user.avatar.url }}" class="user-avatar" alt="Autor wiadomości"/>
+                                {% if message.user.avatar and message.user.avatar.name %}
+                                    <img src="{{ message.user.avatar.url }}">
+                                {% else %}
+                                    <img src="{% static 'img/profile-pictures/avatar.svg' %}">
+                                {% endif %}
                             </div>
                             <p>
                                 @{{ message.user.username }}
@@ -52,7 +56,7 @@
                         {% elif not message.user %}
                         <a class="roomListRoom__author">
                             <div class="avatar avatar--small">
-                                <img src="{% static 'img/profile-pictures/avatar.svg' %}" class="user-avatar"/>
+                                <img src="{% static 'img/profile-pictures/avatar.svg' %}" class="user-avatar" alt="Domyślny avatar"/>
                             </div>
                             <div class="user-info">
                                 <p>

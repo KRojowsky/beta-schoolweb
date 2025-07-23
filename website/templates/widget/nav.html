@@ -1,22 +1,22 @@
 {% load static %}
 <nav>
     <div class="nav-container">
-        <!-- Link do strony głównej -->
         <a class="nav-brand" href="{% url 'schoolweb:home' %}" title="Wróć do strony głównej">
-            <img src="{% static 'img/widget/logo.png' %}" alt="Logo SchoolWeb">
+            <picture>
+                <source srcset="{% static 'img/widget/logo.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/logo.png' %}" alt="Logo SchoolWeb" loading="lazy">
+            </picture>
             <div class="nav-brand-name">
                 <span class="title-word title-word-1">School</span>
                 <span class="title-word title-word-2">Web</span>
             </div>
         </a>
 
-        <!-- Linki nawigacyjne -->
         <ul class="nav-links">
             <li><a href="{% url target_url %}" class="upper-btn" title="Korepetycje">STREFA KOREPETYCJI</a></li>
             <li><a href="{% url 'schoolweb:knowledge_zone' %}" class="upper-btn" title="Forum">STREFA WIEDZY</a></li>
         </ul>
 
-        <!-- Ikona hamburgera dla menu mobilnego -->
         <div class="hamburger-menu">
             <div class="bar"></div>
             <div class="bar"></div>
@@ -24,7 +24,6 @@
         </div>
     </div>
 
-    <!-- Dodatkowe opcje nawigacyjne -->
     <div class="additional-nav">
         <ul class="nav-links">
             <li><a href="{% url 'schoolweb:home' %}#jak-zaczac" class="nav-option">Jak zacząć?</a></li>

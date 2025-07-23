@@ -19,7 +19,7 @@
     <nav class="header__menu">
       {% if request.user.is_authenticated %}
       <div class="header__user">
-        <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}">
+        <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
           <div class="avatar avatar--medium active">
             <img src="{{request.user.avatar.url}}" />
           </div>
@@ -41,7 +41,7 @@
 
       {% endif %}
       <div class="dropdown-menu">
-        <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}" class="dropdown-link"
+        <a href="{% url 'schoolweb:user-profile' request.user.pk %}" class="dropdown-link"
           ><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <path d="M30.539 20.766c-2.69-1.547-5.75-2.427-8.92-2.662 0.649 0.291 1.303 0.575 1.918 0.928 0.715
             0.412 1.288 1.005 1.71 1.694 1.507 0.419 2.956 1.003 4.298 1.774 0.281 0.162 0.456 0.487 0.456
@@ -60,7 +60,7 @@
           Profil
         </a>
 
-        <a href="{% url 'schoolweb:update-user-lessons' %}" class="dropdown-link"
+        <a href="{% url 'schoolweb:update-user' %}" class="dropdown-link"
           ><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <path d="M27.465 32c-1.211 0-2.35-0.471-3.207-1.328l-9.392-9.391c-2.369 0.898-4.898 0.951-7.355
             0.15-3.274-1.074-5.869-3.67-6.943-6.942-0.879-2.682-0.734-5.45 0.419-8.004 0.135-0.299 0.408-0.512
@@ -100,7 +100,7 @@
           Strefa Wiedzy
         </a>
 
-        <a href="{% url 'schoolweb:logout' %}?next={{ request.path }}" class="dropdown-link"
+        <a href="{% url 'schoolweb:new_students' %}" class="dropdown-link"
           ><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20">
             <path d="M19.404,6.65l-5.998-5.996c-0.292-0.292-0.765-0.292-1.056,0l-2.22,2.22l-8.311,8.313l-0.003,
             0.001v0.003l-0.161,0.161c-0.114,0.112-0.187,0.258-0.21,0.417l-1.059,7.051c-0.035,0.233,0.044,0.47,0.21,
@@ -128,8 +128,8 @@
           Dostępność
         </a>
 
-        <a href="{% url 'schoolweb:logout' %}?next={{ request.path }}" class="dropdown-link"
-          ><svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+        <a href="{% url 'schoolweb:logout' %}?next={% url 'schoolweb:login' %}?next={% url 'schoolweb:coursesLoader' %}" class="dropdown-link">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
             <path d="M3 0h22c0.553 0 1 0 1 0.553l-0 3.447h-2v-2h-20v28h20v-2h2l0 3.447c0 0.553-0.447 0.553-1
             0.553h-22c-0.553 0-1-0.447-1-1v-30c0-0.553 0.447-1 1-1z" ></path>
             <path d="M21.879 21.293l1.414 1.414 6.707-6.707-6.707-6.707-1.414 1.414 4.293

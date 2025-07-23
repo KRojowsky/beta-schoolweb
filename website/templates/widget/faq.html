@@ -15,8 +15,11 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
     <div class="item">
         <a href="#o-nas">
             <h2 class="sub-hero-heading small">O nas</h2>
-            <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="O nas">
+            <div class="image-container small-img">
+                <picture>
+                    <source srcset="{% static 'img/widget/logo.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/logo.png' %}" alt="O nas">
+                </picture>
             </div>
         </a>
     </div>
@@ -25,7 +28,10 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
         <a href="#korepetycje-online">
             <h2 class="sub-hero-heading small">Korepetycje online</h2>
             <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-7.png' %}" alt="Korepetycje online">
+                <picture>
+                    <source srcset="{% static 'img/widget/main-view-7.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/main-view-7.png' %}" alt="Korepetycje online">
+                </picture>
             </div>
         </a>
     </div>
@@ -34,7 +40,10 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
         <a href="#ceny">
             <h2 class="sub-hero-heading small">Ceny</h2>
             <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-2.png' %}" alt="Ceny">
+                <picture>
+                    <source srcset="{% static 'img/widget/main-view-6.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/main-view-6.png' %}" alt="Ceny">
+                </picture>
             </div>
         </a>
     </div>
@@ -42,8 +51,11 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
     <div class="item">
         <a href="#dla-korepetytorow">
             <h2 class="sub-hero-heading small">Dla korepetytorów</h2>
-            <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-3.png' %}" alt="Dla korepetytorów">
+            <div class="image-container small-img">
+                <picture>
+                    <source srcset="{% static 'img/widget/main-view-2.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/main-view-2.png' %}" alt="Dla korepetytorów">
+                </picture>
             </div>
         </a>
     </div>
@@ -52,7 +64,10 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
         <a href="#rezerwacja-zajec">
             <h2 class="sub-hero-heading small">Rezerwacje zajęć</h2>
             <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-6.png' %}" alt="Rezerwacje zajęć">
+                <picture>
+                    <source srcset="{% static 'img/widget/main-view-5.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/main-view-5.png' %}" alt="Rezerwacje zajęć">
+                </picture>
             </div>
         </a>
     </div>
@@ -60,8 +75,11 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
     <div class="item">
         <a href="#inne">
             <h2 class="sub-hero-heading small">Inne</h2>
-            <div class="image-container">
-                <img src="{% static 'img/widget/become_tutor_faq/tutor-7.png' %}" alt="Inne">
+            <div class="image-container small-img">
+                <picture>
+                    <source srcset="{% static 'img/widget/main-view-3.webp' %}" type="image/webp">
+                    <img src="{% static 'img/widget/main-view-3.png' %}" alt="Inne">
+                </picture>
             </div>
         </a>
     </div>
@@ -97,18 +115,22 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                     <span id="toggle-icon-3" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-3" class="additional-info fadeIn">
-                    W SchoolWeb korepetytorzy to oddani specjaliści, ekspert w swoich dziedzinach. Przechodzą dokładną
-                    kontrolę jakości przed rozpoczęciem zajęć, aby zapewnić najwyższy standard nauczania.
+                    W SchoolWeb korepetytorzy to nie tylko doświadczeni specjaliści i eksperci w swoich dziedzinach,
+                    ale także osoby z pasją do nauczania, które przeszły odpowiednie szkolenie przygotowujące do pracy z uczniami.
+                    Każdy z nich wyróżnia się nie tylko wiedzą, ale również umiejętnością jej skutecznego przekazywania.
+                    Zanim rozpoczną współpracę, przechodzą przez proces weryfikacji, który gwarantuje najwyższy
+                    standard nauczania na naszej platformie.
                 </div>
                 <li onclick="toggleInfo(4)">
                     <div class="title">Jakie usługi oferuje SchoolWeb?</div>
                     <span id="toggle-icon-4" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-4" class="additional-info fadeIn">
-                    Oferujemy interaktywną platformę edukacyjną SchoolWeb zapewniającą dostęp do innowacyjnych
-                    korepetycji, forum do zadawania pytań, platformę korepetytorską, na której odbywają się zajęcia,
-                    dodatkowo jest to miejsce, w którym można kontakować z korepetytorem oraz przechowywać notatki,
-                    aby uprościć i ulepszyć proces nauki uczniów.
+                    Oferujemy interaktywną platformę edukacyjną - SchoolWeb - która zapewnia dostęp do innowacyjnych korepetycji
+                    w ramach Strefy Korepetycji, forum dyskusyjnego Strefa Wiedzy do zadawania pytań i dzielenia się wiedzą,
+                    a także bloga edukacyjnego z wartościowymi treściami dla uczniów i rodziców. Zajęcia odbywają się bezpośrednio
+                    na platformie, która umożliwia również kontakt z korepetytorem, przechowywanie notatek oraz organizację materiałów
+                    - wszystko po to, aby maksymalnie uprościć i usprawnić proces nauki.
                 </div>
             </ol>
         </div>
@@ -145,8 +167,8 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                 </li>
                 <div id="info-7" class="additional-info fadeIn">
                     Zapraszamy na naszą stronę główną, gdzie masz możliwość zapisania się na lekcję próbną. Możesz
-                    zapisać się również kontaktując się bezpośrednio z administracją platformy: telefonicznie:
-                    572930585 lub mailowo: supportsw@schoolweb.pl Masz możliwość wybrać dowolny przedmiot oraz termin,
+                    zapisać się również kontaktując się bezpośrednio z administracją platformy: <br>telefonicznie:
+                    572930585 <br>lub mailowo: supportsw@schoolweb.pl <br>Masz możliwość wybrać dowolny przedmiot oraz termin,
                     który Ci odpowiada. Skorzystaj z tej okazji, aby poznać naszą platformę i doświadczyć
                     profesjonalnych korepetycji. Serdecznie zachęcamy do zapoznania się z naszą ofertą i rejestracji
                     na lekcję próbną już teraz!
@@ -183,7 +205,7 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                     <span id="toggle-icon-10" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-10" class="additional-info fadeIn">
-                    Zapewniamy korzystne ceny korepetycji, w zakresie od 35 zł do 50 zł (za pojedyncze zajęcia),
+                    Zapewniamy korzystne ceny korepetycji, w zakresie od ... zł do ... zł (za pojedyncze zajęcia w zależności od poziomu),
                     dostosowane do różnych typów członkostwa. Możesz skorzystać również z pakietów zajęć po okazyjnych
                     cenach. Naszym priorytetem jest stworzenie idealnej oferty, która spełni potrzeby każdego ucznia.
                     Więcej szczegółów i informacji można znaleźć na naszej stronie. Zapraszamy do zapoznania się z
@@ -236,8 +258,8 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                 </li>
                 <div id="info-14" class="additional-info fadeIn">
                     Na stronie głównej platformy wybierz w menu "Zostań korepetytorem", a następnie uzupełnij
-                    formularz i zarejestruj się. Możesz również zrobić to wchodząc w "Korepetycje", a następnie
-                    "Dołącz" w "Zostań korepetytorem". Inną możliwością jest kontakt z administracją platformy
+                    formularz i zarejestruj się. Możesz również zrobić to wchodząc w "Strefę Korepetycji" w górnym menu,
+                    a następnie wybierz rolę "Korepetytor"  i utwórz konto. Inną możliwością jest kontakt z administracją platformy
                     mailowo: rekrutacjasw@schoolweb.pl lub telefonicznie: 572930585.
                 </div>
                 <li onclick="toggleInfo(15)">
@@ -254,7 +276,7 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                     <span id="toggle-icon-16" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-16" class="additional-info fadeIn">
-                    Po przesłaniu Twojej aplikacji, zaplanujemy rozmowę wideo, podczas której szczegółowo omówimy
+                    Po przesłaniu Twojej aplikacji, zaplanujemy krótką rozmowę wideo, podczas której szczegółowo omówimy
                     wszystkie szczegóły i ocenimy Twoje kompetencje w kontekście pracy jako korepetytor. Po pomyślnym
                     przejściu tej rozmowy oraz zaliczeniu testu związanego z daną dziedziną, przystąpimy do
                     organizacji Twojej pierwszej lekcji.
@@ -292,7 +314,7 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                     <span id="toggle-icon-19" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-19" class="additional-info fadeIn">
-                    Celem zapisania się do wybranego korepetytora napisz wiadomość na stonie głównej platformy w
+                    Celem zapisania się do wybranego korepetytora napisz wiadomość na stronie głównej platformy w
                     "Kontakt" lub skontaktuj się w tej sprawie z administracją platformy.
                 </div>
                 <li onclick="toggleInfo(20)">
@@ -300,25 +322,25 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                     <span id="toggle-icon-20" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-20" class="additional-info fadeIn">
-                    Na stronie główniej w menu wejdź w "Korepetycje". Po poprawnym zalogowaniu będziesz widział/a
-                    nadchodzące oraz poprzednie zajęcia. Celem dostania się na zajęcia kliknij "Dołącz na zajęcia",
-                    wpisz nazwę pokoju podaną przez korepetytora oraz swoje imię, a następnie kliknij "Dołącz".
+                    Na stronie głównej, w menu, przejdź do zakładki „Strefa Korepetycji”. Po poprawnym zalogowaniu zobaczysz
+                    listę nadchodzących oraz zrealizowanych zajęć. Aby dołączyć do lekcji, kliknij przycisk „Dołącz”,
+                    udziel wymaganych zgód na korzystanie z mikrofonu i kamery - i rozpocznij naukę w komfortowych warunkach.
                 </div>
                 <li onclick="toggleInfo(21)">
                     <div class="title">Jak sprawdzić ile zajęć zostało do wykorzystania?</div>
                     <span id="toggle-icon-21" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-21" class="additional-info fadeIn">
-                    Liczba zajęć pozostałych do wykorzystania jest widoczna w sekcji korepetycji po wejściu na swój
-                    profil (Kliknij w swoje imię na górnym pasku).
+                    Liczba zajęć pozostałych do wykorzystania jest widoczna na Twoim profilu w sekcji Twoich kursów.
+                    (Celem dostania się na profil kliknij swoje imię na górnym pasku lub opcję "Profil" w menu rozwijanym).
                 </div>
                 <li onclick="toggleInfo(22)">
                     <div class="title">Jak skontaktować się z korepetytorem?</div>
                     <span id="toggle-icon-22" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-22" class="additional-info fadeIn">
-                    Kontakt z korepetytorem jest możliwy poprzez czat dołączony do każdych zajęć po wejściu w szczegóły
-                    lub poprzez aplikację mobilną WhatsApp.
+                    Kontakt z korepetytorem jest możliwy poprzez sekcję komentarzy po wejściu w szczegóły danej lekcji
+                    lub poprzez grupę danego kursu utworzoną na aplikacji WhatsApp.
                 </div>
                 <li onclick="toggleInfo(23)">
                     <div class="title">Jak odwołać lub zmienić termin zajęć?</div>
@@ -327,7 +349,7 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
                 <div id="info-23" class="additional-info fadeIn">
                     Odwołanie lub zmiana terminu zajęcia powinny być wspólnie ustalone pomiędzy uczniem,
                     a korepetytorem. Celem zmiany terminu zajęć lub ich usunięcia wejdź w szczegóły zajęć i wybierz
-                    jedną z opcji w prawym górnym rogu "Edycja"/"Usuń" - Możliwe do zrobienia przez stronę korepetytora.
+                    jedną z opcji w prawym górnym rogu "Edycja"/"Usuń" - Możliwe do zrobienia wyłączenie przez korepetytora.
                 </div>
             </ol>
         </div>
@@ -340,46 +362,28 @@ działania platformy, cen i zarobków, rezerwacji zajęć oraz pomocy dla korepe
             <h1 class="sub-hero-heading">Inne</h1>
             <ol class="hero-list no-numbers">
                 <li onclick="toggleInfo(24)">
-                    <div class="title">Jak zapisać się na zajęcia do wybranego korepetytora?</div>
+                    <div class="title">Czy potrzebuję instalować jakiś program, żeby korzystać z platformy?</div>
                     <span id="toggle-icon-24" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-24" class="additional-info fadeIn">
-                    Celem zapisania się do wybranego korepetytora napisz wiadomość na stonie głównej platformy w
-                    "Kontakt" lub skontaktuj się w tej sprawie z administracją platformy.
+                    Nie, nasza platforma działa w pełni w przeglądarce internetowej. Wystarczy stabilne połączenie z Internetem i nowoczesna przeglądarka (np. Chrome, Firefox, Edge).
                 </div>
+
                 <li onclick="toggleInfo(25)">
-                    <div class="title">Jak dostać się na moje zajęcia?</div>
+                    <div class="title">Czy mogę korzystać z platformy na telefonie lub tablecie?</div>
                     <span id="toggle-icon-25" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-25" class="additional-info fadeIn">
-                    Na stronie główniej w menu wejdź w "Korepetycje". Po poprawnym zalogowaniu będziesz widział/a
-                    nadchodzące oraz poprzednie zajęcia. Celem dostania się na zajęcia kliknij "Dołącz na zajęcia",
-                    wpisz nazwę pokoju podaną przez korepetytora oraz swoje imię, a następnie kliknij "Dołącz".
+                    Tak, platforma SchoolWeb jest dostosowana do urządzeń mobilnych. Możesz korzystać z niej zarówno na smartfonach, jak i tabletach.
                 </div>
+
+
                 <li onclick="toggleInfo(26)">
-                    <div class="title">Jak sprawdzić ile zajęć zostało do wykorzystania?</div>
+                    <div class="title">Czy mogę poprosić o fakturę za zajęcia?</div>
                     <span id="toggle-icon-26" class="toggle-icon">&#9660;</span>
                 </li>
                 <div id="info-26" class="additional-info fadeIn">
-                    Liczba zajęć pozostałych do wykorzystania jest widoczna w sekcji korepetycji po wejściu na swój
-                    profil (Kliknij w swoje imię na górnym pasku).
-                </div>
-                <li onclick="toggleInfo(27)">
-                    <div class="title">Jak skontaktować się z korepetytorem?</div>
-                    <span id="toggle-icon-27" class="toggle-icon">&#9660;</span>
-                </li>
-                <div id="info-27" class="additional-info fadeIn">
-                    Kontakt z korepetytorem jest możliwy poprzez czat dołączony do każdych zajęć po wejściu w szczegóły
-                    lub poprzez aplikację mobilną WhatsApp.
-                </div>
-                <li onclick="toggleInfo(28)">
-                    <div class="title">Jak odwołać lub zmienić termin zajęć?</div>
-                    <span id="toggle-icon-28" class="toggle-icon">&#9660;</span>
-                </li>
-                <div id="info-28" class="additional-info fadeIn">
-                    Odwołanie lub zmiana terminu zajęcia powinny być wspólnie ustalone pomiędzy uczniem,
-                    a korepetytorem. Celem zmiany terminu zajęć lub ich usunięcia wejdź w szczegóły zajęć i wybierz
-                    jedną z opcji w prawym górnym rogu "Edycja"/"Usuń" - Możliwe do zrobienia przez stronę korepetytora.
+                    Tak, wystawiamy faktury na życzenie. Skontaktuj się z nami po dokonaniu płatności, podając dane do faktury.
                 </div>
             </ol>
         </div>

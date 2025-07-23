@@ -1,13 +1,13 @@
 function openModal() {
-    document.getElementById('shop-modal').style.display = 'block';
+    document.getElementById('no-content-info-modal').style.display = 'block';
 }
 
 function closeModal() {
-    document.getElementById('shop-modal').style.display = 'none';
+    document.getElementById('no-content-info-modal').style.display = 'none';
 }
 
 window.onclick = function(event) {
-    let modal = document.getElementById('shop-modal');
+    let modal = document.getElementById('no-content-info-modal');
     if (event.target == modal) {
         closeModal();
     }

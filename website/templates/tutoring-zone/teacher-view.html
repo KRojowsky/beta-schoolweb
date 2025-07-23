@@ -11,6 +11,11 @@
     {% include 'tutoring-zone/courses-component-teachers.html' %}
 
     <div class="roomList">
+      <div class="top__options">
+          <a href="{{ request.META.HTTP_REFERER }}" class="top__options-link">← Cofnij</a>|
+          <a href="{% url 'schoolweb:knowledge_zone' %}" class="top__options-link">Strefa Wiedzy </a>|
+          <a href="{{ user_redirect_url }}" class="top__options-link">Strefa Korepetycji</a>
+      </div>
       <div class="mobile-menu">
         <form action="#" method="GET" class="header__search">
           <label>
@@ -46,7 +51,7 @@
       <a class="btn btn--main" href="{% url 'schoolweb:new_students' %}" title="Zdobądź ucznia">
             Zdobądź ucznia
       </a>
-       {% if courses.count == 0 %}
+       {% if lessons.count == 0 %}
         <div class="no-courses-info">
           <h2 class="welcome-title">Witaj na SchoolWeb!</h2>
           <p>Cieszymy się, że dołączyłeś/aś do naszej platformy jako nowy korepetytor. Życzymy Ci powodzenia w pracy

@@ -1,17 +1,17 @@
-{% for room in rooms %}
 {% load static %}
+{% for room in rooms %}
 <div class="roomListRoom">
     <div class="roomListRoom__header__container">
         {% if room.host %}
         <div class="roomListRoom__header">
             <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="roomListRoom__author">
                 <div class="avatar avatar--small active">
-                    <img src="{{room.host.avatar.url}}"/>
+                    <img src="{% if room.host.avatar %}{{ room.host.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Avatar użytkownika"/>
                 </div>
                 <div class="roomListRoom__details">
-                    <span title="Zobacz profil" class="username">@{{room.host.username}}</span>
+                    <span title="Zobacz profil" class="username">@{{ room.host.username }}</span>
                     <div class="roomListRoom__actions">
-                        <span>{{room.created|timesince}} temu</span>
+                        <span>{{ room.created|timesince }} temu</span>
                     </div>
                 </div>
             </a>
@@ -30,16 +30,21 @@
         {% else %}
         <div class="roomListRoom__author-container">
             <div class="roomListRoom__author">
-                <div class="avatar avatar--small active">
+                <div class="avatar avatar--small">
                     <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Zdjęcie posta"/>
                 </div>
-                <span>Użytkownik usunięty</span>
+                <div class="roomListRoom__details">
+                    <span>Użytkownik usunięty</span>
+                    <div class="roomListRoom__actions">
+                        <span>{{ room.created|timesince }} temu</span>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
     </div>
     <div class="roomListRoom__content">
-        <a href="{% url 'schoolweb:room' room.id %}" title="Zobacz post">{{room.name}}</a>
+        <a href="{% url 'schoolweb:room' room.id %}" title="Zobacz post">{{ room.name }}</a>
         <p>{{ room.description|truncatechars:150 }}</p>
         <br>
         {% if room.image %}
@@ -53,7 +58,7 @@
         {% for participant in room.participants.all %}
             {% if forloop.counter <= 3 %}
             <div class="avatar avatar--participant">
-                <img src="{{ participant.avatar.url }}" alt="{{ participant.username }}">
+                <img src="{% if participant.avatar %}{{ participant.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ participant.username }}">
             </div>
             {% endif %}
         {% endfor %}
@@ -64,9 +69,9 @@
 
     <div class="comment-counters-container">
         <div class="comment-counter">
-            <img src="{% static 'img/filled.png' %}" alt="Polubienia">
+            <i class="fas fa-heart"></i>
             <div class="comment-info">
-                {{ room.likes.all.count }}
+                {{ room.likes.all.count }} polubień
             </div>
         </div>
         <div class="comment-counter">

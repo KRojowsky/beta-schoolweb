@@ -7,6 +7,10 @@ import string
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import datetime
+from django.core.files.base import ContentFile
+from PIL import Image
+import os
+from io import BytesIO
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~WIDGET~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -20,8 +24,8 @@ class PlatformMessage(models.Model):
         return self.email
 
     class Meta:
-        verbose_name = 'Wiadomości z Platformy'
-        verbose_name_plural = 'Wiadomości z Platformy'
+        verbose_name = 'Wiadomości'
+        verbose_name_plural = 'Wiadomości'
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KNOWLEDGE-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 class Topic(models.Model):
@@ -32,8 +36,8 @@ class Topic(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Kategorie - Strefa Wiedzy'
-        verbose_name_plural = 'Kategorie - Strefa Wiedzy'
+        verbose_name = 'STREFA WIEDZY - Kategorie'
+        verbose_name_plural = 'STREFA WIEDZY - Kategorie'
 
 
 class User(AbstractUser):
@@ -42,7 +46,7 @@ class User(AbstractUser):
     bio = models.TextField(null=True, default="Brak opisu")
     interests = models.TextField(null=True, blank=True, default="Brak zainteresowań")
     avatar = models.ImageField(upload_to='profile-pictures/', null=True, blank=True, default='profile-pictures/avatar.svg')
-    phone_number = models.CharField(default='N/A', max_length=20)
+    phone_number = models.CharField(max_length=20, blank=True, null=True, default='')
     subject = models.ForeignKey(Topic, on_delete=models.SET_NULL, null=True, blank=True)
     points = models.IntegerField(default=0)
 
@@ -69,10 +73,27 @@ class User(AbstractUser):
                 return code
 
     def save(self, *args, **kwargs):
+        if self.avatar and hasattr(self.avatar, 'file') and not str(self.avatar.name).endswith('.webp'):
+            try:
+                img = Image.open(self.avatar)
+                output = BytesIO()
+
+                img = img.convert('RGB')
+                max_size = (512, 512)
+                img.thumbnail(max_size, Image.Resampling.LANCZOS)
+
+                img.save(output, format='WEBP', quality=85)
+                avatar_filename = os.path.splitext(self.avatar.name)[0] + ".webp"
+                self.avatar.save(avatar_filename, ContentFile(output.getvalue()), save=False)
+
+            except Exception as e:
+                print(f"[Avatar compression error] {e}")
+
         if not self.referral_code:
             self.referral_code = self.generate_referral_code()
 
         super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}' if self.first_name and self.last_name else self.username
@@ -97,14 +118,30 @@ class Room(models.Model):
 
     class Meta:
         ordering = ['-created', '-updated']
-        verbose_name = 'Posty - Strefa Wiedzy'
-        verbose_name_plural = 'Posty - Strefa Wiedzy'
+        verbose_name = 'STREFA WIEDZY - Posty'
+        verbose_name_plural = 'STREFA WIEDZY - Posty'
 
     def __str__(self):
         return self.name
 
     def save(self, *args, **kwargs):
+        if self.image and hasattr(self.image, 'file') and not str(self.image.name).endswith('.webp'):
+            try:
+                img = Image.open(self.image)
+                img = img.convert('RGB')
+                img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
+
+                output = BytesIO()
+                img.save(output, format='WEBP', quality=85)
+
+                image_filename = os.path.splitext(self.image.name)[0] + ".webp"
+                self.image.save(image_filename, ContentFile(output.getvalue()), save=False)
+
+            except Exception as e:
+                print(f"[Room image compression error] {e}")
+
         is_new = self.pk is None
+
         with transaction.atomic():
             super().save(*args, **kwargs)
             if is_new:
@@ -145,7 +182,7 @@ class Room(models.Model):
 
 class Message(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='messages')
-    room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
     body = models.TextField()
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -155,8 +192,8 @@ class Message(models.Model):
 
     class Meta:
         ordering = ['-updated', '-created']
-        verbose_name = 'Komentarze - Strefa Wiedzy'
-        verbose_name_plural = 'Komentarze - Strefa Wiedzy'
+        verbose_name = 'STREFA WIEDZY - Komentarze'
+        verbose_name_plural = 'STREFA WIEDZY - Komentarze'
 
     def __str__(self):
         return self.body[:50]
@@ -228,8 +265,9 @@ class Report(models.Model):
         return f'Report by {self.reporter.username} on {self.room.name}'
 
     class Meta:
-        verbose_name = 'Zgłoszenia - Strefa Wiedzy'
-        verbose_name_plural = 'Zgłoszenia - Strefa Wiedzy'
+        verbose_name = 'STREFA WIEDZY - Zgłoszenia'
+        verbose_name_plural = 'STREFA WIEDZY - Zgłoszenia'
+
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -263,7 +301,7 @@ class Course(models.Model):
     )
 
     name = models.CharField(max_length=200)
-    student = models.CharField(max_length=200, default="")
+    subject = models.ForeignKey('Topic', on_delete=models.SET_NULL, null=True, blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses_taught')
     students = models.ManyToManyField(User, related_name='courses_enrolled', blank=True)
     courseCreated = models.DateTimeField(auto_now_add=True)
@@ -273,12 +311,12 @@ class Course(models.Model):
         return self.lesson_set.filter(feedback__isnull=False).count()
 
     def __str__(self):
-        return self.student
+        return self.name
 
     class Meta:
         ordering = ['-courseCreated']
-        verbose_name = 'Kursy - Strefa Korepetycji'
-        verbose_name_plural = 'Kursy - Strefa Korepetycji'
+        verbose_name = 'STREFA KOREPETYCJI - Kursy'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Kursy'
 
 
 class LessonStats(models.Model):
@@ -544,8 +582,8 @@ class BlogCategory(models.Model):
         return self.name
 
     class Meta:
-        verbose_name = 'Kategorie - Blog'
-        verbose_name_plural = 'Kategorie - Blog'
+        verbose_name = 'BLOG - Kategorie'
+        verbose_name_plural = 'BLOG - Kategorie'
 
 
 class BlogPost(models.Model):
@@ -575,8 +613,8 @@ class BlogPost(models.Model):
 
 
     class Meta:
-        verbose_name = 'Posty - Blog'
-        verbose_name_plural = 'Posty - Blog'
+        verbose_name = 'BLOG - Posty'
+        verbose_name_plural = 'BLOG - Posty'
 
 class ContentBlock(models.Model):
     TEXT = 'text'

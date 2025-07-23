@@ -8,6 +8,7 @@ from django.core.validators import MaxLengthValidator
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from datetime import timedelta, datetime
+import re
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~USER-CREATION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
 
@@ -15,11 +16,26 @@ def validate_username_length(value):
     if len(value) > 10:
         raise ValidationError(_("Nazwa użytkownika nie może przekraczać 10 znaków."))
 
+
 class MyUserCreationForm(UserCreationForm):
     username = forms.CharField(
         label=_("Nazwa użytkownika (maks. 10 znaków)"),
         validators=[validate_username_length],
         help_text=_("Maksymalnie 10 znaków."),
+    )
+    first_name = forms.CharField(
+        required=True,
+        label=_("Imię"),
+        max_length=30
+    )
+    last_name = forms.CharField(
+        required=True,
+        label=_("Nazwisko"),
+        max_length=30
+    )
+    email = forms.EmailField(
+        required=True,
+        label=_("E-mail")
     )
 
     class Meta:
@@ -37,13 +53,65 @@ class RoomForm(forms.ModelForm):
 
 
 class RoomMessageForm(forms.ModelForm):
-    image_clear = forms.BooleanField(required=False, initial=False)
+    body = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'placeholder': 'Wpisz treść wiadomości...',
+            'rows': 4
+        }),
+        required=False,
+        label='Treść komentarza'
+    )
+
+    image_clear = forms.BooleanField(
+        required=False,
+        initial=False,
+        label='Usuń obraz'
+    )
 
     class Meta:
         model = Message
         fields = ['body', 'image', 'file']
+        widgets = {
+            'image': forms.ClearableFileInput(attrs={
+                'accept': 'image/*',
+                'class': 'form-control'
+            }),
+            'file': forms.ClearableFileInput(attrs={
+                'class': 'form-control'
+            })
+        }
 
-    body = forms.CharField(widget=forms.Textarea, required=False)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        if not self.instance or not self.instance.image:
+            self.fields['image_clear'].widget = forms.HiddenInput()
+
+        # Całkowicie usuń automatyczny opis i checkbox Django
+        self.fields['image'].widget.initial_text = ''
+        self.fields['image'].widget.clear_checkbox_label = ''
+        self.fields['image'].widget.input_text = 'Zmień obraz'
+        self.fields['image'].widget.template_name = 'knowledge-zone/custom_clearable_file_input.html'
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        if cleaned_data.get('image_clear'):
+            cleaned_data['image'] = None
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        # Jeśli obraz ma zostać usunięty — usuń plik i wartość
+        if self.cleaned_data.get('image_clear') and instance.image:
+            instance.image.delete(save=False)
+            instance.image = None
+
+        if commit:
+            instance.save()
+        return instance
 
 
 class ReportForm(forms.ModelForm):
@@ -58,10 +126,13 @@ class ReportForm(forms.ModelForm):
 
 class UserForm(forms.ModelForm):
     username = forms.CharField(
-        validators=[MaxLengthValidator(limit_value=10, message="Nazwa użytkownika nie może przekraczać 10 znaków.")]
+        validators=[MaxLengthValidator(10, message="Nazwa użytkownika nie może przekraczać 10 znaków.")]
     )
+    bio = forms.CharField(widget=forms.Textarea, required=False)
+
     class Meta:
         model = User
+        fields = ['avatar', 'username', 'email', 'bio', 'interests']
         labels = {
             'avatar': 'Zdjęcie profilowe',
             'username': 'Nazwa użytkownika (maks. 10 znaków)',
@@ -69,11 +140,9 @@ class UserForm(forms.ModelForm):
             'bio': 'Bio',
             'interests': 'Zainteresowania'
         }
-        fields = ['avatar', 'username', 'email', 'bio', 'interests']
-
-    bio = forms.CharField(widget=forms.Textarea, required=False)
 
 '''~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~TUTORING-ZONE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'''
+
 
 class WriterDataForm(forms.ModelForm):
     user_type = forms.ChoiceField(
@@ -91,13 +160,25 @@ class WriterDataForm(forms.ModelForm):
         fields = ['phone_number', 'level', 'subject']
         labels = {
             'phone_number': 'Numer telefonu',
-            'subject': 'Przedmiot',
+            'level': 'Poziom nauki',
+            'subject': 'Wybierz przedmiot',
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.fields['subject'].required = True
+        self.fields['level'].required = True
 
     def clean_phone_number(self):
         phone_number = self.cleaned_data.get('phone_number')
+
         if not phone_number or phone_number == 'N/A':
             raise forms.ValidationError("Numer telefonu jest wymagany.")
+
+        if len(phone_number) != 9 or not re.match(r'^\d{9}$', phone_number):
+            raise forms.ValidationError("Numer telefonu musi zawierać dokładnie 9 cyfr.")
+
         return phone_number
 
     def clean_user_type(self):
@@ -176,14 +257,28 @@ class BankInformationForm(forms.ModelForm):
 
 
 class ResignationForm(forms.ModelForm):
-    course_info = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nazwa kursu, imie i nazwisko ucznia/ów, numeru telefonu/ów, przedmiot, częstotliwość zajęć, dodatkowe informacje itd.'}))
+    course_info = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nazwa kursu, imię i nazwisko ucznia/ów...'}),
+        required=False
+    )
     rating = forms.ChoiceField(choices=Resign.RATING_CHOICES, label='Ocena platformy SchoolWeb', required=True)
-    consider_return = forms.ChoiceField(choices=Resign.RETURN_OPTIONS, label='Czy rozważasz powrót na SchoolWeb', required=True)
-    reason_details = forms.CharField(widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Podaj dodatkowe informacje dotyczące powodu rezygnacji/przerwy'}),required=False)
+    consider_return = forms.ChoiceField(choices=Resign.RETURN_OPTIONS, label='Czy rozważasz powrót na SchoolWeb?', required=True)
+    reason_details = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 5, 'placeholder': 'Dodatkowe informacje'}),
+        required=False
+    )
 
     class Meta:
         model = Resign
         fields = ['email', 'reason', 'start_date', 'end_date', 'course_info', 'rating', 'consider_return', 'reason_details']
+
+    def __init__(self, *args, **kwargs):
+        is_teacher = kwargs.pop('is_teacher', False)
+        super().__init__(*args, **kwargs)
+
+        if not is_teacher:
+            del self.fields['reason']
+            del self.fields['course_info']
 
 
 class LessonFormCreate(forms.ModelForm):

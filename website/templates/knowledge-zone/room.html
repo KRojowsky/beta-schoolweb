@@ -74,19 +74,23 @@
           <div class="room__hosted">
             <p>Utworzony przez</p>
             {% if room.host %}
-              <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="room__author">
-                <div class="avatar avatar--small active">
-                  <img src="{{room.host.avatar.url}}" />
-                </div>
-                <span title="Zobacz profil">@{{room.host.username}}</span>
-              </a>
+                <a href="{% url 'schoolweb:user-profile' room.host.id %}" class="room__author">
+                    <div class="avatar avatar--small active">
+                        {% if room.host.avatar and room.host.avatar.name %}
+                            <img src="{{ room.host.avatar.url }}" alt="Avatar użytkownika" />
+                        {% else %}
+                            <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" />
+                        {% endif %}
+                    </div>
+                    <span title="Zobacz profil">@{{ room.host.username }}</span>
+                </a>
             {% else %}
-              <div class="room__author">
-                <div class="avatar avatar--small">
-                  <img src="{% static 'img/profile-pictures/avatar.svg' %}" />
+                <div class="room__author">
+                    <div class="avatar avatar--small">
+                        <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" />
+                    </div>
+                    <span>Użytkownik usunięty</span>
                 </div>
-                <span>Użytkownik usunięty</span>
-              </div>
             {% endif %}
           </div>
           <div class="room__details scroll">
@@ -99,7 +103,7 @@
           {% endif %}
           <div class="likes-room">
             <div class="likes-info" title="Polubienia" onclick="showRoomLikes({{ room.id }})">
-                <img src="{% static 'img/filled.png' %}">
+                <i class="fas fa-heart"></i>
                 <span class="likes-room-count" data-room-id="{{ room.id }}">{{ room.likes.count }}</span>
             </div>
             <div class="modal-container" id="roomLikesModal">
@@ -163,21 +167,25 @@
                     {% if message.user %}
                       <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="thread__authorInfo">
                         <div class="avatar avatar--small active">
-                          <img src="{{message.user.avatar.url}}" />
+                          {% if message.user.avatar and message.user.avatar.name %}
+                            <img src="{{ message.user.avatar.url }}" alt="Avatar użytkownika" />
+                          {% else %}
+                            <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" />
+                          {% endif %}
                         </div>
                         <div class="thread__authorName">
-                          <span class="username" title="Zobacz profil">@{{message.user.username}}</span>
-                          <span class="thread__date">{{message.created|timesince}} temu</span>
+                          <span class="username" title="Zobacz profil">@{{ message.user.username }}</span>
+                          <span class="thread__date">{{ message.created|timesince }} temu</span>
                         </div>
                       </a>
                     {% else %}
                       <div class="thread__authorInfo">
                         <div class="avatar avatar--small">
-                          <img src="{% static 'img/profile-pictures/avatar.svg' %}" />
+                          <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" />
                         </div>
                         <div class="thread__authorName">
                           <span>Użytkownik usunięty</span>
-                          <span class="thread__date">{{message.created|timesince}} temu</span>
+                          <span class="thread__date">{{ message.created|timesince }} temu</span>
                         </div>
                       </div>
                     {% endif %}
@@ -198,7 +206,7 @@
                     </div>
                 </div>
                 <div class="thread__details {% if request.user == message.user %} authenticated{% else %} guest{% endif %}">
-                    {{ message.body }}
+                    <div class="message">{{ message.body }}</div>
                     {% if message.image %}
                         <br>
                         <a href="{{ message.image.url }}" class="popup-image" target="_blank" title="Powiększ">
@@ -214,11 +222,16 @@
 
                 <div class="likes-container">
                     <div class="likes-info">
-                        <img src="{% static 'img/filled.png' %}" class="heart-icon">
-                        <span class="likes-count" data-message-id="{{ message.id }}" onclick="showLikedUsers('{{ message.id }}')">
+                        <i class="fas fa-heart heart-icon"
+                           data-message-id="{{ message.id }}"
+                           style="cursor: pointer;"></i>
+
+                        <span class="likes-count"
+                              data-message-id="{{ message.id }}">
                             {{ message.likes.count }}
                         </span>
                     </div>
+
                     {% if request.user.is_authenticated %}
                         <button class="like-button"
                                 data-message-id="{{ message.id }}"
@@ -244,18 +257,23 @@
                 {% csrf_token %}
                 <div class="input-container">
                     <div class="avatar-container">
-                        <img src="{{ request.user.avatar.url }}" alt="User Avatar" class="user-avatar">
+                        {% if request.user.avatar and request.user.avatar.name %}
+                            <img src="{{ request.user.avatar.url }}" alt="User Avatar" class="user-avatar">
+                        {% else %}
+                            <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" class="user-avatar">
+                        {% endif %}
                     </div>
                     <div class="input-box">
                         <div id="left-side" class="left-side scroll-target">
                             <input name="body" id="message-input" placeholder="Napisz komentarz" />
                         </div>
+                        <div id="image-preview-box"></div>
                         <div class="bottom-controls">
                             <div class="file-upload-controls">
                                 <label for="image" class="file-upload-button">
                                     <i class="fa fa-camera upload-icon" title="Dodaj zdjęcie"></i>
                                 </label>
-                                <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="displaySelectedFileName()" />
+                                <input type="file" id="image" name="image" accept="image/*" style="display: none;" onchange="displayImagePreview()" />
 
                                 <label for="file" class="file-upload-button">
                                     <i class="fa fa-file upload-icon" title="Dodaj plik"></i>
@@ -280,7 +298,11 @@
         {% for user in participants %}
         <a href="{% url 'schoolweb:user-profile' user.id %}" class="participant">
           <div class="avatar avatar--medium active">
-            <img src="{{user.avatar.url}}" />
+              {% if user.avatar and user.avatar.name %}
+                <img src="{{ user.avatar.url }}" alt="Avatar użytkownika" />
+              {% else %}
+                <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar" />
+              {% endif %}
           </div>
           <p>
             {{user.username}}
@@ -295,177 +317,171 @@
 </main>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const likeRoomButtons = document.querySelectorAll('.like-room-button');
+function displayImagePreview() {
+    const input = document.getElementById('image');
+    const previewBox = document.getElementById('image-preview-box');
 
-    likeRoomButtons.forEach(button => {
-        button.addEventListener('click', async function () {
-            const roomId = this.dataset.roomId;
-            const isLiked = this.dataset.liked === 'true';
+    previewBox.innerHTML = '';
 
-            try {
-                const response = await fetch(`/toggle-like-room/${roomId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    credentials: 'same-origin',
-                });
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
 
-                if (response.ok) {
-                    const data = await response.json();
-                    const likesCountElement = document.querySelector(`.likes-room-count[data-room-id="${roomId}"]`);
+        reader.onload = function(e) {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.alt = 'Podgląd zdjęcia';
+            img.style.maxWidth = '200px';
+            img.style.borderRadius = '8px';
+            img.style.marginTop = '5px';
+            img.style.boxShadow = '0 0 5px rgba(0,0,0,0.2)';
+            previewBox.appendChild(img);
+        };
 
-                    if (isLiked) {
-                        this.dataset.liked = 'false';
-                        this.innerHTML = '<i class="fa fa-thumbs-up"></i> Lubię to!';
-                        this.style.color = '';
-                        likesCountElement.textContent = parseInt(likesCountElement.textContent) - 1;
-                    } else {
-                        this.dataset.liked = 'true';
-                        this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#BB00FF"></i> Lubię to!';
-                        this.style.color = '#BB00FF';
-                        likesCountElement.textContent = parseInt(likesCountElement.textContent) + 1;
-                    }
-
-                } else {
-                    console.error('Failed to toggle like for room');
-                }
-            } catch (error) {
-                console.error('An error occurred:', error);
-            }
-        });
-    });
-});
+        reader.readAsDataURL(file);
+    }
+}
 </script>
 
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function showRoomLikes(roomId) {
-        $.ajax({
-            type: 'GET',
-            url: '/get_room_likes/' + roomId + '/',
-            success: function(response) {
-                var likedUsers = response.liked_users || [];
+  const csrfToken = '{{ csrf_token }}';
 
-                var modalContent = $('.modal-container .modal-content');
-                modalContent.html('<span class="close" onclick="closeModal()">&times;</span>');
-                modalContent.append('<p>Polubienia:</p>');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.like-room-button').forEach(button => {
+      button.addEventListener('click', async function () {
+        const roomId = this.dataset.roomId;
+        const isLiked = this.dataset.liked === 'true';
+        const countElem = document.querySelector(`.likes-room-count[data-room-id="${roomId}"]`);
 
-                if (likedUsers.length > 0) {
-                    likedUsers.forEach(function(user) {
-                        var userId = user.id > 0 ? user.id : 'unknown';
-
-                        modalContent.append('<div class="liked-user">' +
-                            '<div class="avatar avatar--small active">' +
-                            '<img src="' + (user.avatar || '') + '" />' +
-                            '</div>' +
-                            '<span><a href="/strefa-wiedzy/profil-strefa-wiedzy/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
-                            '</div>');
-                    });
-                } else {
-                    modalContent.append('<p>Brak polubień dla tego postu.</p>');
-                }
-
-                $('.modal-container').show();
+        try {
+          const response = await fetch(`/toggle-like-room/${roomId}/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': csrfToken
             },
-            error: function(error) {
-                console.log(error);
-                window.location.href = '/404/';
-            }
-        });
-    }
-</script>
+            credentials: 'same-origin'
+          });
 
-<script>
-    $(document).ready(function() {
-        $('.likes-count').on('click', function() {
-            var message_id = $(this).data('message-id');
-
-            $.ajax({
-                type: 'GET',
-                url: '/get_likes/' + message_id + '/',
-                success: function(response) {
-                    var likedUsers = response.liked_users || [];
-
-                    var modalContent = $('.modal-content');
-                    modalContent.html('<span class="close" onclick="closeModal()">&times;</span>');
-                    modalContent.append('<p>Polubienia:</p>');
-
-                    if (likedUsers.length > 0) {
-                        likedUsers.forEach(function(user) {
-                            // Use a default ID (e.g., 0) if user.id is not a valid number
-                            var userId = user.id > 0 ? user.id : 'unknown';
-
-                            modalContent.append('<div class="liked-user">' +
-                                '<div class="avatar avatar--small active">' +
-                                '<img src="' + (user.avatar || '') + '" />' +
-                                '</div>' +
-                                '<span><a href="/strefa-wiedzy/profil-strefa-wiedzy/' + userId + '/">' + (user.username || 'Unknown') + '</a></span>' +
-                                '</div>');
-                        });
-                    } else {
-                        modalContent.append('<p>Brak polubień danego komentarza.</p>');
-                    }
-
-                    $('.modal-container').show();
-                },
-                error: function(error) {
-                    console.log(error);
-                    window.location.href = '/404/';
-                }
-            });
-        });
+          if (response.ok) {
+            const data = await response.json();
+            this.dataset.liked = (!isLiked).toString();
+            this.style.color = isLiked ? '' : '#BB00FF';
+            this.innerHTML = `<i class="fa fa-thumbs-up"${isLiked ? '' : ' style="color:#BB00FF"'}></i> Lubię to!`;
+            countElem.textContent = data.likes_count;
+          }
+        } catch (error) {
+          console.error('Błąd przy toggle-like-room:', error);
+        }
+      });
     });
+  });
 
-    function closeModal() {
-        $('.modal-container').hide();
-    }
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const likeButtons = document.querySelectorAll('.like-button');
-
-    likeButtons.forEach(button => {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.like-button').forEach(button => {
       button.addEventListener('click', async function () {
         const messageId = this.dataset.messageId;
-        const isLiked = this.dataset.liked === 'true';  // sprawdzenie, czy już polubiono
-        const likesCountElement = this.closest('.likes-container').querySelector('.likes-count'); // liczba polubień
+        const isLiked = this.dataset.liked === 'true';
+        const countElem = this.closest('.likes-container').querySelector('.likes-count');
 
         try {
           const response = await fetch(`/toggle-like/${messageId}/`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'X-CSRFToken': '{{ csrf_token }}',  // CSRF Token dla ochrony
+              'X-CSRFToken': csrfToken
             },
-            credentials: 'same-origin',
+            credentials: 'same-origin'
           });
 
           if (response.ok) {
             const data = await response.json();
-
-            if (isLiked) {
-              this.dataset.liked = 'false';
-              this.innerHTML = '<i class="fa fa-thumbs-up"></i> Lubię to!';
-              this.style.color = '';
-              likesCountElement.textContent = data.likes_count; // zaktualizowana liczba polubień
-            } else {
-              this.dataset.liked = 'true';
-              this.innerHTML = '<i class="fa fa-thumbs-up" style="color:#BB00FF;"></i> Lubię to!';
-              this.style.color = '#BB00FF';
-              likesCountElement.textContent = data.likes_count; // zaktualizowana liczba polubień
-            }
-          } else {
-            console.error('Failed to toggle like');
+            this.dataset.liked = (!isLiked).toString();
+            this.style.color = isLiked ? '' : '#BB00FF';
+            this.innerHTML = `<i class="fa fa-thumbs-up"${isLiked ? '' : ' style="color:#BB00FF"'}></i> Lubię to!`;
+            countElem.textContent = data.likes_count;
           }
         } catch (error) {
-          console.error('An error occurred:', error);
+          console.error('Błąd przy toggle-like:', error);
         }
       });
     });
   });
+
+  function showRoomLikes(roomId) {
+    $.ajax({
+      type: 'GET',
+      url: `/get_room_likes/${roomId}/`,
+      success: function (response) {
+        const users = response.liked_users || [];
+        const modalContent = $('#roomLikesModal .modal-content');
+        modalContent.html('<span class="close" onclick="closeModal()">&times;</span><p>Polubienia:</p>');
+
+        if (users.length > 0) {
+          users.forEach(user => {
+            const avatar = user.avatar || '/static/img/profile-pictures/avatar.svg';
+            modalContent.append(`
+              <div class="liked-user">
+                <div class="avatar avatar--small active">
+                  <img src="${avatar}" />
+                </div>
+                <span><a href="/strefa-wiedzy/profil/${user.id}/">@${user.username}</a></span>
+              </div>
+            `);
+          });
+        } else {
+          modalContent.append('<p>Brak polubień dla tego postu.</p>');
+        }
+
+        $('#roomLikesModal').show();
+      },
+      error: function () {
+        window.location.href = '/404/';
+      }
+    });
+  }
+
+  $(document).ready(function () {
+    $('.likes-count, .heart-icon').on('click', function () {
+      const messageId = $(this).data('message-id');
+      $.ajax({
+        type: 'GET',
+        url: `/get_likes/${messageId}/`,
+        success: function (response) {
+          const users = response.liked_users || [];
+          const modalContent = $('.modal-container .modal-content');
+          modalContent.html('<span class="close" onclick="closeModal()">&times;</span><p>Polubienia:</p>');
+
+          if (users.length > 0) {
+            users.forEach(user => {
+              const avatar = user.avatar || '/static/img/profile-pictures/avatar.svg';
+              modalContent.append(`
+                <div class="liked-user">
+                  <div class="avatar avatar--small active">
+                    <img src="${avatar}" />
+                  </div>
+                  <span><a href="/strefa-wiedzy/profil/${user.id}/">@${user.username}</a></span>
+                </div>
+              `);
+            });
+          } else {
+            modalContent.append('<p>Brak polubień danego komentarza.</p>');
+          }
+
+          $('.modal-container').show();
+        },
+        error: function () {
+          window.location.href = '/404/';
+        }
+      });
+    });
+  });
+
+  function closeModal() {
+    $('#roomLikesModal').hide();
+    $('.modal-container').hide();
+  }
 </script>
+
 {% endblock content %}

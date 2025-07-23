@@ -11,6 +11,11 @@
     {% include 'tutoring-zone/courses-component-students.html' %}
 
     <div class="roomList">
+      <div class="top__options">
+          <a href="{{ request.META.HTTP_REFERER }}" class="top__options-link">← Cofnij</a>|
+          <a href="{% url 'schoolweb:knowledge_zone' %}" class="top__options-link">Strefa Wiedzy </a>|
+          <a href="{{ user_redirect_url }}" class="top__options-link">Strefa Korepetycji</a>
+      </div>
       <div class="mobile-menu">
         <form action="{% url 'schoolweb:studentPage' %}" method="GET" class="header__search">
           <label>

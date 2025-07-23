@@ -49,18 +49,26 @@
           </div>
 
           <div class="form__group">
-            <label for="room_image">Obraz</label>
-            {% if form.image.value %}
-                <div class="image-preview">
-                    <img src="{{ form.image.value.url }}" alt="Aktualny obraz" class="image-preview__img">
-                    <div class="image-clear-wrapper">
-                        <input type="checkbox" name="image_clear" id="id_image_clear" class="image-clear-checkbox">
-                        <label for="id_image_clear" class="clear-image-btn" id="clear_image_btn">Usuń obraz</label>
-                    </div>
+              <label for="room_image">Obraz</label>
+
+              <div id="image-preview-section">
+                {% if form.image.value %}
+                  <div class="image-preview" id="current-image-preview">
+                    <img id="current-image" src="{{ form.image.value.url }}" alt="Aktualny obraz" class="image-preview__img">
+                  </div>
+                {% endif %}
+
+                <div class="image-preview" id="new-image-preview" style="display: none;">
+                  <img id="new-image" src="#" alt="Podgląd nowego obrazu" class="image-preview__img">
                 </div>
-            {% else %}
-                {{ form.image }}
-            {% endif %}
+
+                <div class="image-clear-wrapper" id="image-clear-wrapper" style="margin-top: 10px; {% if not form.image.value %}display:none;{% endif %}">
+                  <input type="hidden" name="image_clear" id="id_image_clear" value="">
+                  <button type="button" class="btn--clear" id="clear_image_btn">Usuń obraz</button>
+                </div>
+              </div>
+
+              <input type="file" name="image" id="room_image" accept="image/*" onchange="previewImage(event)">
           </div>
 
           <div class="form__action">
@@ -72,4 +80,66 @@
     </div>
   </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const clearBtn = document.getElementById("clear_image_btn");
+  const imageClearInput = document.getElementById("id_image_clear");
+  const imageClearWrapper = document.getElementById("image-clear-wrapper");
+  const currentImage = document.getElementById("current-image");
+  const currentImagePreview = document.getElementById("current-image-preview");
+  const newImagePreview = document.getElementById("new-image-preview");
+  const newImage = document.getElementById("new-image");
+
+  const imageInput = document.getElementById("room_image");
+
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      newImage.src = e.target.result;
+      newImagePreview.style.display = "block";
+
+      if (currentImagePreview) currentImagePreview.style.display = "none";
+      if (imageClearWrapper) imageClearWrapper.style.display = "flex";
+      if (imageClearInput) imageClearInput.value = '';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  if (imageInput) {
+    imageInput.addEventListener("change", previewImage);
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (currentImagePreview) currentImagePreview.style.display = "none";
+      if (newImagePreview) newImagePreview.style.display = "none";
+      if (imageClearWrapper) imageClearWrapper.style.display = "none";
+      if (imageInput) imageInput.value = '';
+      if (imageClearInput) imageClearInput.value = 'on';
+    });
+  }
+});
+</script>
+
+<script>
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        var output = document.getElementById('new-image');
+        output.src = reader.result;
+        document.getElementById('new-image-preview').style.display = 'block';
+
+        var currentImage = document.getElementById('current-image');
+        if (currentImage) {
+            currentImage.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
 {% endblock content %}

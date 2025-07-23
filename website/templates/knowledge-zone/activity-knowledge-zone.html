@@ -9,7 +9,7 @@
             {% if message.user and message.user.id %}
             <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
                 <div class="avatar avatar--small active">
-                    <img src="{{ message.user.avatar.url }}" alt="Autor komentarza"/>
+                    <img src="{% if message.user.avatar %}{{ message.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Autor komentarza"/>
                 </div>
                 <p title="Zobacz profil" class="username">
                     @{{ message.user.username }}
@@ -30,7 +30,7 @@
             {% elif not message.user %}
              <a class="roomListRoom__author">
                 <div class="avatar avatar--small">
-                    <img src="{% static 'img/profile-pictures/avatar.svg' %}" class="user-avatar"/>
+                    <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar"/>
                 </div>
                 <div class="user-info">
                     <p>
@@ -49,10 +49,10 @@
                 </p>
                 {% if message.body %}
                 <div class="activities__boxRoomContent lesson-link">
-                    {{message.body|truncatechars:60}}
+                    {{ message.body|truncatechars:60 }}
                 </div>
                 {% endif %}
-                {% else %}
+            {% else %}
                 <p>Odpisał/a na: <i>Usunięty pokój</i></p>
             {% endif %}
         </div>

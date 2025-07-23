@@ -1,6 +1,6 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     if (!window.localStorage) {
         alert('Twoja przeglądarka nie obsługuje funkcji wymaganych do obsługi cookies.');
         return;
@@ -9,30 +9,49 @@ document.addEventListener('DOMContentLoaded', function() {
     const cookieBanner = document.getElementById('cookie-consent-banner');
     const acceptButton = document.getElementById('accept-cookies');
     const rejectButton = document.getElementById('reject-cookies');
+    const GA_ID = 'G-4H49J1BGY5';
 
-    if (!localStorage.getItem('cookiesAccepted')) {
+    const loadGtagScript = () => {
+        if (document.getElementById('gtag-script')) return;
+
+        const script = document.createElement('script');
+        script.id = 'gtag-script';
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+        script.async = true;
+        document.head.appendChild(script);
+
+        script.onload = () => {
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            window.gtag = gtag;
+            gtag('js', new Date());
+            gtag('consent', 'update', { 'analytics_storage': 'granted' });
+            gtag('config', GA_ID, { anonymize_ip: true });
+        };
+    };
+
+    const consent = localStorage.getItem('cookiesAccepted');
+
+    if (consent === null) {
         cookieBanner.style.display = 'block';
+    } else if (consent === 'true') {
+        loadGtagScript();
     }
 
-    acceptButton.addEventListener('click', function() {
+    acceptButton.addEventListener('click', function () {
+        console.log('Użytkownik zaakceptował cookies');
         localStorage.setItem('cookiesAccepted', 'true');
         cookieBanner.style.display = 'none';
-
-        gtag('js', new Date());
-        gtag('config', 'G-4H49J1BGY5', {
-            'anonymize_ip': true
-        });
-        gtag('consent', 'update', {
-            'analytics_storage': 'granted'
-        });
+        loadGtagScript();
     });
 
-    rejectButton.addEventListener('click', function() {
+    rejectButton.addEventListener('click', function () {
+        console.log('Użytkownik odrzucił cookies');
         localStorage.setItem('cookiesAccepted', 'false');
         cookieBanner.style.display = 'none';
 
-        gtag('consent', 'update', {
-            'analytics_storage': 'denied'
-        });
+        if (typeof gtag === 'function') {
+            gtag('consent', 'update', { 'analytics_storage': 'denied' });
+        }
     });
 });

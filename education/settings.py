@@ -1,5 +1,9 @@
 from pathlib import Path
 import os
+import environ
+
+env = environ.Env()
+environ.Env.read_env(os.path.join(Path(__file__).resolve().parent.parent, '.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,10 +13,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ldvk&mditg$2#(2cffhznu8k-+&bugc33cp@e91+5j7-gh^ps0'
+SECRET_KEY = env('SECRET_KEY', default='fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
 # Application definition
 
@@ -28,6 +32,8 @@ INSTALLED_APPS = [
 ]
 
 AUTH_USER_MODEL = 'website.User'
+
+ALLOWED_HOSTS = ['*']
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -108,13 +114,10 @@ USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = 'website/static/'
-MEDIA_URL = 'website/img/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = [
-    BASE_DIR / 'website/static'
-]
-
+STATICFILES_DIRS = [BASE_DIR / 'website/static']
 MEDIA_ROOT = BASE_DIR / 'website/static/img'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
@@ -122,5 +125,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'helpdesk.schoolweb@gmail.com'
-EMAIL_HOST_PASSWORD = 'qwam bwew qyjh vdcs'
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+
+GOOGLE_ANALYTICS_ID = env('GOOGLE_ANALYTICS_ID')
+
+SESSION_COOKIE_AGE = 3600
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_SAVE_EVERY_REQUEST = True
+
+RECAPTCHA_SECRET_KEY = env('RECAPTCHA_SECRET_KEY')
+
+

@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block navbar %}
-  {% include 'tutoring-zone/nav-teacher-view.html' %}
+  {% include 'tutoring-zone/nav-teacher-view-no-search.html' %}
 {% endblock navbar %}
 
 {% block content %}
@@ -17,21 +17,25 @@
                 </path>
             </svg>
         </a>
-      <h3>Lista nowych uczniów</h3>
     </div>
   </div>
-  <div class="layout__body">
+  <div class="layout__body students-layout">
+     <div class="top__options">
+          <a href="{{ request.META.HTTP_REFERER }}" class="top__options-link">← Cofnij</a>|
+          <a href="{% url 'schoolweb:knowledge_zone' %}" class="top__options-link">Strefa Wiedzy </a>|
+          <a href="{% url 'schoolweb:teacherPage' %}" class="top__options-link">Strefa Korepetycji</a>
+      </div>
     {% if students %}
-      <div class="students-list">
+      <div class="new-students-list">
         {% for student in students %}
-        <div class="student-card">
+        <div class="new-student-card">
           {% if student.is_new %}
-          <div class="student-card__badge">Nowy uczeń</div>
+          <div class="new-student-card__badge">Nowy uczeń</div>
           {% endif %}
-          <div class="student-avatar">
-            <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie ucznia" class="student-avatar">
+          <div class="new-student-avatar">
+            <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie ucznia" class="new-student-avatar">
           </div>
-          <div class="student-info">
+          <div class="new-student-info">
             <h2>{{ student.first_name }} {{ student.last_name }}</h2>
             <p><strong>Przedmiot:</strong> {{ student.subject|default:"Brak danych" }}</p>
             <p><strong>Poziom:</strong> {{ student.level }}</p>
@@ -39,7 +43,7 @@
           <form method="POST" action="{% url 'schoolweb:new_students' %}">
             {% csrf_token %}
             <input type="hidden" name="student_id" value="{{ student.id }}">
-            <button type="submit" class="student-card__action btn btn--main">Zostań korepetytorem</button>
+            <button type="submit" class="new-student-card__action btn btn--main">Zostań korepetytorem</button>
           </form>
         </div>
         {% endfor %}

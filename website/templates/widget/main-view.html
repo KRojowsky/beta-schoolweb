@@ -1,6 +1,7 @@
 {% extends 'base-widget.html' %}
 {% load static %}
 {% block content %}
+
 <section class="hero hero-main">
     <h1 class="hero-heading">Twórz z nami <span>najlepszą platformę edukacyjną</span></h1>
     <div class="hero-container">
@@ -12,20 +13,26 @@
             <br><span>✔</span> Kontakt z korepetytorami po godzinach.
             <br><span>✔</span> Dostęp do Forum Edukacyjnego.
             <br><br><br>
-            <a href="{% url 'schoolweb:applyUser' %}" title="Umów pierwsze zajęcia" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
-
+            <a href="{% url target_url %}" title="Umów pierwsze zajęcia" class="hvr-buzz-out">Umów pierwsze zajęcia</a>
         </p>
         <div class="hero-image">
-            <img src="{% static 'img/widget/main-view-1.png' %}" alt="Twórz z nami najlepszą platformę edukacyjną SchoolWeb">
+            <picture>
+                <source srcset="{% static 'img/widget/main-view-1.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/main-view-1.png' %}" alt="Twórz z nami najlepszą platformę edukacyjną SchoolWeb" loading="lazy">
+            </picture>
         </div>
     </div>
 </section>
 
+
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
-            <div class="sub-hero-image">
-                <img src="{% static 'img/widget/logo.png' %}" alt="O platformie SchoolWeb">
-            </div>
+        <div class="sub-hero-image">
+            <picture>
+                <source srcset="{% static 'img/widget/logo.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/logo.png' %}" alt="O platformie SchoolWeb" loading="lazy">
+            </picture>
+        </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading">O platformie <span>Schoolweb</span></h2>
             <p class="sub-hero-text right-side">
@@ -44,6 +51,7 @@
     </div>
 </section>
 
+
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-label">
@@ -57,18 +65,25 @@
                 wybierani i przeszli przez <span>rozbudowany proces selekcji</span>, aby zapewnić najwyższą
                 jakość edukacji.
             </p>
-            <a href="{% url 'schoolweb:applyUser' %}" class="hvr-buzz-out">Zostań korepetytorem</a>
+            <a href="{% url target_url %}" class="hvr-buzz-out">Zostań korepetytorem</a>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget/main-view-2.png' %}" alt="Nasi korepetytorzy">
+            <picture>
+                <source srcset="{% static 'img/widget/main-view-2.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/main-view-2.png' %}" alt="Nasi korepetytorzy" loading="lazy">
+            </picture>
         </div>
     </div>
 </section>
 
+
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget/main-view-3.png' %}" alt="Zajęcia dla każdego">
+            <picture>
+                <source srcset="{% static 'img/widget/main-view-3.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/main-view-3.png' %}" alt="Zajęcia dla każdego" loading="lazy">
+            </picture>
         </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading">Zajęcia<span> dla każdego</span></h2>
@@ -83,6 +98,7 @@
         </div>
     </div>
 </section>
+
 
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
@@ -102,15 +118,22 @@
             </p>
         </div>
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget/main-view-4.png' %}" alt="Początki bywają łatwe">
+            <picture>
+                <source srcset="{% static 'img/widget/main-view-4.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/main-view-4.png' %}" alt="Początki bywają łatwe" loading="lazy">
+            </picture>
         </div>
     </div>
 </section>
 
+
 <section class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-image">
-            <img src="{% static 'img/widget/logo.png' %}" alt="Odwiedź blog">
+            <picture>
+                <source srcset="{% static 'img/widget/main-view-5.webp' %}" type="image/webp">
+                <img src="{% static 'img/widget/main-view-5.png' %}" alt="Odwiedź blog" loading="lazy">
+            </picture>
         </div>
         <div class="sub-hero-label">
             <h2 class="sub-hero-heading"><span>Blog</span> edukacyjny</h2>
@@ -126,16 +149,17 @@
     </div>
 </section>
 
+
 <section id="jak-zaczac" class="hero sub-hero">
     <div class="hero-container sub-hero-container">
         <div class="sub-hero-label-list">
             <h2 class="sub-hero-heading"><span>Jak zacząć</span> . . . ?</h2>
             <ul class="hero-list">
-                <li>Uzupełnij formularz oraz utwórz konto w "Strefie Korepetycji".</li>
-                <li>Jak najszybciej to możliwe otrzymasz kontakt od administracji platformy, aby ustalić szczegóły.</li>
-                <li>Dokonaj zakupu pakietu zajęć, aby móc w pełni korzystać z możliwości platformy.</li>
-                <li>Umawiaj się na zajęcia z indywidualnie przydzielonym korepetytorem.</li>
-                <li>Korzystaj bez ograniczeń ze wszystkich narzędzi na platformie SchoolWeb.</li>
+                <li>Utwórz konto w „Strefie Korepetycji”.</li>
+                <li>Administracja SchoolWeb rozpatrzy i zatwierdzi Twoje konto tak szybko, jak to możliwe.</li>
+                <li>Kolejnym krokiem jest dobór korepetytora najlepiej dopasowanego do Twoich potrzeb i oczekiwań.</li>
+                <li>Zakup pakiet zajęć, aby w pełni korzystać z możliwości platformy.</li>
+                <li>Korzystaj bez ograniczeń ze wszystkich narzędzi dostępnych na platformie SchoolWeb.</li>
             </ul>
         </div>
     </div>
@@ -350,21 +374,22 @@
     </div>
 </div>
 
+
 <section class="contact">
     <h2 class="sub-hero-heading">Kontakt</h2>
     <form id="contact-form" method="post" action="{% url 'schoolweb:user-message' %}" data-url="{% url 'schoolweb:user-message' %}">
         {% csrf_token %}
         <input type="email" name="email" placeholder="E-mail" required>
         <input type="text" name="phone_number" placeholder="Numer telefonu" pattern="[0-9]{9}" title="Numer telefonu musi składać się z 9 cyfr." inputmode="tel" required>
-        <textarea name="message" placeholder="Napisz wiadomość . . ." required style="resize: none;"></textarea>
+        <textarea name="message" placeholder="Napisz wiadomość . . ." required></textarea>
 
+        <div class="g-recaptcha" data-sitekey="6Ld1rU0rAAAAANPKXRZINCSKpLpy3HiPX5dbaLXn"></div>
         <div id="success-message">Wiadomość została wysłana!</div>
         <div id="error-message"></div>
 
         <button type="submit">Wyślij</button>
     </form>
 </section>
-
 
 <script src="{% static 'js/widget-slider.js' %}" defer></script>
 <script src="{% static 'js/contact-form.js' %}" defer></script>

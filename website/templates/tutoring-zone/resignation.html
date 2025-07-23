@@ -11,7 +11,7 @@
         <div class="layout__box">
             <div class="layout__boxHeader">
                 <div class="layout__boxTitle">
-                    <a href="{% url 'schoolweb:lesson-profile' request.user.pk %}">
+                    <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
                         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
                             viewBox="0 0 32 32">
                             <title>Cofnij</title>
@@ -20,15 +20,24 @@
                             </path>
                         </svg>
                     </a>
-                    <h3>Formularz rezygnacji / przerwy</h3>
+                    <h3>
+                        {% if is_teacher %}
+                            Formularz rezygnacji / przerwy (Nauczyciel)
+                        {% else %}
+                            Formularz rezygnacji (Uczeń)
+                        {% endif %}
+                    </h3>
                 </div>
             </div>
             <div class="layout__body">
                 <h2 class="auth__tagline" style="font-size:15px; text-align:left;">
-                    Dziękujemy za Twój wkład w udzielanie korepetycji online na SchoolWeb. Szanujemy Twoją decyzję o
-                    przerwie lub zakończeniu współpracy. Jako zaangażowany nauczyciel, Twoja praca była cennym wkładem
-                    w rozwój społeczności. Zachęcamy do znalezienia zastępstwa dla stałych uczniów, aby zapewnić im
-                    ciągłość w nauce. Dziękujemy za Twój czas i dedykację. Życzymy powodzenia w kolejnych krokach!
+                    {% if is_teacher %}
+                        Dziękujemy za Twój wkład w nauczanie online na SchoolWeb. Szanujemy Twoją decyzję o przerwie lub zakończeniu współpracy.
+                        Jeśli to możliwe, prosimy o znalezienie zastępstwa dla Twoich uczniów. Życzymy powodzenia!
+                    {% else %}
+                        Dziękujemy za korzystanie z platformy SchoolWeb. Jeśli zdecydowałeś/aś się na rezygnację, mamy nadzieję, że było to wartościowe doświadczenie.
+                        Możesz wrócić w każdej chwili. Życzymy sukcesów w dalszej nauce!
+                    {% endif %}
                     <br><br>
                     Pozdrawiamy,<br> Zespół SchoolWeb
                 </h2>
@@ -40,31 +49,34 @@
                         {{ form.email }}
                     </div>
 
-                    <div class="form__group">
-                        <label for="resignation_reason">Powód:</label>
-                        {{ form.reason }}
-                    </div>
+                    {% if is_teacher %}
+                        <div class="form__group">
+                            <label for="resignation_reason">Powód:</label>
+                            {{ form.reason }}
+                        </div>
+                    {% endif %}
 
                     <div class="form__group" id="startEndDateGroup" style="display: none;">
                         <label for="resignation_start_date">Początkowa data przerwy:</label>
-                        <input type="date" id="resignation_start_date" name="start_date" min="{{ start_date_min }}">
+                        <input type="date" id="resignation_start_date" name="start_date">
                     </div>
 
                     <div class="form__group" id="endDateGroup" style="display: none;">
                         <label for="resignation_end_date" id="endDateLabel">Końcowa data przerwy:</label>
-                        <input type="date" id="resignation_end_date" name="end_date" min="{{ end_date_min }}">
+                        <input type="date" id="resignation_end_date" name="end_date">
                     </div>
 
                     <div class="form__group" id="lastDayGroup" style="display: none;">
                         <label for="last_day">Ostatni dzień współpracy:</label>
-                        <input type="date" id="last_day" name="end_date" min="{{ last_day_min }}">
+                        <input type="date" id="last_day" name="end_date">
                     </div>
 
-
-                    <div class="form__group">
-                        <label for="resignation_course_info">Informacje na temat kursów:</label>
-                        {{ form.course_info }}
-                    </div>
+                    {% if is_teacher %}
+                        <div class="form__group">
+                            <label for="resignation_course_info">Informacje na temat kursów:</label>
+                            {{ form.course_info }}
+                        </div>
+                    {% endif %}
 
                     <div class="form__group">
                         <label for="resignation_rating">Jak oceniasz platformę SchoolWeb:</label>
@@ -89,84 +101,49 @@
             </div>
         </div>
     </div>
-  </div>
 </main>
 
 <script>
-    document.getElementById('id_reason').addEventListener('change', function() {
+    document.addEventListener("DOMContentLoaded", function() {
+        var reasonSelect = document.getElementById('id_reason');
+        var startEndDateGroup = document.getElementById('startEndDateGroup');
         var endDateGroup = document.getElementById('endDateGroup');
         var lastDayGroup = document.getElementById('lastDayGroup');
-        var endDateLabel = document.getElementById('endDateLabel');
-        var lastDayInput = document.getElementById('last_day');
-
-        if (this.value === 'Przerwa') {
-            startEndDateGroup.style.display = 'block';
-            endDateGroup.style.display = 'block';
-            lastDayGroup.style.display = 'none';
-            endDateLabel.innerText = 'Końcowa data przerwy:';
-            disablePastDates();
-        } else if (this.value === 'Rezygnacja') {
-            startEndDateGroup.style.display = 'none';
-            endDateGroup.style.display = 'none';
-            lastDayGroup.style.display = 'block';
-            endDateLabel.innerText = 'Ostatni dzień współpracy:';
-            disablePastDates();
-        } else {
-            endDateGroup.style.display = 'none';
-            lastDayGroup.style.display = 'none';
-        }
-    });
-
-    function disablePastDates() {
-        var currentDate = new Date();
         var startDateInput = document.getElementById('resignation_start_date');
         var endDateInput = document.getElementById('resignation_end_date');
         var lastDayInput = document.getElementById('last_day');
 
-        currentDate.setDate(currentDate.getDate() + 7);
-        startDateInput.min = currentDate.toISOString().split('T')[0];
-        lastDayInput.min = currentDate.toISOString().split('T')[0];
+        function disablePastDates() {
+            var currentDate = new Date();
+            currentDate.setDate(currentDate.getDate() + 7);
+            var minDate = currentDate.toISOString().split('T')[0];
 
-        lastDayInput.addEventListener('input', function() {
-            var selectedLastDay = new Date(this.value);
+            if (startDateInput) startDateInput.min = minDate;
+            if (lastDayInput) lastDayInput.min = minDate;
+        }
 
-            if (selectedLastDay < currentDate) {
-                this.setCustomValidity('Wybierz datę ostatniego dnia współpracy minimum 7 dni do przodu.');
+        function handleReasonChange() {
+            var selectedReason = reasonSelect.value;
+
+            if (selectedReason === 'Przerwa') {
+                startEndDateGroup.style.display = 'block';
+                endDateGroup.style.display = 'block';
+                lastDayGroup.style.display = 'none';
+                disablePastDates();
+            } else if (selectedReason === 'Rezygnacja') {
+                startEndDateGroup.style.display = 'none';
+                endDateGroup.style.display = 'none';
+                lastDayGroup.style.display = 'block';
+                disablePastDates();
             } else {
-                this.setCustomValidity('');
+                startEndDateGroup.style.display = 'none';
+                endDateGroup.style.display = 'none';
+                lastDayGroup.style.display = 'none';
             }
-        });
+        }
 
-        startDateInput.addEventListener('input', function() {
-            var selectedStartDate = new Date(this.value);
-            var nextDay = new Date(selectedStartDate);
-            nextDay.setDate(selectedStartDate.getDate() + 1);
-            endDateInput.min = nextDay.toISOString().split('T')[0];
-
-            var maxEndDate = new Date(selectedStartDate);
-            maxEndDate.setDate(selectedStartDate.getDate() + 14);
-            endDateInput.max = maxEndDate.toISOString().split('T')[0];
-
-            if (selectedStartDate < currentDate) {
-                this.setCustomValidity('Wybierz datę rozpoczęcia minimum tydzień do przodu.');
-            } else {
-                this.setCustomValidity('');
-                endDateInput.setCustomValidity('');
-            }
-        });
-
-        endDateInput.addEventListener('input', function() {
-            var selectedEndDate = new Date(this.value);
-            var selectedStartDate = new Date(startDateInput.value);
-
-            if (selectedEndDate <= selectedStartDate) {
-                this.setCustomValidity('Wybierz datę zakończenia po dacie rozpoczęcia.');
-            } else if (selectedEndDate > maxEndDate) {
-                this.setCustomValidity('Przerwa nie może trwać dłużej niż 2 tygodnie.');
-            } else {
-                this.setCustomValidity('');
-            }
-        });
-    }
+        reasonSelect.addEventListener('change', handleReasonChange);
+        disablePastDates();
+    });
 </script>
 {% endblock content %}

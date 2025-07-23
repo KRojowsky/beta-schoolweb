@@ -736,7 +736,7 @@ body.dark-mode::before {
     justify-content: flex-start;
 }
 
-.post-content h4 {
+.post-content h3 {
     font-size: 1em;
     margin: 0 0 5px;
     font-weight: bold;
@@ -771,7 +771,7 @@ body.dark-mode::before {
         font-size: 1.2em;
     }
 
-    .post-content h4 {
+    .post-content h3 {
         font-size: .9em;
     }
 

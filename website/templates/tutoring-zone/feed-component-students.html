@@ -3,7 +3,7 @@
 <div class="roomListRoom {% if lesson.event_datetime and lesson.event_datetime <= time_threshold %}expired-lesson{% endif %}">
     <div class="roomListRoom__header">
       {% if lesson.host %}
-      <a href="{% url 'schoolweb:lesson-profile' lesson.host.id %}" class="roomListRoom__author">
+      <a href="{% url 'schoolweb:user-profile' lesson.host.id %}" class="roomListRoom__author">
         <div class="avatar avatar--small active">
           <img src="{{ lesson.host.avatar.url }}" />
         </div>
@@ -17,41 +17,63 @@
         <span>Użytkownik usunięty</span>
       </div>
       {% endif %}
-      <div style="text-align: right;">
-          {% if lesson.event_datetime %}
-            {% if lesson.event_datetime > now %}
-                <div>
-                    <a href="{% url 'schoolweb:converse' %}?room={{ lesson.invite_code }}" target="_blank" class="joinButton">
-                        <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
-                    </a>
-                </div>
-            {% elif lesson.event_datetime <= time_threshold %}
-                <div class="inactiveButton" style="display: inline-block;">
-                    <span class="lock-icon"><i class="fa fa-lock"></i></span>
-                </div>
-            {% else %}
-                <div class="inactiveButton">
-                    <span class="lock-icon"><i class="fa fa-lock"></i></span>
-                </div>
-            {% endif %}
-        {% else %}
-            <div class="inactiveButton">
-                <span class="lock-icon"><i class="fa fa-lock"></i></span>
+      <div>
+          {% if lesson.can_join %}
+            <div>
+              <a href="{% url 'schoolweb:converse' %}?room={{ lesson.invite_code }}" target="_blank" class="joinButton">
+                <i class="fa fa-arrow-circle-right"></i> DOŁĄCZ
+              </a>
             </div>
-        {% endif %}
+
+          {% elif lesson.lock_before_join or lesson.lock_after_join or lesson.lock_only %}
+            <div class="inactiveButton">
+              <span class="lock-icon"><i class="fa fa-lock"></i></span>
+            </div>
+
+          {% else %}
+            <div class="inactiveButton">
+              <span class="lock-icon"><i class="fa fa-lock"></i></span>
+            </div>
+          {% endif %}
       </div>
     </div>
 
     <div class="roomListRoom__content">
-        <div class="lesson-content">
-            <span class="label">Data:</span>
-            <span class="content">
-                {{ lesson.event_datetime|date:"Y-m-d H:i" }}
-            </span>
-        </div>
-        <div class="lesson-content">
-            <span class="label">Temat:</span>
-            <a href="{% url 'schoolweb:lesson' lesson.id %}" class="lesson-link" title="Zobacz lekcję">{{ lesson.title }}</a></span>
+        <div class="lesson-details">
+            <div class="lesson-row">
+                <span class="lesson-label">Data:</span>
+                <span class="lesson-date">{{ lesson.event_datetime|date:"Y-m-d" }}</span>
+            </div>
+
+            <div class="lesson-row">
+                <span class="lesson-label">Godzina:</span>
+                <span class="lesson-time">{{ lesson.event_datetime|date:"H:i" }}</span>
+            </div>
+
+            <div class="lesson-row">
+                <span class="lesson-label">Temat:</span>
+                <a href="{% url 'schoolweb:lesson' lesson.id %}" class="lesson-title">{{ lesson.title }}</a>
+            </div>
+
+            <div class="lesson-row">
+                <span class="lesson-label">Przedmiot:</span>
+                <a href="{% url 'schoolweb:studentPage' %}?q={{ lesson.course.name|urlencode }}" class="subject-link">
+                    {{ lesson.course.subject }}
+                </a>
+            </div>
+
+            <div class="lesson-row">
+                <span class="lesson-label">Uczniowie:</span>
+                <span class="student-list">
+                    {% for student in lesson.course.students.all %}
+                        <a href="{% url 'schoolweb:user-profile' student.pk %}" class="student-link">
+                            {{ student.first_name }} {{ student.last_name }}
+                        </a>{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Brak uczniów
+                    {% endfor %}
+                </span>
+            </div>
         </div>
     </div>
 
@@ -70,8 +92,14 @@
 
      <div class="comment-counters-container">
         <div class="comment-counter">
-            <div class="comment-info">
-                {{ lesson.course.name }}
+            <div class="comment-info-type">
+                {% if lesson.course.course_type == 'basic' %}
+                    Poziom podstawowy
+                {% elif lesson.course.course_type == 'intermediate' %}
+                    Poziom rozszerzony
+                {% else %}
+                    {{ lesson.course.course_type }}
+                {% endif %}
             </div>
         </div>
         <div class="comment-counter">

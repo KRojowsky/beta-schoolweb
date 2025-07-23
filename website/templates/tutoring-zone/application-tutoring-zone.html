@@ -3,159 +3,265 @@
 {% block navbar %}
 {% include 'tutoring-zone/nav-no-search.html' %}
 {% endblock navbar %}
+
 {% load static %}
+
 {% block content %}
 <main class="auth layout">
   <div class="container">
     <div class="layout__box">
       <div class="layout__boxHeader">
         <div class="layout__boxTitle">
-          <h3 id="form-title">
-            {% if user_type == 'teacher' %}Rejestracja Korepetytora{% else %}Rejestracja Ucznia{% endif %}
-          </h3>
+          <h3 id="form-title">Rejestracja</h3>
         </div>
       </div>
       <div class="layout__body">
         <h2 class="auth__tagline" id="form-tagline">
-          Utwórz konto {% if user_type == 'teacher' %}korepetytora{% else %}ucznia{% endif %}, aby móc w pełni korzystać ze <i>Strefy Korepetycji</i>
+          Wybierz rolę, aby rozpocząć rejestrację w <i>Strefie Korepetycji</i>
         </h2>
 
         <form class="form" action="" method="POST">
-          <label>Wybierz rolę</label>
           {% csrf_token %}
 
           <div class="form__group role-selection">
-            <input type="hidden" name="role" id="role-input" value="{% if user_type == 'teacher' %}teacher{% else %}student{% endif %}">
-            <button type="button" class="role-btn {% if user_type == 'student' %}selected{% endif %}" data-role="student" onclick="selectRole(this)">Uczeń</button>
-            <button type="button" class="role-btn {% if user_type == 'teacher' %}selected{% endif %}" data-role="teacher" onclick="selectRole(this)">Korepetytor</button>
+            <input type="hidden" name="role" id="role-input">
+            <button type="button" class="role-btn" data-role="student" onclick="selectRole('student')">
+                <img src="{% static 'img/widget/main-view-7.webp' %}" alt="Uczeń">
+                Uczeń
+            </button>
+            <button type="button" class="role-btn" data-role="teacher" onclick="selectRole('teacher')">
+                <img src="{% static 'img/widget/main-view-2.webp' %}" alt="Korepetytor">
+                Korepetytor
+            </button>
           </div>
 
-          <div class="form__group">
-            <label for="{{ form.first_name.id_for_label }}">{{ form.first_name.label }}</label>
-            {{ form.first_name }}
-            {% if form.first_name.errors %}
-              <div class="form__error">{{ form.first_name.errors }}</div>
-            {% endif %}
-          </div>
+          <div id="form-fields" class="{% if form.errors %}{% else %}hidden{% endif %}" style="{% if form.errors %}display: block;{% endif %}">
+            <div class="form__group">
+              <input
+                type="text"
+                name="first_name"
+                id="{{ form.first_name.id_for_label }}"
+                class="form-control"
+                placeholder="{{ form.first_name.label }}"
+                value="{{ form.first_name.value|default_if_none:'' }}"
+                required
+              >
+              {% if form.first_name.errors %}
+                <ul class="messages">
+                  {% for error in form.first_name.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.last_name.id_for_label }}">{{ form.last_name.label }}</label>
-            {{ form.last_name }}
-            {% if form.last_name.errors %}
-              <div class="form__error">{{ form.last_name.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+              <input
+                type="text"
+                name="last_name"
+                id="{{ form.last_name.id_for_label }}"
+                class="form-control"
+                placeholder="{{ form.last_name.label }}"
+                value="{{ form.last_name.value|default_if_none:'' }}"
+                required
+              >
+              {% if form.last_name.errors %}
+                <ul class="messages">
+                  {% for error in form.last_name.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
 
-          <div class="form__group">
-              <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-              {{ form.username }}
-              <script>
-                  document.getElementById("{{ form.username.id_for_label }}").setAttribute("maxlength", "10");
-              </script>
+            <div class="form__group">
+              <input
+                type="text"
+                name="username"
+                id="{{ form.username.id_for_label }}"
+                class="form-control"
+                placeholder="{{ form.username.label }}"
+                value="{{ form.username.value|default_if_none:'' }}"
+                required
+              >
               {% if form.username.errors %}
-                <div class="form__error">{{ form.username.errors }}</div>
+                <ul class="messages">
+                  {% for error in form.username.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
               {% endif %}
-          </div>
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-            {{ form.email }}
-            {% if form.email.errors %}
-              <div class="form__error">{{ form.email.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+              <input
+                type="email"
+                name="email"
+                id="{{ form.email.id_for_label }}"
+                class="form-control"
+                placeholder="{{ form.email.label }}"
+                value="{{ form.email.value|default_if_none:'' }}"
+                required
+              >
+              {% if form.email.errors %}
+                <ul class="messages">
+                  {% for error in form.email.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.phone_number.id_for_label }}">{{ form.phone_number.label }}</label>
-            {{ form.phone_number }}
-            {% if form.phone_number.errors %}
-              <div class="form__error">{{ form.phone_number.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+              <input
+                type="text"
+                name="phone_number"
+                id="{{ form.phone_number.id_for_label }}"
+                class="form-control"
+                placeholder="{{ form.phone_number.label }}"
+                value="{{ form.phone_number.value|default_if_none:'' }}"
+              >
+              {% if form.phone_number.errors %}
+                <ul class="messages">
+                  {% for error in form.phone_number.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.subject.id_for_label }}">
-              Wybierz przedmiot, z którego chcesz {% if user_type == 'student' %}otrzymywać korepetycje{% else %}udzielać korepetycji{% endif %}
-            </label>
-            {{ form.subject }}
-            {% if form.subject.errors %}
-              <div class="form__error">{{ form.subject.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group" id="subject-group">
+                <label for="{{ form.subject.id_for_label }}" id="subject-label">{{ form.subject.label }}</label>
+                {{ form.subject }}
+                {% if form.subject.errors %}
+                  <ul class="messages">
+                    {% for error in form.subject.errors %}
+                      <li class="error">{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.level.id_for_label }}">{{ form.level.label }}</label>
-            {{ form.level }}
-            {% if form.level.errors %}
-              <div class="form__error">{{ form.level.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+                <label for="{{ form.level.id_for_label }}">Poziom nauki</label>
+                {{ form.level }}
+                {% if form.level.errors %}
+                  <ul class="messages">
+                    {% for error in form.level.errors %}
+                      <li class="error">{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.referral_code_input.id_for_label }}">{{ form.referral_code_input.label }}</label>
-            {{ form.referral_code_input }}
-            {% if form.referral_code_input.errors %}
-              <div class="form__error">{{ form.referral_code_input.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+              <input
+                type="text"
+                name="referral_code_input"
+                id="{{ form.referral_code_input.id_for_label }}"
+                class="form-control"
+                placeholder="Kod polecający"
+                value="{{ form.referral_code_input.value|default_if_none:'' }}"
+              >
+               {% if form.referral_code_input.errors %}
+                <ul class="messages">
+                  {% for error in form.referral_code_input.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+               {% endif %}
+              <small>{{ form.referral_code_input.help_text }}</small>
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-            <div class="password-container">
-              {{ form.password1 }}
+            <div class="form__group">
+              <div class="password-container">
+                <input
+                  type="password"
+                  name="password1"
+                  id="{{ form.password1.id_for_label }}"
+                  class="form-control"
+                  placeholder="{{ form.password1.label }}"
+                >
+              </div>
               {% if form.password1.errors %}
-                <div class="form__error">{{ form.password1.errors }}</div>
+                <ul class="messages">
+                  {% for error in form.password1.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
               {% endif %}
             </div>
-          </div>
 
-          <div class="form__group">
-            <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-            <div class="password-container">
-              {{ form.password2 }}
+            <div class="form__group">
+              <div class="password-container">
+                <input
+                  type="password"
+                  name="password2"
+                  id="{{ form.password2.id_for_label }}"
+                  class="form-control"
+                  placeholder="{{ form.password2.label }}"
+                >
+              </div>
               {% if form.password2.errors %}
-                <div class="form__error">{{ form.password2.errors }}</div>
+                <ul class="messages">
+                  {% for error in form.password2.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
               {% endif %}
             </div>
-          </div>
 
-          <div class="form__group">
+            <div class="form__group">
               <label for="{{ form.terms_and_privacy.id_for_label }}">
-                  {{ form.terms_and_privacy }}
-                  <span class="checkmark"></span> Akceptuję
-                  <a href="{% static 'files/regulamin.pdf' %}" target="_blank">Regulamin</a> oraz
-                  <a href="{% static 'files/regulamin.pdf' %}" target="_blank">Politykę Prywatności</a> SchoolWeb.pl
+                {{ form.terms_and_privacy }} Akceptuję
+                <a href="{% static 'files/Regulamin.pdf' %}" target="_blank">Regulamin</a> oraz
+                <a href="{% static 'files/Regulamin.pdf' %}" target="_blank">Politykę Prywatności</a>
               </label>
               {% if form.terms_and_privacy.errors %}
-                  <div class="form__error">{{ form.terms_and_privacy.errors }}</div>
+                <ul class="messages">
+                  {% for error in form.terms_and_privacy.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
               {% endif %}
-          </div>
+            </div>
 
-          <div class="form__group">
-            <label for="{{ form.age_confirmation.id_for_label }}">
-              {{ form.age_confirmation }}
-              {{ form.age_confirmation.label }}
-            </label>
-            {% if form.age_confirmation.errors %}
-              <div class="form__error">{{ form.age_confirmation.errors }}</div>
-            {% endif %}
-          </div>
+            <div class="form__group">
+              <label for="{{ form.age_confirmation.id_for_label }}">
+                {{ form.age_confirmation }}
+                <span id="age-confirmation-text">
+                  Potwierdzam ukończenie 18 lat.
+                </span>
+              </label>
+              {% if form.age_confirmation.errors %}
+                <ul class="messages">
+                  {% for error in form.age_confirmation.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
 
-          <div class="container">
-            <div class="center-button">
-              <button class="btn btn--link" type="submit">
-                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-                  <path d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 12v-2c0-4.418 3.582-8 8-8s8 3.582 8 8v2h-16zM26 30h-20v-16h20v16z"></path>
-                </svg>
-                <span>Załóż konto</span>
-              </button>
+            <div class="form__group">
+              <div class="g-recaptcha" data-sitekey="6Ld1rU0rAAAAANPKXRZINCSKpLpy3HiPX5dbaLXn"></div>
+            </div>
+
+            <div class="container">
+              <div class="center-button">
+                <button class="btn btn--link" type="submit">
+                  <span>Załóż konto</span>
+                </button>
+              </div>
             </div>
           </div>
+
         </form>
       </div>
     </div>
   </div>
 </main>
+
 <script src="{% static 'js/apply-user-tutoring-zone.js' %}"></script>
 <script src="{% static 'js/password-visibility.js' %}"></script>
+
 {% endblock content %}

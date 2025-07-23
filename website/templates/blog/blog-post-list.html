@@ -1,11 +1,11 @@
 {% extends "base-blog.html" %}
-
+{% load static %}
 {% block content %}
     <div class="container">
         <div class="blog-posts">
             {% for post in blog_posts %}
                 <a href="{% url 'schoolweb:blog-post-detail' slug=post.slug id=post.id %}" class="blog-post-link">
-                    <div class="blog-post" style="background-image: url('{{ post.image.url }}');">
+                    <div class="blog-post" style="background-image: url('{% if post.image %}{{ post.image.url }}{% else %}{% static "img/blog-list-images/blog-no-img.png" %}{% endif %}');">
                         <div class="post-meta">
                             <div class="meta-left">
                                 <span class="category-label">{{ post.category.name }}</span>

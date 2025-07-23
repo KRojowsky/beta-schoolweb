@@ -136,6 +136,21 @@
   margin: 0;
 }
 
+.message__text {
+  margin: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
+  color: #FFF;
+}
+
+.message__text a {
+  color: #4DA6FF;
+  text-decoration: underline;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 #message__form {
   width: 23.2rem;
   position: fixed;
@@ -313,15 +328,101 @@
 .stream__actions a,
 .stream__actions button {
   cursor: pointer;
-  background-color: #FF0000;
-  color: #fff;
-  border: none;
+  background-color: #262625;
+  color: #FFF;
+  border: 2px solid #FFF;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem 1rem;
   border-radius: 5px;
   transition: all 0.1s ease-in-out;
+  position: relative;
+}
+
+.stream__actions button::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 12px;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stream__actions button:hover::before {
+  visibility: visible;
+  opacity: 1;
+}
+
+#mic-btn {
+  border: 2px solid #FFF;
+  background-color: #262625;
+}
+
+#camera-btn, #screen-btn {
+  border: 2px solid red;
+  background-color: rgba(255, 0, 0, 0.1);
+  position: relative;
+}
+
+#camera-btn::after, #screen-btn::after {
+  content: "";
+  position: absolute;
+  width: 120%;
+  height: 2px;
+  background: red;
+  top: 48%;
+  left: -6px;
+  transform: rotate(-35deg);
+}
+
+.stream__actions button:hover {
+  opacity: 0.8;
+}
+
+#camera-btn:hover, #screen-btn:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+#mic-btn.disabled {
+  border: 2px solid red;
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+#mic-btn.disabled::after {
+  content: "";
+  position: absolute;
+  width: 120%;
+  height: 2px;
+  background: red;
+  top: 48%;
+  left: -6px;
+  transform: rotate(-35deg);
+}
+
+  border: 2px solid #FFF;
+  background-color: #262625;
+}
+
+#mic-btn.active::after {
+  content: none;
+}
+
+#camera-btn.active, #screen-btn.active {
+  border: 2px solid #FFF;
+  background-color: #262625;
+}
+
+#camera-btn.active::after, #screen-btn.active::after {
+  content: none;
 }
 
 .stream__actions a svg,
@@ -333,7 +434,10 @@
 
 .stream__actions a.active,
 .stream__actions button.active,
-.stream__actions a:hover,
-.stream__actions button:hover {
+.stream__actions a:hover {
   background-color: #262625;
+}
+
+.stream__actions button:hover {
+  border: 1px solid #FFF;
 }

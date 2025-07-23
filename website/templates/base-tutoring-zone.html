@@ -15,10 +15,18 @@
 
     <link rel="icon" type="image/x-icon" href="{% static 'img/widget/logo.png' %}">
     <link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
-    <link href="{% static 'css/knowledge-zone.css' %}" rel="stylesheet">
+    <link href="{% static 'css/knowledge-tutoring-zone.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="{% static 'js/knowledge-zone-dropdown-menu.js' %}" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="{% static 'js/google-analytics.js' %}" defer></script>
+    <script src="{% static 'js/cookie-banner.js' %}" defer></script>
+
+    <script>
+        let logoutUrl = "{% url 'schoolweb:session_timeout' %}";
+    </script>
+    <script src="{% static 'js/auto-logout.js' %}" defer></script>
 
     <style>
     body::before {
@@ -36,6 +44,24 @@
       z-index: -1;
     }
     </style>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '671974412562471');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=671974412562471&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 
 <body>
@@ -44,5 +70,18 @@
 
     {% block content %}
     {% endblock content %}
+
+    <div id="cookie-consent-banner" style="display:none;">
+    <div class="cookie-content">
+        <p>
+            Ta strona używa plików cookies, aby zapewnić najlepsze wrażenia użytkownika.
+            <a href="{% static 'files/regulamin.pdf' %}">Więcej informacji</a>.
+        </p>
+        <div class="cookie-buttons">
+            <button id="accept-cookies" class="accept-button">Akceptuję</button>
+            <button id="reject-cookies" class="reject-button">Odrzucam</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

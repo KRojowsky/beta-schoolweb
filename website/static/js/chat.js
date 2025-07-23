@@ -42,7 +42,7 @@ let cachedResponses = null;
 
 async function fetchResponses() {
     if (!cachedResponses) {
-        const response = await fetch('/website/static/json/responses.json');
+        const response = await fetch('/static/json/responses.json');
         if (!response.ok) throw new Error('Wystąpiły problemy z siecią...');
         cachedResponses = await response.json();
     }

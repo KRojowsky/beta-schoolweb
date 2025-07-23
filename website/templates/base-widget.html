@@ -23,9 +23,27 @@
     <script src="{% static 'js/widget-menu-dropdown.js' %}" defer></script>
     <script src="{% static 'js/no-content-info.js' %}" defer></script>
     <script src="{% static 'js/chat.js' %}" defer></script>
-    <script id="google-analytics" async src="https://www.googletagmanager.com/gtag/js?id=G-4H49J1BGY5"></script>
     <script src="{% static 'js/google-analytics.js' %}" defer></script>
     <script src="{% static 'js/cookie-banner.js' %}" defer></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '671974412562471');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=671974412562471&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
 </head>
 
 <body>
@@ -34,7 +52,7 @@
     {% endblock content %}
 	{% include 'widget/footer.html' %}
 
-    <div id="shop-modal" class="modal">
+    <div id="no-content-info-modal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <p>Opcja dostępna już wkrótce!</p>
@@ -66,7 +84,7 @@
             <div id="chatMessages">
                 <div class="message-bot">
                     <div class="chatbot-img-container">
-                        <img src="{% static 'img/icons/robot.svg' %}" alt="ikona chatbota" class="chatbot-img">
+                        <img src="{% static 'img/icons/robot.svg' %}" alt="Ikona chatbota Resq" class="chatbot-img">
                     </div>
                     <div class="message-text">
                         <p>Cześć jestem Resq - chatbot platformy edukacyjnej SchoolWeb! &#128512<br><br>Jak mogę Ci pomóc?</p>
@@ -91,12 +109,18 @@
 
     <input type="hidden" id="static-image-path" value="{% static 'img/icons/robot.svg' %}">
 
+
+
     <div id="cookie-consent-banner">
         <div class="cookie-content">
-            <p>Ta strona używa plików cookies, aby zapewnić najlepsze wrażenia użytkownika.
-            <a href="{% static 'files/regulamin.pdf' %}">Więcej informacji</a>.</p>
-            <button id="accept-cookies" class="accept-button">Akceptuję</button>
-            <button id="reject-cookies" class="reject-button">Odrzucam</button>
+            <p>
+                Ta strona używa plików cookies, aby zapewnić najlepsze wrażenia użytkownika.
+                <a href="{% static 'files/regulamin.pdf' %}">Więcej informacji</a>.
+            </p>
+            <div class="cookie-buttons">
+                <button id="accept-cookies" class="accept-button">Akceptuję</button>
+                <button id="reject-cookies" class="reject-button">Odrzucam</button>
+            </div>
         </div>
     </div>
 </body>

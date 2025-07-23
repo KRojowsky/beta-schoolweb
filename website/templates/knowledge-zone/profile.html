@@ -1,68 +1,329 @@
 {% extends 'base-knowledge-zone.html' %}
 
 {% block navbar %}
-{% include 'knowledge-zone/nav-knowledge-zone.html' %}
+    {% include 'knowledge-zone/nav-no-search.html' %}
 {% endblock navbar %}
 
 {% block content %}
 {% load static %}
 <main class="profile-page layout layout--3">
-  <div class="container">
-    {% include 'knowledge-zone/topics-knowledge-zone.html' %}
-    <div class="roomList">
-      <div class="profile">
-        {% if messages %}
-                {% for message in messages %}
-                    <div class="notification notification--{{ message.tags }} show">
-                        <span>{{ message }}</span>
-                        <button class="notification__close">&times;</button>
+    <div class="container">
+        {% include 'knowledge-zone/topics-knowledge-zone.html' %}
+        <div class="roomList">
+            <div class="profile">
+                <div class="top__options">
+                    <a href="javascript:history.back()" class="top__options-link">← Cofnij</a>|
+                    <a href="{% url 'schoolweb:knowledge_zone' %}" class="top__options-link">Strefa Wiedzy </a>|
+                    <a href="{{ user_redirect_url }}" class="top__options-link">Strefa Korepetycji</a>
+                </div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="notification notification--{{ message.tags }} show">
+                            <span>{{ message }}</span>
+                            <button class="notification__close">&times;</button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="profile__avatar">
+                    <div class="avatar avatar--large active">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" alt="Avatar użytkownika">
+                        {% else %}
+                            <img src="{% static 'img/profile-pictures/avatar.svg' %}" alt="Domyślny avatar">
+                        {% endif %}
                     </div>
-                {% endfor %}
-            {% endif %}
-        <div class="profile__avatar">
-          <div class="avatar avatar--large active">
-            <img src="{{user.avatar.url}}" />
-          </div>
-        </div>
-        <div class="profile__info">
-          <p>@{{user.username}}</p>
-          {% if request.user == user %}
-            <a href="{% url 'schoolweb:update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
-          {% endif %}
-        </div>
-        <div class="profile__about">
-          <h3>Punkty</h3>
-          <div class="profile__points">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill='gold' class="star-icon">
-                  <path d="M12 .587l3.668 7.568L24 9.764l-6 5.847L19.336 24 12 19.941 4.664 24 6 15.611 0 9.764l8.332-1.609L12 .587z"/>
-              </svg>
-              {{ user.points }} pkt.
-          </div>
-          {% if request.user == user %}
-          <span>Punkty możesz wymienić na bonusy dołączając do Strefy Korepetycji.</span>
-          {% endif %}
-        </div>
+                </div>
 
-        <div class="profile__about">
-          <h3>O mnie</h3>
-          <p>{{user.bio}}</p>
-        </div>
+                <div class="profile__info">
+                    <h3>@{{ user.username }}</h3>
+                    <p>{{ user.first_name }} {{ user.last_name }}</p>
+                    {% if request.user == user %}
+                        <a href="{% url 'schoolweb:update-user' %}" class="btn btn--main btn--pill">Ustawienia</a>
+                    {% endif %}
+                    {% if request.user == user and is_teacher %}
+                        <a href="{% url 'schoolweb:manage_availability' %}" class="btn btn--main btn--pill">Dostępność</a>
+                        <a href="{% url 'schoolweb:new_students' %}" class="btn btn--main btn--pill">Zdobądź ucznia</a>
+                        <a href="{% url 'schoolweb:bank-information' %}" class="btn btn--main btn--pill">Dane bankowe</a>
+                        <a href="{% url 'schoolweb:earnings-pdf' %}" class="btn btn--main btn--pill">Przychody</a>
+                    {% endif %}
+                </div>
 
-        <div class="profile__about">
-          <h3>Zainteresowania</h3>
-          <p>{{ user.interests }}</p>
-        </div>
-      </div>
+                <div class="profile__tabs">
+                    <button class="tab-button active" data-tab="info">Informacje</button>
+                    <button class="tab-button" data-tab="bonuses">Bonusy</button>
+                    <button class="tab-button" data-tab="posts">Posty</button>
+                    <button class="tab-button" data-tab="courses">Kursy</button>
+                    {% if request.user == user and is_teacher %}
+                        <button class="tab-button" data-tab="earnings">Zarobki</button>
+                    {% endif %}
+                </div>
 
-      <div class="roomList__header">
-        <div>
-          <h2>Posty utworzone przez <i>{{user.username}}</i></a>
-          </h2>
+                <div class="profile__section active" id="info">
+                    <h3>O mnie</h3>
+                    <p>{{ user.bio }}</p>
+
+                    <h3>Zainteresowania</h3>
+                    <p>{{ user.interests }}</p>
+
+                    {% if request.user == user and not is_teacher or request.user != user and is_teacher %}
+                        <h3>Liczba zajęć do wykorzystania w bieżącym pakiecie</h3>
+                        <p class="highlight">{{ package }}</p>
+
+                        <h3>Liczba wykorzystanych zajęć</h3>
+                        <p class="highlight">{{ all_package }}</p>
+                    {% endif %}
+
+                    <h3>Punkty</h3>
+                    <div class="profile__points">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill='gold' class="star-icon">
+                            <path d="M12 .587l3.668 7.568L24 9.764l-6 5.847L19.336 24 12 19.941 4.664 24 6 15.611 0 9.764l8.332-1.609L12 .587z"/>
+                        </svg>
+                        {{ user.points }} pkt.
+                    </div>
+                    {% if request.user == user %}
+                        <div class="additional-info">Punkty możesz wymienić na bonusy dołączając do Strefy Korepetycji.</div>
+                    {% endif %}
+
+                    {% if request.user == user and is_teacher %}
+                        <h3>Kod polecenia</h3>
+                        <p>{{ user.referral_code }}</p>
+                        <div class="additional-info">Ta sekcja NIE będzie widoczna przez nikogo</div>
+                    {% endif %}
+
+                    {% if request.user == user %}
+                       <h3>Więcej opcji</h3>
+                       <a href="{% url 'schoolweb:resignation' %}" class="btn btn--link">Rezygnacja</a>
+                    {% endif %}
+                </div>
+
+                <div class="profile__section" id="bonuses">
+                    {% if request.user == user and is_teacher %}
+                        <h3>Twój obecny miesięczny bonus</h3>
+                        <div class="profile__bonus">
+                            {{ user.lesson_stats.month_bonus }} zł
+                        </div>
+                       <div class="additional-info">Ta sekcja NIE będzie widoczna przez ucznia</div>
+
+                        <h3>Twój obecny miesięczny bonus z poleceń</h3>
+                        <div class="profile__bonus">
+                            {{ user.lesson_stats.month_referral_bonus }} zł
+                        </div>
+                       <div class="additional-info">Ta sekcja NIE będzie widoczna przez ucznia</div>
+                    {% endif %}
+                </div>
+
+                <div class="profile__section" id="posts">
+                    <div class="roomList__header">
+                        <h2>Posty utworzone przez <i>{{ user.username }}</i></h2>
+                    </div>
+                    {% include 'knowledge-zone/feed-knowledge-zone.html' %}
+                </div>
+
+                <div class="profile__section" id="courses">
+                    <h3>Twoje kursy</h3>
+                    <div class="course-cards">
+                        {% for course in courses %}
+                        <a href="{% url 'schoolweb:teacherPage' %}?q={{course.name}}" class="course-card-link">
+                            <div class="course-card">
+                                <div class="lesson-count">
+                                    <p>{{ course.get_lessons_with_feedback_count }} lekcji</p>
+                                </div>
+                                <div class="course-info">
+                                    <h3>{{ course.name }}</h3>
+                                    <h4 class="type">{{ course.get_course_type_display }}</h4>
+                                    <h4 class="type">{{ course.student }}</h4>
+                                </div>
+                                <ul class="students-list">
+                                    {% for student in course.students.all %}
+                                    <li class="student-item">
+                                        <img src="{{ student.avatar.url }}" alt="{{ student.first_name }} {{ student.last_name }}" class="student-avatar">
+                                        <div class="student-info">
+                                            <span>{{ student.first_name }} {{ student.last_name }}</span>
+                                            {% if course.course_type == 'basic' %}
+                                            <div class="lesson-badge">Dostępne lekcje: {{ student.lesson_stats.lessons }}</div>
+                                            {% elif course.course_type == 'intermediate' %}
+                                            <div class="lesson-badge">Dostępne lekcje: {{ student.lesson_stats.lessons_intermediate }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+               
+                <div class="profile__section" id="earnings">
+                    {% if request.user == user and is_teacher %}
+                      <h3>Przychody</h3>
+                      <div class="animated-progress1">
+                        <p><i>W tym miesiącu</i></p>
+                        <h4>{{ month_earnings }} zł</h4>
+                        <canvas id="monthEarningsChart" width="400" height="200"></canvas>
+                      </div>
+                      <div class="animated-progress2">
+                        <p><i>Ogólne</i></p>
+                        <h4>{{ all_earnings }} zł</h4>
+                        <canvas id="allEarningsChart" width="400" height="200"></canvas>
+                      </div>
+                      <div class="additional-info">Ta sekcja NIE będzie widoczna przez nikogo</div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-      </div>
-      {% include 'knowledge-zone/feed-knowledge-zone.html' %}
+        {% include 'knowledge-zone/activity-knowledge-zone.html' %}
     </div>
-    {% include 'knowledge-zone/activity-knowledge-zone.html' %}
-  </div>
 </main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const buttons = document.querySelectorAll(".tab-button");
+    const sections = document.querySelectorAll(".profile__section");
+
+    buttons.forEach(button => {
+        button.addEventListener("click", function () {
+            buttons.forEach(btn => btn.classList.remove("active"));
+            sections.forEach(sec => sec.classList.remove("active"));
+
+            this.classList.add("active");
+            const tabId = this.getAttribute("data-tab");
+            document.getElementById(tabId).classList.add("active");
+        });
+    });
+});
+</script>
+
+<!-- Add this script tag to include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  var monthEarnings = {{ month_earnings }};
+  var allEarnings = {{ all_earnings }};
+  var monthBonus = {{ lesson_stats.month_bonus }};
+  var allBonus = {{ lesson_stats.all_bonus }};
+  var monthReferralBonus = {{ lesson_stats.month_referral_bonus }};
+  var allReferralBonus = {{ lesson_stats.all_referral_bonus }};
+
+  var monthBonusQuantity = monthBonus / 50;
+  var allBonusQuantity = allBonus / 50;
+  var monthReferralBonusQuantity = monthReferralBonus / 50;
+  var allReferralBonusQuantity = allReferralBonus / 50;
+
+  var monthEarningsChart = new Chart(document.getElementById('monthEarningsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Miesiąc'],
+      datasets: [{
+        label: 'Miesięczne przychody',
+        data: [monthEarnings],
+        backgroundColor: 'rgba(46, 204, 113, 0.5)',
+      }],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 5000,
+          ticks: {
+            callback: function (value, index, values) {
+              return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+            },
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              var totalLessons = {{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }};
+              var tooltipText = label + context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+
+              return tooltipText;
+            },
+            afterLabel: function (context) {
+              var bonusText = 'Miesięczny bonus: ' + monthBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+              var referralBonusText = 'Miesięczny bonus z poleceń: ' + monthReferralBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+              var lessonsInfo1 = 'Lekcje przeprowadzone: ' + ({{ lesson_stats.lessons }} + {{ lesson_stats.lessons_intermediate }});
+              var lessonsInfo2 = 'Lekcje opuszczone przez ucznia: {{ lesson_stats.break_lessons }}';
+              var lessonsInfo3 = 'Lekcje opuszczone przez korepetytora: {{ lesson_stats.missed_lessons }}';
+
+              return [bonusText, referralBonusText, lessonsInfo1, lessonsInfo2, lessonsInfo3];
+            }
+          },
+          displayColors: false,
+          bodyFont: { size: 14 },
+        },
+      },
+    },
+  });
+
+  var allEarningsChart = new Chart(document.getElementById('allEarningsChart'), {
+    type: 'bar',
+    data: {
+      labels: ['Ogólnie'],
+      datasets: [{
+        label: 'Ogólne przychody',
+        data: [allEarnings],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      }],
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 10000,
+          ticks: {
+            callback: function (value, index, values) {
+              return value.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+            },
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || '';
+              if (label) {
+                label += ': ';
+              }
+              var totalLessonsMonth = {{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }};
+              var tooltipText = label + context.parsed.y.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+
+              return tooltipText;
+            },
+            afterLabel: function (context) {
+
+              var bonusText = 'Ogólny bonus: ' + allBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+              var referralBonusText = 'Ogólny bonus z poleceń: ' + allReferralBonus.toLocaleString('pl-PL', { style: 'currency', currency: 'PLN' });
+
+              var lessonsInfo1 = 'Lekcje przeprowadzone: ' + ({{ lesson_stats.all_lessons }} + {{ lesson_stats.all_lessons_intermediate }});
+              var lessonsInfo2 = 'Lekcje opuszczone przez ucznia: {{ lesson_stats.all_break_lessons }}';
+              var lessonsInfo3 = 'Lekcje opuszczone przez korepetytora: {{ lesson_stats.all_missed_lessons }}';
+
+              return [bonusText, referralBonusText, lessonsInfo1, lessonsInfo2, lessonsInfo3];
+            }
+          },
+          displayColors: false,
+          bodyFont: { size: 14 },
+        },
+      },
+    },
+  });
+
+</script>
+
+
 {% endblock content %}

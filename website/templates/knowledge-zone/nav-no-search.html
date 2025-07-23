@@ -11,7 +11,7 @@
             <div class="header__user">
                 <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
                     <div class="avatar avatar--medium active">
-                        <img src="{{request.user.avatar.url}}"/>
+                        <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" />
                     </div>
                     <p>{{request.user.first_name}}<span>@{{request.user.username}}</span></p>
                 </a>
