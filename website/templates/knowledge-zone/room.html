@@ -113,7 +113,18 @@
                 </div>
             </div>
 
-            <span class="room__topics">{{ room.topic }}</span>
+            <div class="room__meta">
+              <span class="room__topics">{{ room.topic.name }}</span>
+              <span class="room__topics">
+                {% if room.level == 'basic' %}
+                  Podstawa
+                {% elif room.level == 'advanced' %}
+                  Rozszerzenie
+                {% else %}
+                  Nieznany poziom
+                {% endif %}
+              </span>
+            </div>
           </div>
         </div>
         {% if request.user.is_authenticated %}
@@ -289,7 +300,19 @@
                 </div>
             </form>
         </div>
-        {% endif %}
+      {% else %}
+            <div class="room__message room__message--guest">
+              <p>
+                Aby dodać komentarz i zyskać <b>więcej możliwości</b>
+              </p>
+              <p>
+                <a href="{% url 'schoolweb:register' %}" class="btn-register">Załóż darmowe konto</a>
+              </p>
+              <p class="login-line">
+                Masz już konto? <a href="{% url 'schoolweb:login' %}">Zaloguj się</a>.
+              </p>
+            </div>
+      {% endif %}
     </div>
 
     <div class="participants">
@@ -305,7 +328,7 @@
               {% endif %}
           </div>
           <p>
-            {{user.username}}
+            {{user.first_name}}
             <span class="username" title="Zobacz profil">@{{user.username}}</span>
           </p>
         </a>
@@ -313,6 +336,51 @@
       </div>
     </div>
   </div>
+
+  {% if similar_rooms %}
+      <div class="similar-rooms">
+        <h3>Podobne posty z kategorii "{{ room.topic.name }}"</h3>
+        <div class="similar-rooms__list">
+          {% for r in similar_rooms %}
+            <a href="{% url 'schoolweb:room' r.id %}" class="similar-room">
+              <div class="similar-room__info">
+                <h4 class="similar-room__title">{{ r.name|truncatechars:50 }}</h4>
+                <p class="similar-room__desc">{{ r.description|default:"Brak opisu"|truncatechars:80 }}</p>
+                <div class="similar-room__image">
+                  {% if r.image %}
+                    <img src="{{ r.image.url }}" alt="Miniatura posta">
+                  {% else %}
+                    <img src="{% static 'img/placeholder/no-img.webp' %}" alt="Brak zdjęcia">
+                  {% endif %}
+                </div>
+                <p class="similar-room__author">
+                  Dodane przez:
+                  {% if r.host and r.host.name %}
+                    {{ r.host.name }}
+                  {% elif r.host %}
+                    @{{ r.host.username }}
+                  {% else %}
+                    <i>Użytkownik usunięty</i>
+                  {% endif %}
+                </p>
+                <p class="similar-room__level">
+                  Poziom:
+                  {% if r.level == 'basic' %}
+                    Podstawowy
+                  {% elif r.level == 'advanced' %}
+                    Rozszerzony
+                  {% else %}
+                    Nieznany
+                  {% endif %}
+                </p>
+                <span class="similar-room__date">{{ r.created|date:"d.m.Y" }}</span>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+  {% endif %}
+
   <script src="{% static 'js/room.js' %}"></script>
 </main>
 

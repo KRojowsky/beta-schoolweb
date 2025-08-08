@@ -84,8 +84,12 @@
               value="{{ form.referral_code_input.value|default_if_none:'' }}"
             >
             {% if form.referral_code_input.errors %}
-              <div class="form__error">{{ form.referral_code_input.errors }}</div>
-            {% endif %}
+              <ul class="messages">
+                {% for error in form.referral_code_input.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+           {% endif %}
             <small>{{ form.referral_code_input.help_text }}</small>
           </div>
 

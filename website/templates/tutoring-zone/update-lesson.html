@@ -28,25 +28,43 @@
             {% csrf_token %}
 
             <div class="form__group">
-              <label for="room_name">Temat lekcji:</label>
-              <input type="text" id="room_name" name="title" value="{{ form.instance.title }}">
+              <label for="{{ form.title.id_for_label }}">Temat lekcji</label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <ul class="messages">
+                  {% for error in form.title.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
             </div>
 
             <div class="form__group">
-              <label for="room_description">Notatki(opis):</label>
-              <textarea id="room_description" name="description">{{ form.instance.description }}</textarea>
+              <label for="{{ form.description.id_for_label }}">Notatki(opis)</label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <ul class="messages">
+                  {% for error in form.description.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
             </div>
 
             <div class="form__group">
-              <label for="room_event_datetime">Data:</label>
-              <input type="datetime-local" id="room_event_datetime" name="event_datetime" value="{{ form.instance.event_datetime|date:'Y-m-d\TH:i:s' }}">
-              {% for error in form.event_datetime.errors %}
-                <div class="alert alert-danger" style="color: red;">{{ error }}</div>
-              {% endfor %}
+              <label for="{{ form.event_datetime.id_for_label }}">Data</label>
+              {{ form.event_datetime }}
+              {% if form.event_datetime.errors %}
+                <ul class="messages">
+                  {% for error in form.event_datetime.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
             </div>
 
             <div class="form__action">
-              <a class="btn btn--link" href="{{request.META.HTTP_REFERER}}">Anuluj</a>
+              <a class="btn btn--link" href="{{ request.META.HTTP_REFERER|default:'/' }}">Anuluj</a>
               <button class="btn btn--link" type="submit">Zatwierdź</button>
             </div>
           </form>

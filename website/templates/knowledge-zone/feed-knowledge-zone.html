@@ -54,7 +54,9 @@
         {% endif %}
     </div>
 
-    <div class="participants-avatars">
+
+    <div class="room-meta-bottom">
+      <div class="participants-avatars">
         {% for participant in room.participants.all %}
             {% if forloop.counter <= 3 %}
             <div class="avatar avatar--participant">
@@ -65,6 +67,17 @@
         {% if room.participants.all.count > 3 %}
             <span class="more-participants">+{{ room.participants.all.count|add:-3 }} użytkowników odpowiedziało</span>
         {% endif %}
+      </div>
+
+      <div class="room-level">
+        {% if room.level == 'basic' %}
+          Podstawa
+        {% elif room.level == 'advanced' %}
+          Rozszerzenie
+        {% else %}
+          Nieznany
+        {% endif %}
+      </div>
     </div>
 
     <div class="comment-counters-container">

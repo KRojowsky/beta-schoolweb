@@ -42,31 +42,33 @@ urlpatterns = [
     path('toggle-like-room/<int:room_id>/', views.toggle_like_room, name='toggle_like_room'),
 
     # TUTORING ZONE
-    path('success/', views.successPage, name='success-page'),
-    path('access-denied/', views.access_denied, name='access_denied'),
-
     path('dolacz-strefa-korepetycji', views.WriterToTutoringZone, name="WriterToTutoringZone"),
     path('rejestracja-strefa-korepetycji/', views.applyUser, name="applyUser"),
     path('przekierowanie/', views.coursesLoader, name="coursesLoader"),
-    path('zdobadz-ucznia/', views.newStudent, name='new_students'),
 
+    path('zdobadz-ucznia/', views.newStudent, name='new_students'),
     path('strefa-korepetycji-korepetytor/', views.teacherPage, name="teacherPage"),
     path('strefa-korepetycji-uczen/', views.studentPage, name="studentPage"),
-
     path('kursy-strefa-korepetycji/', views.coursesTutoringZone, name="courses-tutoring-zone"),
     path('aktywnosci-strefa-korepetycji/', views.activityTutoringZone, name="activity-tutoring-zone"),
 
-    path('informacje-bankowe/', views.bankInformation, name='bank-information'),
     path('earnings/', views.Teachersearnings, name='teachers-earnings'),
     path('earnings/pdf/<int:month>/<int:year>/', views.generate_pdf, name='generate-pdf'),
     path('pdf-dochody/', views.Teachersearnings, name='earnings-pdf'),
     path('rezygnacja/', views.resignation, name='resignation'),
-    path('dostępność/', views.manage_availability, name='manage_availability'),
-    path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
 
     path('lekcja/<str:pk>/', views.lesson, name="lesson"),
     path('utworz-lekcje/', views.createLesson, name='create-lesson'),
     path('edytuj-lekcje/<str:pk>/', views.updateLesson, name='update-lesson'),
+
+
+
+
+
+
+
+    path('dostępność/', views.manage_availability, name='manage_availability'),
+    path('get_availability/<str:selected_date>/', views.get_availability, name='get_availability'),
 
     path('znajdz-korepetycje/', views.findTutor, name='find_tutor'),
 

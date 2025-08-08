@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import (Room, Topic, Message, Course, Lesson, LessonStats, CourseMessage, PlatformMessage, LessonCorrection,
-                     Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, BankInformation,
-                     TeachersEarning, NewStudents)
+                     Resign, Availability, Report, BlogPost, BlogCategory, ContentBlock, TeachersEarning, NewStudents)
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.forms import DateInput
@@ -96,7 +95,8 @@ class ReportAdmin(admin.ModelAdmin):
 
 class LessonStatsAdmin(admin.ModelAdmin):
     list_display = [
-        'user', 'lessons', 'lessons_intermediate',
+        'user', 'basic_lesson_rate', 'intermediate_lesson_rate',
+        'lessons', 'lessons_intermediate',
         'break_lessons', 'all_break_lessons',
         'missed_lessons', 'all_missed_lessons',
         'all_lessons', 'all_lessons_intermediate',
@@ -161,6 +161,34 @@ class TeachersEarningAdmin(admin.ModelAdmin):
 
 
 
+class ResignationAdminForm(forms.ModelForm):
+    class Meta:
+        model = Resign
+        fields = '__all__'
+        widgets = {
+            'start_date': DateInput(attrs={'type': 'date'}),
+            'end_date': DateInput(attrs={'type': 'date'}),
+        }
+
+
+class ResignationAdmin(admin.ModelAdmin):
+    form = ResignationAdminForm
+    list_display = ('user_email', 'reason', 'start_date_display', 'end_date_display', 'course_info')
+
+    def user_email(self, obj):
+        return obj.user.email if obj.user else None
+    user_email.short_description = "Email"
+
+    def start_date_display(self, obj):
+        return obj.start_date.strftime("%Y-%m-%d") if obj.start_date else ""
+    start_date_display.short_description = "Start Date"
+
+    def end_date_display(self, obj):
+        return obj.end_date.strftime("%Y-%m-%d") if obj.end_date else ""
+    end_date_display.short_description = "End Date"
+
+
+
 class LessonInfo(admin.ModelAdmin):
     def clicked_users_count(self, obj):
         return obj.clicked_users.count()
@@ -202,29 +230,6 @@ class LessonCorrectionAdmin(admin.ModelAdmin):
     get_attended_teachers.short_description = 'Attended Teachers'
     display_image.short_description = 'Lesson Image'
 
-
-class ResignationAdminForm(forms.ModelForm):
-    class Meta:
-        model = Resign
-        fields = '__all__'
-        widgets = {
-            'start_date': DateInput(attrs={'type': 'date'}),
-            'end_date': DateInput(attrs={'type': 'date'}),
-        }
-
-
-class ResignationAdmin(admin.ModelAdmin):
-    form = ResignationAdminForm
-    list_display = ('user_email', 'email', 'reason', 'start_date', 'end_date', 'course_info')
-
-    def user_email(self, obj):
-        return obj.user.email if obj.user else None
-
-    def start_date(self, obj):
-        return obj.start_date.strftime("%Y-%m-%d") if obj.start_date else ""
-
-    def end_date(self, obj):
-        return obj.end_date.strftime("%Y-%m-%d") if obj.end_date else ""
 
 
 class SelectedHoursFilter(admin.SimpleListFilter):
@@ -320,7 +325,7 @@ class CourseAdminForm(forms.ModelForm):
 
         students_group = Group.objects.get(name="Students")
         self.fields['students'].queryset = User.objects.filter(groups=students_group)
-        
+
 
 class CourseAdmin(admin.ModelAdmin):
     form = CourseAdminForm
@@ -332,12 +337,8 @@ class CourseAdmin(admin.ModelAdmin):
     get_students_list.short_description = 'Students'
 
 
-class BankInformationAdmin(admin.ModelAdmin):
-    list_display = ('user', 'card_number', 'cvv', 'cardholder_name', 'expiration_date')
-
-
 class NewStudentsAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'subject', 'level', 'is_selected', 'get_courses')
+    list_display = ('first_name', 'last_name', 'subject', 'level', 'is_selected', 'get_courses', 'notes')
 
     # Dodajemy metodę, żeby wyświetlić kursy przypisane do ucznia
     def get_courses(self, obj):
@@ -376,5 +377,4 @@ admin.site.register(TeachersEarning, TeachersEarningAdmin)
 admin.site.register(Report, ReportAdmin)
 admin.site.register(CourseMessage, CourseMessageAdmin)
 admin.site.register(Resign, ResignationAdmin)
-admin.site.register(BankInformation, BankInformationAdmin)
 admin.site.register(NewStudents, NewStudentsAdmin)

@@ -12,12 +12,10 @@
             <div class="layout__boxHeader">
                 <div class="layout__boxTitle">
                     <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
-                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                            viewBox="0 0 32 32">
+                        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
                             <title>Cofnij</title>
                             <path d="M13.723 2.286l-13.723 13.714 13.719 13.714
-                            1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-                            </path>
+                            1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"></path>
                         </svg>
                     </a>
                     <h3>
@@ -41,61 +39,57 @@
                     <br><br>
                     Pozdrawiamy,<br> Zespół SchoolWeb
                 </h2>
+
                 <form class="form" action="{% url 'schoolweb:resignation' %}" method="post" style="margin-top:35px;">
                     {% csrf_token %}
 
-                    <div class="form__group">
-                        <label for="resignation_email">Twój e-mail:</label>
-                        {{ form.email }}
-                    </div>
-
                     {% if is_teacher %}
                         <div class="form__group">
-                            <label for="resignation_reason">Powód:</label>
+                            <label for="id_reason">Powód:</label>
                             {{ form.reason }}
                         </div>
                     {% endif %}
 
                     <div class="form__group" id="startEndDateGroup" style="display: none;">
                         <label for="resignation_start_date">Początkowa data przerwy:</label>
-                        <input type="date" id="resignation_start_date" name="start_date">
+                        {{ form.pause_start_date }}
                     </div>
 
                     <div class="form__group" id="endDateGroup" style="display: none;">
-                        <label for="resignation_end_date" id="endDateLabel">Końcowa data przerwy:</label>
-                        <input type="date" id="resignation_end_date" name="end_date">
+                        <label for="resignation_end_date">Końcowa data przerwy:</label>
+                        {{ form.pause_end_date }}
                     </div>
 
                     <div class="form__group" id="lastDayGroup" style="display: none;">
                         <label for="last_day">Ostatni dzień współpracy:</label>
-                        <input type="date" id="last_day" name="end_date">
+                        {{ form.resignation_date }}
                     </div>
 
                     {% if is_teacher %}
                         <div class="form__group">
-                            <label for="resignation_course_info">Informacje na temat kursów:</label>
+                            <label for="id_course_info">Informacje na temat kursów:</label>
                             {{ form.course_info }}
                         </div>
                     {% endif %}
 
                     <div class="form__group">
-                        <label for="resignation_rating">Jak oceniasz platformę SchoolWeb:</label>
+                        <label for="id_rating">Jak oceniasz platformę SchoolWeb:</label>
                         {{ form.rating }}
                     </div>
 
                     <div class="form__group">
-                        <label for="consider_return">Czy rozważasz powrót na SchoolWeb?</label>
+                        <label for="id_consider_return">Czy rozważasz powrót na SchoolWeb?</label>
                         {{ form.consider_return }}
                     </div>
 
                     <div class="form__group">
-                        <label for="reason_details">Dodatkowe informacje dotyczące powodu rezygnacji/przerwy:</label>
+                        <label for="id_reason_details">Dodatkowe informacje dotyczące powodu rezygnacji/przerwy:</label>
                         {{ form.reason_details }}
                     </div>
 
                     <div class="form__action">
-                       <a class="btn btn--link" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
-                       <button class="btn btn--link" type="submit">Zatwierdź</button>
+                        <a class="btn btn--link" href="{{ request.META.HTTP_REFERER }}">Anuluj</a>
+                        <button class="btn btn--link" type="submit">Zatwierdź</button>
                     </div>
                 </form>
             </div>
@@ -104,46 +98,52 @@
 </main>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var reasonSelect = document.getElementById('id_reason');
-        var startEndDateGroup = document.getElementById('startEndDateGroup');
-        var endDateGroup = document.getElementById('endDateGroup');
-        var lastDayGroup = document.getElementById('lastDayGroup');
-        var startDateInput = document.getElementById('resignation_start_date');
-        var endDateInput = document.getElementById('resignation_end_date');
-        var lastDayInput = document.getElementById('last_day');
+document.addEventListener("DOMContentLoaded", function () {
+    const reasonSelect = document.getElementById('id_reason');
+    const startDateInput = document.getElementById('resignation_start_date');
+    const endDateInput = document.getElementById('resignation_end_date');
+    const lastDayInput = document.getElementById('last_day');
 
-        function disablePastDates() {
-            var currentDate = new Date();
-            currentDate.setDate(currentDate.getDate() + 7);
-            var minDate = currentDate.toISOString().split('T')[0];
+    const startEndDateGroup = document.getElementById('startEndDateGroup');
+    const endDateGroup = document.getElementById('endDateGroup');
+    const lastDayGroup = document.getElementById('lastDayGroup');
 
-            if (startDateInput) startDateInput.min = minDate;
-            if (lastDayInput) lastDayInput.min = minDate;
+    function disableFutureDates() {
+        const minDate = new Date();
+        minDate.setDate(minDate.getDate() + 7);
+        const min = minDate.toISOString().split('T')[0];
+
+        if (startDateInput) startDateInput.min = min;
+        if (endDateInput) endDateInput.min = min;
+        if (lastDayInput) lastDayInput.min = min;
+    }
+
+    function handleReasonChange() {
+        const selectedReason = reasonSelect ? reasonSelect.value : null;
+
+        if (selectedReason === 'Przerwa') {
+            startEndDateGroup.style.display = 'block';
+            endDateGroup.style.display = 'block';
+            lastDayGroup.style.display = 'none';
+        } else if (selectedReason === 'Rezygnacja') {
+            startEndDateGroup.style.display = 'none';
+            endDateGroup.style.display = 'none';
+            lastDayGroup.style.display = 'block';
+        } else {
+            startEndDateGroup.style.display = 'none';
+            endDateGroup.style.display = 'none';
+            lastDayGroup.style.display = 'none';
         }
 
-        function handleReasonChange() {
-            var selectedReason = reasonSelect.value;
+        disableFutureDates();
+    }
 
-            if (selectedReason === 'Przerwa') {
-                startEndDateGroup.style.display = 'block';
-                endDateGroup.style.display = 'block';
-                lastDayGroup.style.display = 'none';
-                disablePastDates();
-            } else if (selectedReason === 'Rezygnacja') {
-                startEndDateGroup.style.display = 'none';
-                endDateGroup.style.display = 'none';
-                lastDayGroup.style.display = 'block';
-                disablePastDates();
-            } else {
-                startEndDateGroup.style.display = 'none';
-                endDateGroup.style.display = 'none';
-                lastDayGroup.style.display = 'none';
-            }
-        }
-
+    if (reasonSelect) {
         reasonSelect.addEventListener('change', handleReasonChange);
-        disablePastDates();
-    });
+        handleReasonChange();
+    } else {
+        disableFutureDates();
+    }
+});
 </script>
 {% endblock content %}

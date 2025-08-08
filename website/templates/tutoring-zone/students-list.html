@@ -36,9 +36,12 @@
             <img src="{% if student.user.avatar %}{{ student.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Zdjęcie ucznia" class="new-student-avatar">
           </div>
           <div class="new-student-info">
-            <h2>{{ student.first_name }} {{ student.last_name }}</h2>
-            <p><strong>Przedmiot:</strong> {{ student.subject|default:"Brak danych" }}</p>
-            <p><strong>Poziom:</strong> {{ student.level }}</p>
+              <h2>{{ student.first_name }} {{ student.last_name }}</h2>
+              <p><strong>Przedmiot:</strong> {{ student.subject|default:"Brak danych" }}</p>
+              <p><strong>Poziom:</strong> {{ student.level }}</p>
+              {% if student.notes %}
+                <p><strong>Uwagi ucznia:</strong> {{ student.notes }}</p>
+              {% endif %}
           </div>
           <form method="POST" action="{% url 'schoolweb:new_students' %}">
             {% csrf_token %}

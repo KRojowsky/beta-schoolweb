@@ -58,7 +58,7 @@
             {% if lesson.host %}
             <a href="{% url 'schoolweb:user-profile' lesson.host.id %}" class="room__author">
               <div class="avatar avatar--small active">
-                <img src="{{lesson.host.avatar.url}}" />
+                <img src="{% if lesson.host.avatar %}{{ lesson.host.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ lesson.host.username }}">
               </div>
               <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
             </a>
@@ -74,13 +74,23 @@
           <div class="room__details scroll">
             {{lesson.description}}
           </div>
-          {% if room.image %}
+          {% if lesson.image %}
             <a href="{{ lesson.image.url }}" class="popup-image" target="_blank">
               <img src="{{ lesson.image.url }}" alt="Zdjęcie pokoju">
             </a>
           {% endif %}
           <div class="likes-room">
-            <span class="room__topics">{{ lesson.course }}</span>
+            <div class="lesson-course-info">
+                <span class="topics__list__subject">{{ lesson.course.subject }}</span><br>
+
+                {% if lesson.course.course_type == 'basic' %}
+                    <span class="topics__list__type">Poziom podstawowy</span>
+                {% elif lesson.course.course_type == 'intermediate' %}
+                    <span class="topics__list__type">Poziom rozszerzony</span>
+                {% else %}
+                    <span class="topics__list__type">{{ lesson.course.course_type }}</span>
+                {% endif %}
+            </div>
           </div>
         </div>
 
@@ -119,7 +129,7 @@
                     {% if message.user %}
                       <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="thread__authorInfo">
                         <div class="avatar avatar--small active">
-                          <img src="{{message.user.avatar.url}}" />
+                            <img src="{% if message.user and message.user.avatar %}{{ message.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Autor komentarza" />
                         </div>
                         <div class="thread__authorName">
                           <span class="username" title="Zobacz profil">@{{message.user.first_name}}</span>
@@ -169,7 +179,7 @@
               {% csrf_token %}
               <div class="input-container">
                   <div class="avatar-container">
-                        <img src="{{ request.user.avatar.url }}" alt="User Avatar" class="user-avatar">
+                    <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ request.user.username }}" class="user-avatar">
                   </div>
                   <div class="input-box">
                     <div id="left-side" class="left-side scroll-target">
@@ -203,9 +213,9 @@
       <h3 class="participants__top">Członkowie <span>({{participants.count}} dołączyło)</span></h3>
       <div class="participants__list scroll">
        {% for user in participants %}
-        <a href="{% url 'schoolweb:user-profile' lesson.host.id %}" class="participant">
+          <a href="{% url 'schoolweb:user-profile' user.id %}" class="participant">
           <div class="avatar avatar--medium active">
-            <img src="{{user.avatar.url}}" />
+            <img src="{% if user.avatar %}{{ user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ user.username }}">
           </div>
           <p>
             {{user.first_name}}

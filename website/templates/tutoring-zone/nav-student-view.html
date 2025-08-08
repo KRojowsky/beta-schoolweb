@@ -5,6 +5,7 @@
       <img src="{% static 'img/widget/logo.png' %}" title="Wróć do menu głównego"/>
       <h1 title="Wróć do menu głównego">SchoolWeb</h1>
     </a>
+    {% if show_search|default_if_none:True %}
     <form class="header__search" method="GET" action="{% url 'schoolweb:studentPage' %}">
       <label>
         <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
@@ -17,12 +18,13 @@
         <input name="q" placeholder="Wyszukaj lekcję..." />
       </label>
     </form>
+    {% endif %}
     <nav class="header__menu">
       {% if request.user.is_authenticated %}
       <div class="header__user">
         <a href="{% url 'schoolweb:user-profile' request.user.pk %}">
           <div class="avatar avatar--medium active">
-            <img src="{{request.user.avatar.url}}" />
+            <img src="{% if request.user.avatar %}{{ request.user.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Avatar użytkownika" />
           </div>
           <p>{{request.user.first_name}}<span>@{{request.user.username}}</span></p>
         </a>

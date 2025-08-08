@@ -50,6 +50,15 @@
         {% endif %}
       {% endif %}
 
+      {% if messages %}
+          {% for message in messages %}
+              <div class="notification notification--{{ message.tags }} show">
+                  <span>{{ message }}</span>
+                  <button class="notification__close">&times;</button>
+              </div>
+          {% endfor %}
+      {% endif %}
+
       <div class="roomList__header">
         <div>
           <h2>Twoje lekcje</h2>

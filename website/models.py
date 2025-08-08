@@ -125,21 +125,6 @@ class Room(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        if self.image and hasattr(self.image, 'file') and not str(self.image.name).endswith('.webp'):
-            try:
-                img = Image.open(self.image)
-                img = img.convert('RGB')
-                img.thumbnail((1024, 1024), Image.Resampling.LANCZOS)
-
-                output = BytesIO()
-                img.save(output, format='WEBP', quality=85)
-
-                image_filename = os.path.splitext(self.image.name)[0] + ".webp"
-                self.image.save(image_filename, ContentFile(output.getvalue()), save=False)
-
-            except Exception as e:
-                print(f"[Room image compression error] {e}")
-
         is_new = self.pk is None
 
         with transaction.atomic():
@@ -282,6 +267,7 @@ class NewStudents(models.Model):
         choices=[('Podstawa', 'Podstawa'), ('Rozszerzenie', 'Rozszerzenie')],
         verbose_name="Poziom"
     )
+    notes = models.TextField(blank=True, null=True, verbose_name="Dodatkowe uwagi")
     is_selected = models.BooleanField(default=False, verbose_name="Czy wybrany?")
     is_new = models.BooleanField(default=True, verbose_name="Czy nowy?")
     courses = models.ManyToManyField('Course', blank=True, related_name='students_in_course', verbose_name="Kursy")
@@ -290,8 +276,9 @@ class NewStudents(models.Model):
         return f"{self.first_name} {self.last_name} ({self.subject})"
 
     class Meta:
-        verbose_name = 'Nowi uczniowie - Strefa Korepetycji'
-        verbose_name_plural = 'Nowi uczniowie - Strefa Korepetycji'
+        verbose_name = 'STREFA KOREPETYCJI - Nowi uczniowie'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Nowi uczniowie'
+
 
 
 class Course(models.Model):
@@ -321,6 +308,10 @@ class Course(models.Model):
 
 class LessonStats(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="lesson_stats")
+
+    basic_lesson_rate = models.DecimalField(default=45.0, max_digits=6, decimal_places=2)
+    intermediate_lesson_rate = models.DecimalField(default=60.0, max_digits=6, decimal_places=2)
+
     lessons = models.IntegerField(default=0)
     lessons_intermediate = models.IntegerField(default=0)
 
@@ -356,8 +347,8 @@ class LessonStats(models.Model):
     def month_earnings(self):
         if self.user.groups.filter(name='Teachers').exists():
             return (
-                60 * self.lessons_intermediate +
-                40 * self.lessons +
+                self.intermediate_lesson_rate * self.lessons_intermediate +
+                self.basic_lesson_rate * self.lessons +
                 20 * self.break_lessons -
                 50 * self.missed_lessons +
                 self.month_bonus + self.month_referral_bonus
@@ -368,8 +359,8 @@ class LessonStats(models.Model):
     def all_earnings(self):
         if self.user.groups.filter(name='Teachers').exists():
             return (
-                60 * self.all_lessons_intermediate +
-                40 * self.all_lessons +
+                self.intermediate_lesson_rate * self.all_lessons_intermediate +
+                self.basic_lesson_rate * self.all_lessons +
                 20 * self.all_break_lessons -
                 50 * self.all_missed_lessons +
                 self.all_bonus + self.all_referral_bonus
@@ -388,24 +379,9 @@ class LessonStats(models.Model):
         )
 
     class Meta:
-        verbose_name = 'Lekcje - statystyki'
-        verbose_name_plural = 'Lekcje - statystyki'
+        verbose_name = 'STREFA KOREPETYCJI - Statystyki'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Statystyki'
 
-
-class BankInformation(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='bank_information')
-    card_number = models.CharField(max_length=16, unique=True)
-    cvv = models.CharField(max_length=3)
-    cardholder_name = models.CharField(max_length=100)
-    expiration_date = models.DateField()
-
-    def __str__(self):
-        return f'{self.cardholder_name} - {self.card_number}'
-
-
-    class Meta:
-        verbose_name = 'Informacje bankowe'
-        verbose_name_plural = 'Informacje bankowe'
 
 
 class TeachersEarning(models.Model):
@@ -415,13 +391,52 @@ class TeachersEarning(models.Model):
     month = models.PositiveIntegerField(default=datetime.now().month)
     year = models.PositiveIntegerField(default=datetime.now().year)
 
-    class Meta:
-        verbose_name = 'Wypłata'
-        verbose_name_plural = 'Wypłaty'
-        unique_together = ('user', 'month', 'year')
-
     def __str__(self):
         return f"Earnings for {self.user.username} | Monthly: {self.monthly_earnings} | {self.month}/{self.year}"
+
+    class Meta:
+        verbose_name = 'STREFA KOREPETYCJI - Wypłaty'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Wypłaty'
+        unique_together = ('user', 'month', 'year')
+
+
+
+class Resign(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+
+    REASON_CHOICES = [
+        ('Przerwa', 'Przerwa'),
+        ('Rezygnacja', 'Rezygnacja'),
+    ]
+    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
+
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
+    course_info = models.TextField(blank=True, null=True)
+
+    RATING_CHOICES = [
+        (1, 'Źle'),
+        (2, 'Słabo'),
+        (3, 'Przeciętnie'),
+        (4, 'Dobrze'),
+        (5, 'Fantastycznie'),
+    ]
+    rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
+
+    RETURN_OPTIONS = [
+        ('Tak', 'Tak'),
+        ('Nie', 'Nie'),
+    ]
+    consider_return = models.CharField(max_length=3, choices=RETURN_OPTIONS, blank=True, null=True)
+    reason_details = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return f'Resignation - {self.user.username}'
+
+    class Meta:
+        verbose_name = 'STREFA KOREPETYCJI - Rezygnacje'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Rezygnacje'
+
 
 
 class Lesson(models.Model):
@@ -472,8 +487,8 @@ class Lesson(models.Model):
 
     class Meta:
         ordering = ['-postUpdated', '-postCreated']
-        verbose_name = 'Lekcje - Strefa Korepetycji'
-        verbose_name_plural = 'Lekcje - Strefa Korepetycji'
+        verbose_name = 'STREFA KOREPETYCJI - Lekcje'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Lekcje'
 
 
 
@@ -488,11 +503,13 @@ class CourseMessage(models.Model):
 
     class Meta:
         ordering = ['-messageUpdated', '-messageCreated']
-        verbose_name = 'Komentarze - Strefa Korepetycji'
-        verbose_name_plural = 'Komentarze - Strefa Korepetycji'
+        verbose_name = 'STREFA KOREPETYCJI - Komentarze'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Komentarze'
 
     def __str__(self):
         return self.body[0:50]
+
+
 
 class LessonCorrection(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, default="")
@@ -502,47 +519,10 @@ class LessonCorrection(models.Model):
     lesson_image = models.ImageField(upload_to='lesson_images/', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Poprawki lekcji'
-        verbose_name_plural = 'Poprawki lekcji'
+        verbose_name = 'STREFA KOREPETYCJI - Korekty'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Korekty'
 
 
-class Resign(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    email = models.EmailField()
-
-    REASON_CHOICES = [
-        ('Przerwa', 'Przerwa'),
-        ('Rezygnacja', 'Rezygnacja'),
-    ]
-    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
-
-    start_date = models.DateField(null=True, blank=True)
-    end_date = models.DateField(null=True, blank=True)
-    course_info = models.TextField(blank=True, null=True)
-
-    RATING_CHOICES = [
-        (1, 'Źle'),
-        (2, 'Słabo'),
-        (3, 'Przeciętnie'),
-        (4, 'Dobrze'),
-        (5, 'Fantastycznie'),
-    ]
-    rating = models.IntegerField(choices=RATING_CHOICES, null=True, blank=True)
-
-    RETURN_OPTIONS = [
-        ('Tak', 'Tak'),
-        ('Nie', 'Nie'),
-    ]
-    consider_return = models.CharField(max_length=3, choices=RETURN_OPTIONS, blank=True, null=True)
-    reason_details = models.TextField(blank=True, null=True)
-
-    def __str__(self):
-        return f'Resignation - {self.email}'
-
-
-    class Meta:
-        verbose_name = 'Rezygnacje'
-        verbose_name_plural = 'Rezygnacje'
 
 class Availability(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -568,8 +548,8 @@ class Availability(models.Model):
         return f"{self.user} - {self.day}"
 
     class Meta:
-        verbose_name = 'Dostępności'
-        verbose_name_plural = 'Dostępności'
+        verbose_name = 'STREFA KOREPETYCJI - Dostępności'
+        verbose_name_plural = 'STREFA KOREPETYCJI - Dostępności'
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BLOG~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

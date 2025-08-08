@@ -89,10 +89,10 @@
         </div>
     </div>
 
-    <div class="participants-avatars">
+    <div class="participants-avatars participants-avatars-correction">
         {% for student in lesson.course.students.all %}
             <div class="avatar avatar--participant">
-                <img src="{{ student.avatar.url }}" alt="{{ student.username }}">
+                <img src="{% if student.avatar %}{{ student.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ student.username }}">
             </div>
         {% endfor %}
         <div class="avatar avatar--participant">

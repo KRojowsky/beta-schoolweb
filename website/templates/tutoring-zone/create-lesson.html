@@ -14,9 +14,7 @@
           <a href="{% url 'schoolweb:teacherPage' %}">
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
               <title>Cofnij</title>
-              <path
-                d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z">
-              </path>
+              <path d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z" />
             </svg>
           </a>
           <h3>Utwórz lekcję</h3>
@@ -25,32 +23,61 @@
       <div class="layout__body">
         <form class="form" action="" method="POST">
           {% csrf_token %}
+
           <div class="form__group">
-              <label for="room_course">Dodaj lekcję do kursu:</label>
-              {{ form.course }}
+            <label for="{{ form.course.id_for_label }}">Dodaj lekcję do kursu</label>
+            {{ form.course }}
+            {% if form.course.errors %}
+              <ul class="messages">
+                {% for error in form.course.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
 
           <div class="form__group">
-            <label for="room_name">Temat lekcji:</label>
+            <label for="{{ form.title.id_for_label }}">Temat lekcji</label>
             {{ form.title }}
+            {% if form.title.errors %}
+              <ul class="messages">
+                {% for error in form.title.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
 
           <div class="form__group">
-            <label for="room_description">Notatki(opis):</label>
+            <label for="{{ form.description.id_for_label }}">Notatki (opis)</label>
             {{ form.description }}
+            {% if form.description.errors %}
+              <ul class="messages">
+                {% for error in form.description.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
 
           <div class="form__group">
-            <label for="room_event_datetime">Data:</label>
-            <input type="datetime-local" id="room_event_datetime" name="event_datetime" min="{{ current_date }}">
+            <label for="{{ form.event_datetime.id_for_label }}">Data</label>
+            {{ form.event_datetime }}
+            {% if form.event_datetime.errors %}
+              <ul class="messages">
+                {% for error in form.event_datetime.errors %}
+                  <li class="error">{{ error }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
           </div>
 
           {% if messages %}
-              <ul class="messages">
-                  {% for message in messages %}
-                      <li class="{{ message.tags }}">{{ message }}</li>
-                  {% endfor %}
-              </ul>
+            <ul class="messages">
+              {% for message in messages %}
+                <li class="{{ message.tags }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
           {% endif %}
 
           <div class="form__action">

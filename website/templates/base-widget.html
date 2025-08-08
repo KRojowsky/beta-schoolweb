@@ -48,8 +48,10 @@
 
 <body>
 	{% include 'widget/nav.html' %}
-	{% block content %}
-    {% endblock content %}
+	<main>
+    	{% block content %}
+        {% endblock content %}
+    </main>
 	{% include 'widget/footer.html' %}
 
     <div id="no-content-info-modal" class="modal">

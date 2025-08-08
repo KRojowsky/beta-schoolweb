@@ -5,7 +5,7 @@
       {% if lesson.host %}
       <a href="{% url 'schoolweb:user-profile' lesson.host.id %}" class="roomListRoom__author">
         <div class="avatar avatar--small active">
-          <img src="{{ lesson.host.avatar.url }}" />
+            <img src="{% if room.host.avatar %}{{ lesson.host.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="Avatar użytkownika"/>
         </div>
         <span title="Zobacz profil">{{ lesson.host.first_name }} {{ lesson.host.last_name }}</span>
       </a>
@@ -77,15 +77,15 @@
         </div>
     </div>
 
-    <div class="participants-avatars">
+    <div class="participants-avatars participants-avatars-correction">
         {% for student in lesson.course.students.all %}
             <div class="avatar avatar--participant">
-                <img src="{{ student.avatar.url }}" alt="{{ student.username }}">
+                <img src="{% if student.avatar %}{{ student.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ student.username }}">
             </div>
         {% endfor %}
         {% if lesson.course.teacher %}
             <div class="avatar avatar--participant">
-                <img src="{{ lesson.course.teacher.avatar.url }}" alt="{{ lesson.course.teacher.username }}">
+                <img src="{% if lesson.course.teacher.avatar %}{{ lesson.course.teacher.avatar.url }}{% else %}{% static 'img/profile-pictures/avatar.svg' %}{% endif %}" alt="{{ lesson.course.teacher.username }}">
             </div>
         {% endif %}
     </div>

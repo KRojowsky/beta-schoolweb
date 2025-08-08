@@ -831,6 +831,14 @@ a {
     font-size: 14px;
 }
 
+@media screen and (max-width: 1100px) {
+    .envelope-link {
+        padding: 6px;
+        font-size: 12px;
+
+    }
+}
+
 .envelope-link i{
     margin-right: 3px;
 }
@@ -839,10 +847,22 @@ a {
     background: #F0F0F0;
 }
 
+.room-meta-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
 .participants-avatars {
     display: flex;
     align-items: center;
-    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.participants-avatars-correction {
     overflow: hidden;
 }
 
@@ -856,6 +876,14 @@ a {
     font-size: 12px;
     color: #696969;
     margin: 5px 0 0 15px;
+}
+
+.room-level {
+    padding: 2px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    color: #696969;
+    border: 1px solid #DBDBDB;
 }
 
 .comment-counters-container {
@@ -1055,6 +1083,18 @@ a {
     border-bottom: 1px solid #DBDBDB;
 }
 
+.lesson-course-info {
+    display: flex;
+    gap: 3px;
+    font-size: 1.4rem;
+    margin-top: 16px;
+    align-items: center;
+}
+
+.lesson-course-info span{
+    font-size: 1.2rem;
+}
+
 .likes-info {
     display: flex;
     align-items: center;
@@ -1067,7 +1107,7 @@ a {
     height: 20px;
 }
 
-.likes-room-count{
+.likes-room-count {
     color: #696969;
     margin: 3px 0 0 0;
 }
@@ -1127,7 +1167,7 @@ a {
 .threads {
     overflow-y: auto;
     height: 100%;
-    padding: 0 0 10px 0;
+    padding: 0;
 }
 
 .thread__top {
@@ -1215,10 +1255,10 @@ a {
 }
 
 .thread {
-    margin: 15px 10px;
+    margin: 15px 5px;
     padding: 10px;
     background: #F5F5F5;
-    border-radius: 20px;
+    border-radius: 12px;
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -1266,6 +1306,9 @@ a {
         padding: 10px;
     }
 }
+
+
+
 
 .input-container {
     display: flex;
@@ -1348,6 +1391,76 @@ a {
     margin-left: auto;
 }
 
+.room__message.room__message--guest {
+  background-color: #F9E6FF;
+  border: 1.5px solid #D399FF;
+  color: #9933CC;
+  border-radius: 12px;
+  padding: 10px 25px;
+  font-size: 1.5rem;
+  margin: 5px 20px 20px 20px;
+  box-shadow: 0 2px 6px rgba(211, 153, 255, 0.3);
+  text-align: center;
+}
+
+.room__message.room__message--guest p {
+  margin: 15px 0;
+}
+
+.btn-register {
+  display: inline-block;
+  background-color: #BB3FFF;
+  color: white !important;
+  font-weight: 700;
+  padding: 10px 30px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 1.4rem;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.btn-register:hover {
+  background-color: #8800CC;
+  color: white !important;
+}
+
+.login-line {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #7A3fCC;
+}
+
+.login-line a {
+  color: #BB3FFF;
+  text-decoration: underline;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-line a:hover {
+  color: #8800CC;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+  .room__message.room__message--guest {
+    font-size: 1.2rem;
+    padding: 15px 20px;
+  }
+
+  .btn-register {
+    font-size: 1.2rem;
+    padding: 10px 25px;
+  }
+
+  .login-line {
+      font-size: 1.1rem;
+    }
+}
+
 .room,
 .participants {
     margin: 90px 0 20px 0;
@@ -1416,6 +1529,102 @@ a {
         flex-direction: column;
         align-items: flex-start;
     }
+}
+
+.similar-rooms {
+  margin: 50px 20px;
+}
+
+.similar-rooms h3 {
+  margin-bottom: 30px;
+  color: #7A2fCC;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.similar-rooms__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 0 auto;
+  max-width: 1400px;
+}
+
+.similar-room {
+  display: block;
+  text-decoration: none;
+  background: #FFF;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #E6D3FF;
+  transition: 0.3s ease;
+  box-shadow: 0 1px 4px rgba(153, 51, 255, 0.05);
+}
+
+.similar-room:hover {
+  background: #F3E8FF;
+  box-shadow: 0 4px 10px rgba(153, 51, 255, 0.15);
+}
+
+.similar-room__info {
+  display: flex;
+  flex-direction: column;
+}
+
+.similar-room__title {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #5F1AB2;
+  margin-bottom: 6px;
+}
+
+.similar-room__desc {
+  font-size: 1.4rem;
+  color: #4B2D6F;
+  min-height: 48px;
+}
+
+.similar-room__image {
+  width: 100%;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin: 0px 0 12px 0;
+  background-color: #F5F5F5;
+  border: 1px solid #DBDBDB;
+  margin-top: 10px;
+}
+
+.similar-room__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.similar-room:hover .similar-room__image img {
+  transform: scale(1.02);
+}
+
+.similar-room__author {
+  font-size: 1.3rem;
+  color: #6E3BA1;
+  margin-bottom: 2px;
+}
+
+.similar-room__level {
+  font-size: 1.2rem;
+  color: #5A2E98;
+  font-style: italic;
+}
+
+.similar-room__date {
+  font-size: 1.3rem;
+  color: #999;
+  margin-top: auto;
+  text-align: right;
 }
 
 .modal-container {
@@ -1855,6 +2064,28 @@ a {
     padding: 5px;
     border-radius: 5px;
     font-size: 13px;
+}
+
+.profile__rates {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 20px 0;
+    font-size: 15px;
+    color: #2C3E50;
+}
+
+.profile__rates li {
+    background-color: #F0F9F5;
+    border-left: 5px solid #2ECC71;
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.profile__rates li strong {
+    font-size: 16px;
+    color: #27AE60;
 }
 
 .animated-progress1 h4, .animated-progress2 h4{
@@ -2395,6 +2626,13 @@ input[type="checkbox"]:checked::after {
     color: #000;
 }
 
+@media (max-width: 1100px) {
+    .joinButton, .inactiveButton, .resetAmountButton, .feedback{
+        font-size: 12px;
+        padding:3px 8px;
+    }
+}
+
 .joinButton:hover{
     transform: scale(1.1);
     transition: 0.3s;
@@ -2505,21 +2743,22 @@ input[type="checkbox"]:checked::after {
 }
 
 .new-student-info {
-    text-align: center;
-    margin-bottom: 35px;
+    text-align: left;
+    margin-bottom: 15px;
 }
 
 .new-student-info h2 {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     color: #808080;
     margin-bottom: 8px;
     font-weight: 700;
+    text-align: center;
 }
 
 .new-student-info p {
     margin: 4px 0;
     color: #555;
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 500;
 }
 

@@ -50,23 +50,51 @@
                     <div class="form__group">
                         <label for="{{ form.username.id_for_label }}">Nazwa użytkownika (maks. 10 znaków)</label>
                         {{ form.username }}
+                        {% if form.username.errors %}
+                            <ul class="messages">
+                                {% for error in form.username.errors %}
+                                    <li class="error">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
 
                     <div class="form__group">
                         <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
                         {{ form.email }}
+                        {% if form.email.errors %}
+                            <ul class="messages">
+                                {% for error in form.email.errors %}
+                                    <li class="error">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
 
                     <div class="form__group">
                         <label for="{{ form.bio.id_for_label }}">{{ form.bio.label }}</label>
                         {{ form.bio }}
+                        {% if form.bio.errors %}
+                            <ul class="messages">
+                                {% for error in form.bio.errors %}
+                                    <li class="error">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
 
                     <div class="form__group">
                         <label for="{{ form.interests.id_for_label }}">{{ form.interests.label }}</label>
                         {{ form.interests }}
+                        {% if form.interests.errors %}
+                            <ul class="messages">
+                                {% for error in form.interests.errors %}
+                                    <li class="error">{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
                     </div>
-
+                    
                     {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}

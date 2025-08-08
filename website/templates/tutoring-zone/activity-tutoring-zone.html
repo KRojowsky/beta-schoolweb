@@ -1,5 +1,11 @@
 {% extends 'base-tutoring-zone.html' %}
 
+{% block navbar %}
+{% include navbar_template %}
+{% endblock navbar %}
+
+{% load static %}
+
 {% block content %}
 <main class="layout">
   <div class="container">
@@ -25,7 +31,11 @@
           <div class="activities__boxHeader roomListRoom__header">
             <a href="{% url 'schoolweb:user-profile' message.user.id %}" class="roomListRoom__author">
               <div class="avatar avatar--small active">
-                <img src="{{message.user.avatar.url}}"/>
+                {% if message.user.avatar and message.user.avatar.name %}
+                    <img src="{{ message.user.avatar.url }}">
+                {% else %}
+                    <img src="{% static 'img/profile-pictures/avatar.svg' %}">
+                {% endif %}
               </div>
               <p>
                 {{ message.user.first_name }} {{ message.user.last_name }}

@@ -1,6 +1,6 @@
 import { displayFrame, videoFrames, userIdInDisplayFrame, expandVideoFrame, setUserIdInDisplayFrame } from './room2.js';
 
-export const APP_ID = 'f3d9aeee514b4958bae2a751a01a49e9';
+export const APP_ID = '3c0326eafd0348a6b264fa5ac4a7fcf3';
 export let rtmClient;
 export let channel;
 export let uid;
@@ -72,14 +72,14 @@ export let joinRoomInit = async () => {
             });
 
         console.log("Dołączono do kanału RTM:", roomId);
-        
-        
+
+
         addBotMessageToDom(`Witaj na zajęciach ${displayName}! 👋`)
 
         console.log("Inicjalizacja połączenia RTC...");
         client = AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })
-        
-        
+
+
         client.on("connection-state-change", (curState, prevState) => {
             console.log("Zmiana stanu połączenia:", prevState, "->", curState);
             if (curState === "DISCONNECTED") {
@@ -215,14 +215,14 @@ export let switchToCamera = async () => {
         let player = `<div class="video__container" id="user-container-${uid}">
                         <div class="video-player" id="user-${uid}"></div>
                      </div>`;
-        
+
         streamsContainer.insertAdjacentHTML('beforeend', player);
-        
+
         await localTracks[1].setMuted(true);
 
         const cameraBtn = document.getElementById('camera-btn');
         const screenBtn = document.getElementById('screen-btn');
-        
+
         if (cameraBtn) {
             cameraBtn.classList.remove('active');
             cameraBtn.classList.add('disabled');
@@ -235,7 +235,7 @@ export let switchToCamera = async () => {
         const newContainer = document.getElementById(`user-container-${uid}`);
         if (newContainer) {
             newContainer.addEventListener('click', expandVideoFrame);
-            
+
             try {
                 localTracks[1].play(`user-${uid}`);
                 console.log("Przełączono na kamerę (wyciszoną)");
@@ -253,9 +253,9 @@ export let switchToCamera = async () => {
         } catch (error) {
             logError("Nie udało się opublikować strumienia kamery", error);
         }
-        
+
         displayFrame.style.display = 'none';
-        
+
         let videoFrames = document.getElementsByClassName('video__container');
         for (let i = 0; i < videoFrames.length; i++) {
             videoFrames[i].style.height = '300px';
@@ -315,7 +315,7 @@ export let handleUserLeft = async (user) => {
     try {
         console.log(`Użytkownik ${user.uid} opuścił pokój`);
         delete remoteUsers[user.uid];
-        
+
         const userContainer = document.getElementById(`user-container-${user.uid}`);
         if (userContainer) {
             userContainer.remove();
@@ -420,26 +420,26 @@ export let toggleScreen = async (e) => {
             if (userContainer) {
                 userContainer.remove();
             }
-            
+
             let streamsContainer = document.getElementById('streams__container');
             let player = `<div class="video__container" id="user-container-${uid}">
                         <div class="video-player" id="user-${uid}"></div>
                     </div>`;
 
             streamsContainer.insertAdjacentHTML('beforeend', player);
-            
+
             const newContainer = document.getElementById(`user-container-${uid}`);
             if (newContainer) {
                 displayFrame.style.display = 'block';
                 displayFrame.innerHTML = '';
-                
+
                 displayFrame.appendChild(newContainer);
-                
+
                 setUserIdInDisplayFrame(`user-container-${uid}`);
 
-                
+
                 newContainer.addEventListener('click', expandVideoFrame);
-                
+
                 try {
                     localScreenTracks.play(`user-${uid}`);
                     console.log("Odtwarzanie udostępniania ekranu");
@@ -467,11 +467,11 @@ export let toggleScreen = async (e) => {
             }
         } else {
             sharingScreen = false;
-            
+
             screenButton.classList.remove('active');
             screenButton.classList.add('disabled');
             cameraButton.style.display = 'block';
-            
+
             const userContainer = document.getElementById(`user-container-${uid}`);
             if (userContainer) {
                 userContainer.remove();
@@ -508,7 +508,7 @@ export let leaveChannel = async () => {
         await client.leave();
         await channel.leave();
         await rtmClient.logout();
-        
+
         console.log("Opuszczono pokój");
         return true;
     } catch (error) {
@@ -528,43 +528,43 @@ export let leaveChannelAndGoToLobby = async () => {
 
 export let addBotMessageToDom = (message) => {
     const messageContainer = document.getElementById('messages__container') || document.createElement('div');
-    
+
     let newMessage = `<div class="message__wrapper">
                         <div class="message__body__bot">
                             <strong class="message__author">🤖 Resq bot</strong>
                             <p class="message__text">${message}</p>
                         </div>
                     </div>`;
-                    
+
     messageContainer.insertAdjacentHTML('beforeend', newMessage);
-    
-    
+
+
     messageContainer.scrollTop = messageContainer.scrollHeight;
 }
 
 
 export function initializeRTCEventListeners() {
     console.log("Initializing RTC event listeners...");
-    
+
     const elementsToCheck = [
-        'camera-btn', 
-        'mic-btn', 
-        'screen-btn', 
+        'camera-btn',
+        'mic-btn',
+        'screen-btn',
         'leave-btn'
     ];
-    
+
     elementsToCheck.forEach(id => {
         const element = document.getElementById(id);
         if (!element) {
             console.warn(`Nie znaleziono elementu HTML o ID ${id}`);
         }
     });
-    
+
     const cameraBtn = document.getElementById('camera-btn');
     const micBtn = document.getElementById('mic-btn');
     const screenBtn = document.getElementById('screen-btn');
     const leaveBtn = document.getElementById('leave-btn');
-    
+
     if (cameraBtn) cameraBtn.addEventListener('click', toggleCamera);
     if (micBtn) micBtn.addEventListener('click', toggleMic);
     if (screenBtn) screenBtn.addEventListener('click', toggleScreen);

@@ -24,7 +24,7 @@
           {% csrf_token %}
 
           <div class="form__group role-selection">
-            <input type="hidden" name="role" id="role-input">
+            <input type="hidden" name="role" id="role-input" value="{{ form.data.role|default:'' }}">
             <button type="button" class="role-btn" data-role="student" onclick="selectRole('student')">
                 <img src="{% static 'img/widget/main-view-7.webp' %}" alt="Uczeń">
                 Uczeń
@@ -154,6 +154,18 @@
                 {% endif %}
             </div>
 
+            <div class="form__group" id="notes-field" style="display: none;">
+              <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+              {{ form.notes }}
+              {% if form.notes.errors %}
+                <ul class="messages">
+                  {% for error in form.notes.errors %}
+                    <li class="error">{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
             <div class="form__group">
               <input
                 type="text"
@@ -263,5 +275,18 @@
 
 <script src="{% static 'js/apply-user-tutoring-zone.js' %}"></script>
 <script src="{% static 'js/password-visibility.js' %}"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const role = document.getElementById('role-input').value;
+    const notesField = document.getElementById('notes-field');
+
+    if (role === 'student' && notesField) {
+      notesField.style.display = 'block';
+    } else if (notesField) {
+      notesField.style.display = 'none';
+    }
+  });
+</script>
 
 {% endblock content %}
